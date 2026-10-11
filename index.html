@@ -59,7 +59,6 @@
       transform: scale(0.97);
     }
 
-    /* Animation สำหรับ Toast แจ้งเตือนน่ารักๆ */
     @keyframes toastIn {
       from { transform: translateY(-20px) scale(0.9); opacity: 0; }
       to { transform: translateY(0) scale(1); opacity: 1; }
@@ -123,11 +122,11 @@
     </div>
   </div>
 
-  <!-- Mobile Container (Pastel Shell) -->
+  <!-- Mobile Container -->
   <div class="w-full max-w-md h-screen sm:h-[860px] bg-white sm:rounded-[36px] flex flex-col overflow-hidden shadow-2xl border border-purple-100 relative">
     
     <!-- ==================== VIEW 1: LOBBY ==================== -->
-    <div id="view-lobby" class="flex-1 flex flex-col overflow-hidden bg-slate-50/60">
+    <div id="view-lobby" class="flex-1 flex flex-col overflow-hidden bg-slate-50/60 relative">
       
       <!-- Top Lobby Header -->
       <header class="p-3 bg-white/90 backdrop-blur border-b border-purple-100 flex justify-between items-center z-10">
@@ -198,6 +197,7 @@
             </div>
           </div>
 
+          <!-- Persona Section -->
           <div class="pastel-card p-4 rounded-3xl space-y-3">
             <div class="flex justify-between items-center">
               <div>
@@ -228,8 +228,6 @@
 
         <!-- TAB 2: EXPLORE & BOT MARKETPLACE -->
         <section id="tab-explore" class="hidden space-y-3.5 pb-8">
-          
-          <!-- SUB-VIEW A: หน้ารวมบอท -->
           <div id="explore-discovery-view" class="space-y-3.5">
             <div class="flex p-1 bg-purple-100/60 rounded-2xl border border-purple-200 text-xs font-bold">
               <button onclick="switchExploreSubTab('public')" id="subtab-btn-public" class="flex-1 py-2 rounded-xl bg-white text-purple-700 shadow-sm transition flex items-center justify-center gap-1.5">
@@ -258,7 +256,7 @@
             <div id="explore-bot-cards-container" class="space-y-2.5 pt-1"></div>
           </div>
 
-          <!-- SUB-VIEW B: หน้าฟอร์มสร้าง/แก้ไขบอท -->
+          <!-- หน้าฟอร์มสร้าง/แก้ไขบอท -->
           <div id="explore-creator-view" class="hidden space-y-3">
             <div class="flex items-center justify-between text-slate-500 text-xs px-1">
               <div class="flex items-center gap-1.5 cursor-pointer hover:text-violet-600 transition font-medium" onclick="switchToBotDiscovery()">
@@ -279,26 +277,18 @@
             <div class="pastel-card rounded-3xl p-4 space-y-4">
               <input type="hidden" id="editing-bot-id">
 
-              <!-- 1. Profile Tab -->
               <div id="btab-profile" class="space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ</label>
                   <input id="bot-name-input" type="text" placeholder="กรุณากรอกชื่อตัวละคร" maxlength="20" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                  <div class="text-[10px] text-right text-slate-400 mt-1">0/20</div>
                 </div>
 
                 <div>
                   <label class="block text-xs font-bold text-slate-700 mb-2">เพศ</label>
                   <div class="flex items-center gap-4 text-xs text-slate-600">
-                    <label class="flex items-center gap-1.5 cursor-pointer">
-                      <input type="radio" name="bot-gender" value="male" class="accent-violet-500"> ผู้ชาย
-                    </label>
-                    <label class="flex items-center gap-1.5 cursor-pointer">
-                      <input type="radio" name="bot-gender" value="female" class="accent-violet-500"> หญิง
-                    </label>
-                    <label class="flex items-center gap-1.5 cursor-pointer">
-                      <input type="radio" name="bot-gender" value="none" checked class="accent-violet-500"> ไม่ได้ตั้งค่า
-                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="bot-gender" value="male" class="accent-violet-500"> ผู้ชาย</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="bot-gender" value="female" class="accent-violet-500"> หญิง</label>
+                    <label class="flex items-center gap-1.5 cursor-pointer"><input type="radio" name="bot-gender" value="none" checked class="accent-violet-500"> ไม่ได้ตั้งค่า</label>
                   </div>
                 </div>
 
@@ -323,7 +313,7 @@
                     <label class="block text-xs font-bold text-slate-700">พรีวิวสั้นๆ (Short Preview)</label>
                     <span class="text-[10px] text-purple-600 font-medium">จะแสดงในการ์ดตอนค้นหา</span>
                   </div>
-                  <input id="bot-preview-input" type="text" placeholder="เช่น เพื่อนสมัยเด็กขี้อ้อนที่แอบหลงรักคุณมา 5 ปี..." maxlength="120" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+                  <input id="bot-preview-input" type="text" placeholder="เช่น เพื่อนสมัยเด็กขี้อ้อน..." maxlength="120" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
                 </div>
 
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
@@ -331,7 +321,7 @@
                     <label class="block text-xs font-bold text-slate-700">เรื่องเล่า / สตอรี่แบบละเอียด</label>
                     <span id="story-word-counter" class="text-[10px] text-slate-400">0/2000 คำ</span>
                   </div>
-                  <textarea id="bot-story-input" oninput="updateWordCounter(this, 'story-word-counter', 2000)" rows="5" placeholder="เขียนเนื้อเรื่อง ปูมหลัง บรรยากาศ หรือพล็อตละเอียด..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
+                  <textarea id="bot-story-input" oninput="updateWordCounter(this, 'story-word-counter', 2000)" rows="5" placeholder="เขียนเนื้อเรื่อง ปูมหลัง..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
                 </div>
 
                 <div class="border border-dashed border-purple-200 rounded-2xl p-3 space-y-2 bg-purple-50/40">
@@ -348,15 +338,14 @@
                 </div>
               </div>
 
-              <!-- 2. ข้อมูลบอท -->
               <div id="btab-basic" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ข้อมูลพื้นฐานของบอท</label>
-                  <textarea id="bot-info-input" rows="3" placeholder="ประวัติครอบครัว ความเป็นมา..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <textarea id="bot-info-input" rows="3" placeholder="ประวัติครอบครัว..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3">
                   <label class="block text-xs font-bold text-slate-700 mb-1">นิสัยหรือพฤติกรรม</label>
-                  <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัย การกระทำ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัย..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                   <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-2.5">
@@ -380,11 +369,10 @@
                 </div>
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ความสัมพันธ์กับผู้เล่น</label>
-                  <textarea id="bot-player-relation-input" rows="2" placeholder="ระบุสถานะความสัมพันธ์..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <textarea id="bot-player-relation-input" rows="2" placeholder="ระบุสถานะ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
               </div>
 
-              <!-- 3. สถานการณ์ -->
               <div id="btab-first" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ฉากแรกเจอ (*การกระทำ* "คำพูด" {user})</label>
@@ -392,7 +380,6 @@
                 </div>
               </div>
 
-              <!-- 4. รายละเอียดเพิ่มเติม -->
               <div id="btab-extra" class="hidden space-y-3.5">
                 <div class="flex justify-between items-center px-1">
                   <h3 class="text-xs font-bold text-indigo-950">รายละเอียดเพิ่มเติม (หลังบ้าน)</h3>
@@ -404,9 +391,7 @@
                 </button>
               </div>
 
-              <!-- 5. ตั้งค่าเพิ่มเติม (การเผยแพร่, การเชื่อมโยงบอทอื่น & แฮชแท็ก) -->
               <div id="btab-advanced" class="hidden space-y-3.5">
-                <!-- การเผยแพร่ -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3.5 space-y-2">
                   <label class="block text-xs font-bold text-slate-800">การเผยแพร่</label>
                   <div class="space-y-2 text-xs">
@@ -415,12 +400,11 @@
                   </div>
                 </div>
 
-                <!-- การเชื่อมต่อกับบอทอื่น -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3.5 space-y-3">
                   <div class="flex justify-between items-center">
                     <div>
                       <label class="block text-xs font-bold text-slate-800">เชื่อมต่อกับบอทตัวอื่น</label>
-                      <p class="text-[10px] text-slate-500">เพื่อดึงข้อมูล ความสัมพันธ์ และความทรงจำร่วมมาใช้</p>
+                      <p class="text-[10px] text-slate-500">เพื่อดึงข้อมูลและความสัมพันธ์ร่วมมาใช้</p>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" id="bot-connect-toggle" onchange="toggleBotConnectionSection()" class="sr-only peer">
@@ -437,20 +421,17 @@
                     </div>
                     <div>
                       <label class="block text-[11px] font-semibold text-slate-700 mb-1">ความสัมพันธ์ / ความเกี่ยวข้องกันอย่างไร</label>
-                      <textarea id="connected-bot-relation-input" rows="2" placeholder="เช่น เป็นพี่น้องกัน, เป็นศัตรูคู่แข่ง, เคยเป็นคนรักเก่า..." class="w-full pastel-input rounded-xl p-2.5 text-xs focus:outline-none resize-none"></textarea>
+                      <textarea id="connected-bot-relation-input" rows="2" placeholder="เช่น เป็นพี่น้องกัน..." class="w-full pastel-input rounded-xl p-2.5 text-xs focus:outline-none resize-none"></textarea>
                     </div>
                   </div>
                 </div>
 
-                <!-- แฮชแท็ก (#Hashtags) -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3.5 space-y-1.5">
                   <label class="block text-xs font-bold text-slate-800">แฮชแท็กประจำตัวละคร (#Hashtags)</label>
-                  <input id="bot-hashtags-input" type="text" placeholder="เช่น #คลั่งรัก #เพื่อนสนิท #นักดนตรี #ขี้อ้อน" class="w-full pastel-input rounded-2xl px-3 py-2 text-xs focus:outline-none">
-                  <p class="text-[10px] text-slate-400">เว้นวรรคระหว่างแฮชแท็กเพื่อให้ผู้เล่นค้นพบได้ง่ายขึ้น</p>
+                  <input id="bot-hashtags-input" type="text" placeholder="เช่น #คลั่งรัก #เพื่อนสนิท" class="w-full pastel-input rounded-2xl px-3 py-2 text-xs focus:outline-none">
                 </div>
               </div>
 
-              <!-- ปุ่มบันทึก 2 ปุ่ม -->
               <div class="pt-2 border-t border-purple-100 grid grid-cols-2 gap-2">
                 <button onclick="submitSaveBot(false)" class="py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-bold rounded-2xl text-xs flex items-center justify-center gap-1.5 transition">
                   <i class="fa-solid fa-file-lines text-xs"></i> บันทึกฉบับร่าง
@@ -481,7 +462,6 @@
             </div>
           </div>
 
-          <!-- การ์ดหัวโปรไฟล์ตัวละคร -->
           <div class="pastel-card p-4 rounded-3xl space-y-3 relative overflow-hidden">
             <div class="flex items-start gap-3.5">
               <img id="hub-avatar" src="" class="w-20 h-20 rounded-2xl object-cover border-2 border-purple-200 shadow-md flex-shrink-0">
@@ -498,14 +478,12 @@
             <div id="hub-tags-container" class="flex flex-wrap gap-1 pt-1"></div>
           </div>
 
-          <!-- แท็บย่อย 3 แท็บ -->
           <div class="flex p-1 bg-purple-100/60 rounded-2xl border border-purple-200 text-xs font-bold">
             <button onclick="switchHubSubTab('story')" id="hub-tab-btn-story" class="flex-1 py-2 rounded-xl bg-white text-purple-700 shadow-sm transition">ข้อมูลบอท</button>
             <button onclick="switchHubSubTab('slots')" id="hub-tab-btn-slots" class="flex-1 py-2 rounded-xl text-slate-500 hover:text-purple-700 transition">ข้อมูลตัวละคร</button>
             <button onclick="switchHubSubTab('reviews')" id="hub-tab-btn-reviews" class="flex-1 py-2 rounded-xl text-slate-500 hover:text-purple-700 transition">ความคิดเห็น/รีวิว</button>
           </div>
 
-          <!-- เนื้อหาแท็บ 1: ข้อมูลบอท -->
           <div id="hub-content-story" class="pastel-card p-4 rounded-3xl space-y-3 text-xs leading-relaxed">
             <h4 class="font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-book-open text-violet-500"></i> สตอรี่และเนื้อเรื่อง</h4>
             <div id="hub-story-text" class="text-slate-600 whitespace-pre-line leading-relaxed bg-purple-50/30 p-3 rounded-2xl border border-purple-50 max-h-60 overflow-y-auto hide-scrollbar"></div>
@@ -519,13 +497,12 @@
             </div>
           </div>
 
-          <!-- เนื้อหาแท็บ 2: ข้อมูลตัวละคร (Slots) -->
           <div id="hub-content-slots" class="hidden space-y-3.5">
             <div class="pastel-card p-4 rounded-3xl space-y-3">
               <div class="flex justify-between items-center">
                 <div>
                   <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-user-pen text-violet-500"></i> บันทึกข้อมูลของผู้เล่น (สูงสุด 5 ช่อง)</h4>
-                  <p class="text-[10px] text-slate-500">ใส่หัวข้อและรายละเอียดให้บอทรับรู้ (ไม่เกิน 1,500 คำ/ช่อง)</p>
+                  <p class="text-[10px] text-slate-500">ใส่หัวข้อและรายละเอียดให้บอทรับรู้</p>
                 </div>
                 <button onclick="addPlayerHubSlot()" class="px-2.5 py-1 pastel-btn-primary rounded-xl text-[10px] font-bold">+ เพิ่มช่อง</button>
               </div>
@@ -535,23 +512,20 @@
             <div class="pastel-card p-4 rounded-3xl space-y-3">
               <div>
                 <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-robot text-violet-500"></i> ข้อมูลเฉพาะตัวของบอท (สูงสุด 10 ช่อง)</h4>
-                <p class="text-[10px] text-slate-500">ข้อมูลที่ผู้สร้างป้อนไว้ให้ผู้เล่นเปิดอ่านก่อนเล่น</p>
+                <p class="text-[10px] text-slate-500">ข้อมูลที่ผู้สร้างป้อนไว้</p>
               </div>
               <div id="hub-bot-slots-list" class="space-y-2"></div>
             </div>
           </div>
 
-          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว -->
           <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
             <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
-            
             <div class="space-y-2">
-              <textarea id="hub-review-input" rows="2" placeholder="เขียนรีวิวหรือความรู้สึกหลังจากได้เล่นบอทตัวนี้..." class="w-full pastel-input rounded-2xl p-2.5 text-xs focus:outline-none"></textarea>
+              <textarea id="hub-review-input" rows="2" placeholder="เขียนรีวิวหรือความรู้สึก..." class="w-full pastel-input rounded-2xl p-2.5 text-xs focus:outline-none"></textarea>
               <div class="flex justify-end">
                 <button onclick="submitHubReview()" class="px-3.5 py-1.5 pastel-btn-primary rounded-xl text-[11px] font-bold">ส่งความคิดเห็น</button>
               </div>
             </div>
-
             <div id="hub-reviews-container" class="space-y-3 pt-2 border-t border-purple-100 max-h-80 overflow-y-auto hide-scrollbar"></div>
           </div>
 
@@ -736,14 +710,14 @@
         <input type="hidden" id="edit-player-slot-index">
         <div>
           <label class="block text-[11px] font-bold text-slate-700 mb-1">ชื่อหัวข้อข้อมูล</label>
-          <input id="edit-player-slot-title" type="text" placeholder="เช่น สถานะกับบอท, ความลับ, สิ่งของพกติดตัว" class="w-full pastel-input rounded-2xl px-3 py-2 text-xs focus:outline-none">
+          <input id="edit-player-slot-title" type="text" placeholder="เช่น สถานะกับบอท, ความลับ" class="w-full pastel-input rounded-2xl px-3 py-2 text-xs focus:outline-none">
         </div>
         <div>
           <div class="flex justify-between items-center mb-1">
             <label class="block text-[11px] font-bold text-slate-700">เนื้อหารายละเอียด</label>
             <span id="player-slot-word-counter" class="text-[10px] text-slate-400">0/1500 คำ</span>
           </div>
-          <textarea id="edit-player-slot-content" oninput="updateWordCounter(this, 'player-slot-word-counter', 1500)" rows="4" placeholder="พิมพ์รายละเอียดข้อมูล (ไม่เกิน 1,500 คำ)..." class="w-full pastel-input rounded-2xl p-2.5 text-xs focus:outline-none"></textarea>
+          <textarea id="edit-player-slot-content" oninput="updateWordCounter(this, 'player-slot-word-counter', 1500)" rows="4" placeholder="พิมพ์รายละเอียดข้อมูล..." class="w-full pastel-input rounded-2xl p-2.5 text-xs focus:outline-none"></textarea>
         </div>
         <div class="space-y-2 pt-1">
           <button onclick="savePlayerHubSlot()" class="w-full py-2.5 pastel-btn-primary font-bold rounded-2xl text-xs">บันทึกข้อมูลช่องนี้</button>
@@ -752,6 +726,7 @@
       </div>
     </div>
 
+    <!-- PERSONA CREATE/EDIT MODAL -->
     <div id="create-persona-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
       <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3 max-h-[88vh] overflow-y-auto hide-scrollbar">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
@@ -764,14 +739,32 @@
             <img id="new-persona-avatar-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" class="w-12 h-12 rounded-full object-cover border-2 border-violet-400">
             <label class="px-2.5 py-1 bg-white text-violet-600 rounded-xl text-[11px] font-bold border border-purple-200 cursor-pointer">เลือกรูป<input type="file" accept="image/*" class="hidden" onchange="previewNewPersonaAvatar(event)"></label>
           </div>
-          <input id="persona-name-input" type="text" placeholder="ชื่อเรียกในแชท" class="w-full pastel-input rounded-2xl px-3 py-2">
-          <div class="grid grid-cols-2 gap-2">
-            <input id="persona-gender-input" type="text" placeholder="เพศ" class="w-full pastel-input rounded-2xl px-3 py-2">
-            <input id="persona-age-input" type="text" placeholder="อายุ" class="w-full pastel-input rounded-2xl px-3 py-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">ชื่อเรียกในแชท</label>
+            <input id="persona-name-input" type="text" placeholder="ชื่อของคุณ" class="w-full pastel-input rounded-2xl px-3 py-2">
           </div>
-          <input id="persona-birthday-input" type="text" placeholder="วันเกิด" class="w-full pastel-input rounded-2xl px-3 py-2">
-          <textarea id="persona-appearance-input" rows="2" placeholder="รูปลักษณ์ภายนอก..." class="w-full pastel-input rounded-2xl p-2"></textarea>
-          <textarea id="persona-personality-input" rows="2" placeholder="นิสัย & บุคลิก..." class="w-full pastel-input rounded-2xl p-2"></textarea>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1">เพศ</label>
+              <input id="persona-gender-input" type="text" placeholder="เพศ" class="w-full pastel-input rounded-2xl px-3 py-2">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-700 mb-1">อายุ</label>
+              <input id="persona-age-input" type="text" placeholder="อายุ" class="w-full pastel-input rounded-2xl px-3 py-2">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">วันเกิด</label>
+            <input id="persona-birthday-input" type="text" placeholder="วันเกิด" class="w-full pastel-input rounded-2xl px-3 py-2">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">รูปลักษณ์ภายนอก</label>
+            <textarea id="persona-appearance-input" rows="2" placeholder="รูปลักษณ์..." class="w-full pastel-input rounded-2xl p-2"></textarea>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">นิสัย & บุคลิก</label>
+            <textarea id="persona-personality-input" rows="2" placeholder="นิสัย..." class="w-full pastel-input rounded-2xl p-2"></textarea>
+          </div>
         </div>
         <button onclick="submitSavePersona()" class="w-full py-2.5 pastel-btn-primary font-bold rounded-2xl text-xs">บันทึก Persona</button>
       </div>
@@ -897,6 +890,7 @@
     let isCalling = false;
     let attachedImageUrl = null;
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
+    let tempPersonaAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
     let currentExploreSubTab = localStorage.getItem('lovey_explore_subtab') || 'public';
     let currentHubTab = 'story';
     let currentLobbyTab = localStorage.getItem('lovey_lobby_tab') || 'home';
@@ -925,7 +919,7 @@
         career: "นักศึกษาคณะดนตรี",
         quote: "ต่อให้โลกนี้มืดมิดแค่ไหน เค้าจะส่องสว่างเพื่อเธอคนเดียว",
         shortPreview: "เพื่อนชายคนสนิทขี้อ้อน ปากหวานแต่คลั่งรักสุดใจ แอบชอบคุณมาตลอด",
-        story: "เร็นเติบโตมาในครอบครัวนักดนตรีคลาสสิก เขาดูเป็นคนอบอุ่น ใจดี และมักจะยิ้มแย้มอยู่เสมอ แต่ลึกๆ แล้วเป็นคนที่จริงจังกับความรู้สึกมาก โดยเฉพาะเรื่องเกี่ยวกับคุณ ทุกครั้งที่ซ้อมเปียโนเสร็จ เขามักจะมองหาคุณเป็นคนแรก...",
+        story: "เร็นเติบโตมาในครอบครัวนักดนตรีคลาสสิก เขาดูเป็นคนอบอุ่น ใจดี...",
         personality: "ขี้อ้อน อ่อนโยน ขี้หึงนิดๆ ปากหวาน ไม่หลุดคาร์ บรรยายความรู้สึกและการกระทำอย่างละเอียดลึกซึ้ง",
         height: "183 ซม.",
         weight: "72 กก.",
@@ -934,13 +928,12 @@
         preferredRelation: "คนรักที่คลั่งรักและอยู่เคียงข้างกันตลอดเวลา",
         playerRelation: "เพื่อนสนิทที่แอบชอบคุณมาตลอด",
         speakingStyle: "แทนตัวเองว่าเค้า เรียกผู้เล่นว่าคนดี ลงท้ายด้วยครับ",
-        firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี เสียงเปียโนค่อยๆ เงียบลงเมื่อเขาหยุดปลายนิ้วลงบนคีย์ไม้ เร็นเงยหน้าขึ้นมาสบตากับ {user} ก่อนที่รอยยิ้มอบอุ่นจะปรากฏขึ้นอย่างปิดไม่มิด*
+        firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี...*
 
-"เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย... เข้ามานั่งข้างๆ เค้าตรงนี้สิครับ"`,
-        extraDetails: ["ชอบดื่มช็อกโกแลตร้อนหวานน้อย", "มีรอยแผลเป็นเล็กๆ ที่ข้อนิ้วชี้ซ้าย"],
+"เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย..."`,
+        extraDetails: ["ชอบดื่มช็อกโกแลตร้อนหวานน้อย"],
         botSlots: [
-          { title: "ความลับตอนซ้อมดนตรี", content: "ทุกเพลงรักที่เร็นแต่งขึ้นมาในห้องซ้อม ล้วนมีภาพของ {user} อยู่ในหัวเสมอ" },
-          { title: "ของโปรดที่ชอบทาน", content: "ชอบขนมปังอบเนยสดอุ่นๆ กับช็อกโกแลตร้อน" }
+          { title: "ความลับตอนซ้อมดนตรี", content: "ทุกเพลงรักที่เร็นแต่งขึ้นมาในห้องซ้อม ล้วนมีภาพของ {user} อยู่ในหัวเสมอ" }
         ],
         playerSlots: [
           { title: "สถานะความสัมพันธ์", content: "เพื่อนสนิทคนพิเศษที่รู้ใจกันทุกเรื่อง" }
@@ -951,9 +944,7 @@
         likesCount: 124,
         likedUsers: [],
         playedUsers: [],
-        reviews: [
-          { author: "มินนี่_Reader", text: "เร็นน่ารักมากกก กวนใจแต่หวานเจี๊ยบ บรรยายดีมากค่ะ!", time: "10 นาทีที่แล้ว", likes: 5, likedUsers: [], replies: [] }
-        ],
+        reviews: [],
         isPublished: true,
         rooms: [
           {
@@ -973,7 +964,7 @@
           }
         ],
         dmHistory: [{ sender: "bot", text: "อย่าลืมกินข้าวนะครับ 🤍", time: "18:30 น." }],
-        posts: [{ img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80", caption: "กาแฟแก้วโปรดก็ยังสู้รอยยิ้มของเธอไม่ได้ ✨", time: "1 ชม. ที่แล้ว" }]
+        posts: []
       }
     ];
 
@@ -983,7 +974,7 @@
     let appSettings = { language: "th", length: "epic", provider: "gemini", apiKey: "", showThoughts: true };
     let groupChats = [];
     let bots = defaultBots;
-    let communityPosts = [{ id: "post_1", author: "MewMew", time: "1 ชม. ที่แล้ว", content: "ใครมี Prompt บอทคลั่งรักขอยืมหน่อยค่า", likes: 15, isLiked: false }];
+    let communityPosts = [];
 
     function loadUserData() {
       if (!currentUserEmail) return;
@@ -1007,6 +998,156 @@
       localStorage.setItem(getUserKey('community'), JSON.stringify(communityPosts));
     }
 
+    // ==================== PERSONA MANAGEMENT (ADD, EDIT, DELETE) ====================
+    function checkAndOpenCreatePersona() {
+      if (userPersonas.length >= 15) {
+        return showToast("คุณสร้าง Persona ครบขีดจำกัด 15 โปรไฟล์แล้วครับ", 'info', 'ℹ️');
+      }
+      document.getElementById('editing-persona-id').value = '';
+      document.getElementById('persona-modal-title').innerText = 'สร้างโปรไฟล์ใหม่ (Persona)';
+      document.getElementById('persona-name-input').value = '';
+      document.getElementById('persona-gender-input').value = '';
+      document.getElementById('persona-age-input').value = '';
+      document.getElementById('persona-birthday-input').value = '';
+      document.getElementById('persona-appearance-input').value = '';
+      document.getElementById('persona-personality-input').value = '';
+      tempPersonaAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
+      document.getElementById('new-persona-avatar-preview').src = tempPersonaAvatar;
+      document.getElementById('create-persona-modal').classList.remove('hidden');
+    }
+
+    function editPersonaById(personaId, event) {
+      if (event) event.stopPropagation();
+      const p = userPersonas.find(x => x.id === personaId);
+      if (!p) return;
+
+      document.getElementById('editing-persona-id').value = p.id;
+      document.getElementById('persona-modal-title').innerText = 'แก้ไขโปรไฟล์ (Persona)';
+      document.getElementById('persona-name-input').value = p.name || '';
+      document.getElementById('persona-gender-input').value = p.gender || '';
+      document.getElementById('persona-age-input').value = p.age || '';
+      document.getElementById('persona-birthday-input').value = p.birthday || '';
+      document.getElementById('persona-appearance-input').value = p.appearance || '';
+      document.getElementById('persona-personality-input').value = p.personality || '';
+      tempPersonaAvatar = p.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
+      document.getElementById('new-persona-avatar-preview').src = tempPersonaAvatar;
+      document.getElementById('create-persona-modal').classList.remove('hidden');
+    }
+
+    function deletePersonaById(personaId, event) {
+      if (event) event.stopPropagation();
+      if (userPersonas.length <= 1) {
+        return showToast("คุณต้องมีโปรไฟล์อย่างน้อย 1 โปรไฟล์ในระบบครับ", 'error', '⚠️');
+      }
+
+      showCustomConfirm('ลบโปรไฟล์ Persona', 'คุณแน่ใจหรือไม่ว่าต้องการลบโปรไฟล์นี้?', (confirmed) => {
+        if (confirmed) {
+          const target = userPersonas.find(x => x.id === personaId);
+          userPersonas = userPersonas.filter(x => x.id !== personaId);
+          if (target && target.isSelected && userPersonas.length > 0) {
+            userPersonas[0].isSelected = true;
+          }
+          saveUserData();
+          renderPersonas();
+          showToast("ลบโปรไฟล์เรียบร้อย", 'success', '🗑️');
+        }
+      }, 'fa-solid fa-trash text-rose-500');
+    }
+
+    function closeCreatePersonaModal() {
+      document.getElementById('create-persona-modal').classList.add('hidden');
+    }
+
+    function previewNewPersonaAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          tempPersonaAvatar = e.target.result;
+          document.getElementById('new-persona-avatar-preview').src = tempPersonaAvatar;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function submitSavePersona() {
+      const editingId = document.getElementById('editing-persona-id').value;
+      const name = document.getElementById('persona-name-input').value.trim();
+      if (!name) return showToast("กรุณากรอกชื่อโปรไฟล์ด้วยครับ", 'error', '⚠️');
+
+      const gender = document.getElementById('persona-gender-input').value.trim();
+      const age = document.getElementById('persona-age-input').value.trim();
+      const birthday = document.getElementById('persona-birthday-input').value.trim();
+      const appearance = document.getElementById('persona-appearance-input').value.trim();
+      const personality = document.getElementById('persona-personality-input').value.trim();
+
+      if (editingId) {
+        const p = userPersonas.find(x => x.id === editingId);
+        if (p) {
+          p.name = name;
+          p.gender = gender;
+          p.age = age;
+          p.birthday = birthday;
+          p.appearance = appearance;
+          p.personality = personality;
+          p.avatar = tempPersonaAvatar;
+        }
+        showToast("อัปเดตโปรไฟล์ Persona สำเร็จ!", 'success', '✨');
+      } else {
+        const newP = {
+          id: 'persona_' + Date.now(),
+          name: name,
+          gender: gender,
+          age: age,
+          birthday: birthday,
+          appearance: appearance,
+          personality: personality,
+          avatar: tempPersonaAvatar,
+          isSelected: userPersonas.length === 0
+        };
+        userPersonas.push(newP);
+        showToast("สร้างโปรไฟล์ Persona สำเร็จ!", 'success', '🎉');
+      }
+
+      saveUserData();
+      closeCreatePersonaModal();
+      renderPersonas();
+    }
+
+    function renderPersonas() {
+      const container = document.getElementById('persona-list-container');
+      const badge = document.getElementById('persona-quota-badge');
+      if (!container) return;
+      container.innerHTML = '';
+      if (badge) badge.innerText = `${userPersonas.length}/15`;
+
+      userPersonas.forEach(p => {
+        const div = document.createElement('div');
+        div.className = `p-2.5 rounded-2xl border flex items-center justify-between transition cursor-pointer ${p.isSelected ? 'bg-purple-100/70 border-violet-400 shadow-sm' : 'bg-purple-50/20 border-purple-100'}`;
+        div.onclick = () => { userPersonas.forEach(x => x.isSelected = (x.id === p.id)); saveUserData(); renderPersonas(); };
+        div.innerHTML = `
+          <div class="flex items-center gap-2.5 flex-1 overflow-hidden">
+            <img src="${p.avatar}" class="w-9 h-9 rounded-full object-cover border border-violet-300 flex-shrink-0">
+            <div class="truncate">
+              <span class="text-xs font-bold text-slate-800">${p.name}</span>
+              <p class="text-[10px] text-slate-500 truncate">${p.personality || p.appearance || 'ไม่มีรายละเอียด'}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            <button onclick="editPersonaById('${p.id}', event)" class="p-1.5 bg-white hover:bg-purple-50 text-violet-600 border border-purple-200 rounded-xl text-[10px] transition" title="แก้ไข">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button onclick="deletePersonaById('${p.id}', event)" class="p-1.5 bg-white hover:bg-rose-50 text-rose-500 border border-rose-200 rounded-xl text-[10px] transition" title="ลบ">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            <i class="fa-solid ${p.isSelected ? 'fa-circle-check text-violet-500 text-sm ml-1' : 'fa-circle text-slate-300 text-sm ml-1'}"></i>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // ==================== HOME FRIENDS LIST & BOT HUB (FIXED) ====================
     function renderHomeFriendsList() {
       const container = document.getElementById('home-friends-list');
       const countBadge = document.getElementById('friend-count');
@@ -1027,13 +1168,13 @@
         div.onclick = () => openBotHubPage(b.id);
         div.innerHTML = `
           <div class="flex items-center gap-3">
-            <img src="${b.avatar}" class="w-10 h-10 rounded-full object-cover border border-purple-200">
+            <img src="${b.avatar}" class="w-10 h-10 rounded-full object-cover border border-purple-200 flex-shrink-0">
             <div>
               <h4 class="text-xs font-bold text-slate-800">${b.name}</h4>
               <p class="text-[10px] text-purple-600 font-medium">${b.career || 'ไม่ระบุอาชีพ'} • ${b.age || 'ไม่ระบุอายุ'}</p>
             </div>
           </div>
-          <button class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ดูโปรไฟล์</button>
+          <button onclick="openBotHubPage('${b.id}'); event.stopPropagation();" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ดูโปรไฟล์</button>
         `;
         container.appendChild(div);
       });
@@ -1073,7 +1214,11 @@
 
     function backFromBotHub() {
       document.getElementById('view-bot-hub').classList.add('hidden');
-      document.getElementById('explore-discovery-view').classList.remove('hidden');
+      if (currentLobbyTab === 'explore') {
+        document.getElementById('explore-discovery-view').classList.remove('hidden');
+      } else {
+        switchLobbyTab(currentLobbyTab);
+      }
     }
 
     function updateHubLikeState() {
@@ -1158,20 +1303,6 @@
         <div><strong>สเปกที่ชอบ:</strong> ${currentHubBot.idealType || '-'}</div>
         <div><strong>ความสัมพันธ์กับผู้เล่น:</strong> ${currentHubBot.playerRelation || 'ไม่มีระบุ'}</div>
       `;
-
-      const connBox = document.getElementById('hub-connected-bot-box');
-      const connText = document.getElementById('hub-connected-bot-text');
-      if (currentHubBot.connectedBotId) {
-        const targetB = getBot(currentHubBot.connectedBotId);
-        if (targetB) {
-          connBox.classList.remove('hidden');
-          connText.innerText = `เชื่อมโยงกับ ${targetB.name} (${currentHubBot.connectedBotRelation || 'มีความเกี่ยวข้องกัน'})`;
-        } else {
-          connBox.classList.add('hidden');
-        }
-      } else {
-        connBox.classList.add('hidden');
-      }
     }
 
     function renderHubSlotsTab() {
@@ -1274,136 +1405,17 @@
         container.innerHTML = '<p class="text-center text-xs text-slate-400 py-4">ยังไม่มีรีวิว มาเป็นคนแรกที่เขียนรีวิวกัน!</p>';
         return;
       }
-
       currentHubBot.reviews.forEach((r, idx) => {
         const div = document.createElement('div');
-        div.className = 'p-3 bg-purple-50/40 rounded-2xl border border-purple-100 space-y-2';
-
-        const isOwner = r.author === userProfile.name;
-        const isEditing = editingReviewIndex === idx;
-
-        if (!r.likedUsers) r.likedUsers = [];
-        const hasLiked = r.likedUsers.includes(currentUserEmail);
-
-        let actionBtns = isOwner ? `
-          <button onclick="startEditReview(${idx})" class="hover:text-purple-600 text-[10px] font-medium"><i class="fa-solid fa-pen"></i> แก้ไข</button>
-          <button onclick="deleteReview(${idx})" class="hover:text-rose-600 text-[10px] font-medium"><i class="fa-solid fa-trash"></i> ลบ</button>
-        ` : '';
-
-        let repliesHtml = '';
-        if (r.replies && r.replies.length > 0) {
-          r.replies.forEach((rep, repIdx) => {
-            const isRepOwner = rep.author === userProfile.name;
-            repliesHtml += `
-              <div class="ml-4 p-2 bg-white rounded-xl border border-purple-100 space-y-0.5 text-[11px]">
-                <div class="flex justify-between items-center">
-                  <span class="font-bold text-purple-700">${rep.author}</span>
-                  <div class="flex items-center gap-2">
-                    <span class="text-[9px] text-slate-400">${rep.time}</span>
-                    ${isRepOwner ? `<button onclick="deleteReply(${idx}, ${repIdx})" class="text-rose-500 text-[10px]"><i class="fa-solid fa-xmark"></i></button>` : ''}
-                  </div>
-                </div>
-                <p class="text-slate-600">${rep.text}</p>
-              </div>
-            `;
-          });
-        }
-
-        const isRepOpen = activeReplyReviewIndex === idx;
-
-        if (isEditing) {
-          div.innerHTML = `
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-slate-800">${r.author} (กำลังแก้ไข)</span>
-              <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
-            </div>
-            <textarea id="edit-review-input-${idx}" rows="2" class="w-full pastel-input rounded-xl p-2 text-xs focus:outline-none">${r.text}</textarea>
-            <div class="flex justify-end gap-2 pt-1">
-              <button onclick="cancelEditReview()" class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold">ยกเลิก</button>
-              <button onclick="saveEditReview(${idx})" class="px-2.5 py-1 pastel-btn-primary rounded-lg text-[10px] font-bold">บันทึก</button>
-            </div>
-          `;
-        } else {
-          div.innerHTML = `
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-slate-800">${r.author}</span>
-              <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
-            </div>
-            <p class="text-xs text-slate-600 leading-relaxed">${r.text}</p>
-            <div class="flex gap-4 text-[10px] text-slate-400 pt-0.5 items-center">
-              <button onclick="likeHubReview(${idx})" class="${hasLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-500'} flex items-center gap-1 transition">
-                <i class="${hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i> ${r.likes || 0}
-              </button>
-              <button onclick="toggleReplyBox(${idx})" class="hover:text-purple-600 font-medium"><i class="fa-solid fa-reply text-[9px]"></i> ตอบกลับ (${r.replies ? r.replies.length : 0})</button>
-              ${actionBtns}
-            </div>
-
-            ${repliesHtml ? `<div class="space-y-1.5 pt-1">${repliesHtml}</div>` : ''}
-
-            ${isRepOpen ? `
-              <div class="pt-2 flex gap-1.5">
-                <input id="reply-input-${idx}" type="text" placeholder="ตอบกลับ ${r.author}..." class="flex-1 pastel-input text-xs px-3 py-1.5 rounded-xl focus:outline-none">
-                <button onclick="submitReviewReply(${idx})" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ส่ง</button>
-              </div>
-            ` : ''}
-          `;
-        }
+        div.className = 'p-3 bg-purple-50/40 rounded-2xl border border-purple-100 space-y-1.5';
+        div.innerHTML = `
+          <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-800">${r.author}</span><span class="text-[9px] text-slate-400">${r.time}</span></div>
+          <p class="text-xs text-slate-600">${r.text}</p>
+        `;
         container.appendChild(div);
       });
     }
 
-    function startEditReview(idx) { editingReviewIndex = idx; renderHubReviewsTab(); }
-    function cancelEditReview() { editingReviewIndex = null; renderHubReviewsTab(); }
-    function saveEditReview(idx) {
-      const input = document.getElementById(`edit-review-input-${idx}`);
-      if (!input) return;
-      const text = input.value.trim();
-      if (!text) return;
-      currentHubBot.reviews[idx].text = text;
-      editingReviewIndex = null;
-      saveUserData();
-      renderHubReviewsTab();
-      showToast("แก้ไขความคิดเห็นเรียบร้อย", 'success', '✏️');
-    }
-
-    function deleteReview(idx) {
-      showCustomConfirm('ลบความคิดเห็น', 'คุณต้องการลบความคิดเห็นนี้ใช่หรือไม่?', (confirmed) => {
-        if (confirmed) {
-          currentHubBot.reviews.splice(idx, 1);
-          saveUserData();
-          renderHubReviewsTab();
-          showToast("ลบความคิดเห็นเรียบร้อย", 'success', '🗑️');
-        }
-      }, 'fa-solid fa-trash text-rose-500');
-    }
-
-    function deleteReply(reviewIdx, replyIdx) {
-      showCustomConfirm('ลบข้อความตอบกลับ', 'คุณต้องการลบข้อความตอบกลับนี้ใช่หรือไม่?', (confirmed) => {
-        if (confirmed) {
-          currentHubBot.reviews[reviewIdx].replies.splice(replyIdx, 1);
-          saveUserData();
-          renderHubReviewsTab();
-          showToast("ลบข้อความตอบกลับเรียบร้อย", 'success', '🗑️');
-        }
-      }, 'fa-solid fa-trash text-rose-500');
-    }
-
-    function toggleReplyBox(idx) {
-      activeReplyReviewIndex = activeReplyReviewIndex === idx ? null : idx;
-      renderHubReviewsTab();
-    }
-    function submitReviewReply(idx) {
-      const input = document.getElementById(`reply-input-${idx}`);
-      if (!input) return;
-      const text = input.value.trim();
-      if (!text) return;
-      if (!currentHubBot.reviews[idx].replies) currentHubBot.reviews[idx].replies = [];
-      currentHubBot.reviews[idx].replies.push({ author: userProfile.name, text: text, time: getCurrentTimeStr() });
-      activeReplyReviewIndex = null;
-      saveUserData();
-      renderHubReviewsTab();
-      showToast("ส่งข้อความตอบกลับเรียบร้อย", 'success', '💬');
-    }
     function submitHubReview() {
       const input = document.getElementById('hub-review-input');
       const text = input.value.trim();
@@ -1414,21 +1426,6 @@
       saveUserData();
       renderHubReviewsTab();
       showToast("ส่งความคิดเห็นเรียบร้อยแล้ว!", 'success', '💖');
-    }
-    function likeHubReview(idx) {
-      const r = currentHubBot.reviews[idx];
-      if (!r) return;
-      if (!r.likedUsers) r.likedUsers = [];
-      const userIdx = r.likedUsers.indexOf(currentUserEmail);
-      if (userIdx > -1) {
-        r.likedUsers.splice(userIdx, 1);
-        r.likes = Math.max(0, (r.likes || 1) - 1);
-      } else {
-        r.likedUsers.push(currentUserEmail);
-        r.likes = (r.likes || 0) + 1;
-      }
-      saveUserData();
-      renderHubReviewsTab();
     }
 
     function startChatFromBotHub() {
@@ -1502,35 +1499,12 @@
       renderExploreBotCards();
     }
 
-    function populateConnectedBotDropdown(currentBotIdToExclude) {
-      const select = document.getElementById('connected-bot-select');
-      if (!select) return;
-      select.innerHTML = '<option value="">-- เลือกบอทตัวที่เกี่ยวข้อง --</option>';
-      bots.forEach(b => {
-        if (b.id !== currentBotIdToExclude) {
-          const opt = document.createElement('option');
-          opt.value = b.id;
-          opt.innerText = `${b.name} (${b.career || 'ไม่มีอาชีพ'})`;
-          select.appendChild(opt);
-        }
-      });
-    }
-
-    function toggleBotConnectionSection() {
-      const isChecked = document.getElementById('bot-connect-toggle').checked;
-      const section = document.getElementById('bot-connect-section');
-      if (isChecked) section.classList.remove('hidden');
-      else section.classList.add('hidden');
-    }
-
     function switchToBotCreatorForm(botToEdit = null) {
       document.getElementById('explore-discovery-view').classList.add('hidden');
       document.getElementById('explore-creator-view').classList.remove('hidden');
       document.getElementById('view-bot-hub').classList.add('hidden');
 
       const titleBadge = document.getElementById('creator-form-title-badge');
-      populateConnectedBotDropdown(botToEdit ? botToEdit.id : null);
-
       if (botToEdit) {
         if (titleBadge) titleBadge.innerText = 'โหมดแก้ไขบอท';
         document.getElementById('editing-bot-id').value = botToEdit.id;
@@ -1540,43 +1514,11 @@
         document.getElementById('bot-quote-input').value = botToEdit.quote || '';
         document.getElementById('bot-preview-input').value = botToEdit.shortPreview || '';
         document.getElementById('bot-story-input').value = botToEdit.story || '';
-        document.getElementById('bot-info-input').value = botToEdit.basicInfo || '';
-        document.getElementById('bot-personality-input').value = botToEdit.personality || '';
-        document.getElementById('bot-height-input').value = botToEdit.height || '';
-        document.getElementById('bot-weight-input').value = botToEdit.weight || '';
-        document.getElementById('bot-mbti-input').value = botToEdit.mbti || '';
-        document.getElementById('bot-ideal-type-input').value = botToEdit.idealType || '';
-        document.getElementById('bot-player-relation-input').value = botToEdit.playerRelation || '';
-        document.getElementById('bot-first-encounter-input').value = botToEdit.firstEncounter || '';
         document.getElementById('bot-hashtags-input').value = botToEdit.hashtags || '';
-
-        const connectToggle = document.getElementById('bot-connect-toggle');
-        if (botToEdit.connectedBotId) {
-          connectToggle.checked = true;
-          document.getElementById('bot-connect-section').classList.remove('hidden');
-          document.getElementById('connected-bot-select').value = botToEdit.connectedBotId;
-          document.getElementById('connected-bot-relation-input').value = botToEdit.connectedBotRelation || '';
-        } else {
-          connectToggle.checked = false;
-          document.getElementById('bot-connect-section').classList.add('hidden');
-        }
-
         if (botToEdit.avatar) {
           tempBotAvatar = botToEdit.avatar;
           document.getElementById('new-bot-avatar-preview').src = botToEdit.avatar;
         }
-
-        const genderRadios = document.getElementsByName('bot-gender');
-        for (let r of genderRadios) {
-          r.checked = (r.value === (botToEdit.gender || 'none'));
-        }
-
-        const pubRadios = document.getElementsByName('bot-publish-visibility');
-        for (let r of pubRadios) {
-          r.checked = (r.value === (botToEdit.isPublished ? 'public' : 'private'));
-        }
-
-        renderBotExtraSlots(botToEdit.botSlots);
       } else {
         if (titleBadge) titleBadge.innerText = 'โหมดสร้างบอทใหม่';
         document.getElementById('editing-bot-id').value = '';
@@ -1586,22 +1528,8 @@
         document.getElementById('bot-quote-input').value = '';
         document.getElementById('bot-preview-input').value = '';
         document.getElementById('bot-story-input').value = '';
-        document.getElementById('bot-info-input').value = '';
-        document.getElementById('bot-personality-input').value = '';
-        document.getElementById('bot-height-input').value = '';
-        document.getElementById('bot-weight-input').value = '';
-        document.getElementById('bot-mbti-input').value = '';
-        document.getElementById('bot-ideal-type-input').value = '';
-        document.getElementById('bot-player-relation-input').value = '';
-        document.getElementById('bot-first-encounter-input').value = '';
         document.getElementById('bot-hashtags-input').value = '';
-
-        document.getElementById('bot-connect-toggle').checked = false;
-        document.getElementById('bot-connect-section').classList.add('hidden');
-
-        renderBotExtraSlots();
       }
-
       switchBotTab('profile');
     }
 
@@ -1616,12 +1544,12 @@
       const b = getBot(botId);
       if (!b) return;
 
-      showCustomConfirm('ลบบอทตัวละคร', `คุณแน่ใจหรือไม่ว่าต้องการลบบอท "${b.name}" ออกจากระบบ?`, (confirmed) => {
+      showCustomConfirm('ลบบอทตัวละคร', `คุณแน่ใจหรือไม่ว่าต้องการลบบอท "${b.name}"?`, (confirmed) => {
         if (confirmed) {
           bots = bots.filter(item => item.id !== botId);
           saveUserData();
           renderExploreBotCards();
-          showToast(`ลบบอท "${b.name}" เรียบร้อยแล้ว`, 'success', '🗑️');
+          showToast(`ลบบอทเรียบร้อยแล้ว`, 'success', '🗑️');
         }
       }, 'fa-solid fa-trash text-rose-500');
     }
@@ -1640,7 +1568,6 @@
           if (!query) return true;
           return (b.name && b.name.toLowerCase().includes(query)) ||
                  (b.shortPreview && b.shortPreview.toLowerCase().includes(query)) ||
-                 (b.personality && b.personality.toLowerCase().includes(query)) ||
                  (b.hashtags && b.hashtags.toLowerCase().includes(query));
         });
       } else {
@@ -1662,20 +1589,13 @@
 
         if (currentExploreSubTab === 'mybots') {
           statusBadge = b.isPublished ? '<span class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold">เผยแพร่แล้ว</span>' : '<span class="text-[9px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200 font-semibold">ฉบับร่าง</span>';
-          
           managementBtns = `
             <div class="flex items-center gap-1.5">
-              <button onclick="editBotById('${b.id}', event)" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-pen"></i> แก้ไข
-              </button>
-              <button onclick="deleteBotById('${b.id}', event)" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-trash"></i> ลบ
-              </button>
+              <button onclick="editBotById('${b.id}', event)" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+              <button onclick="deleteBotById('${b.id}', event)" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1"><i class="fa-solid fa-trash"></i> ลบ</button>
             </div>
           `;
         }
-
-        let tagListHtml = b.hashtags ? `<p class="text-[9px] text-violet-500 font-medium truncate pt-0.5">${b.hashtags}</p>` : '';
 
         div.innerHTML = `
           <div class="flex items-center gap-3">
@@ -1683,13 +1603,12 @@
             <div class="flex-1 overflow-hidden">
               <div class="flex justify-between items-center">
                 <h4 class="text-xs font-bold text-slate-800 truncate">${b.name}</h4>
-                <div class="flex items-center gap-1.5">${statusBadge}<span class="text-[9px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full border border-purple-100">${b.career || 'ไม่ระบุอาชีพ'} • ${b.age || 'ไม่ระบุอายุ'}</span></div>
+                <div class="flex items-center gap-1.5">${statusBadge}<span class="text-[9px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full border border-purple-100">${b.career || 'ไม่ระบุอาชีพ'}</span></div>
               </div>
               <p class="text-[11px] text-purple-700 font-medium truncate mt-0.5">${b.quote || ''}</p>
-              ${tagListHtml}
             </div>
           </div>
-          <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed bg-purple-50/30 p-2.5 rounded-2xl border border-purple-50">${b.shortPreview || b.story || 'ตัวละครพร้อมสำหรับเข้าสู่บทบาท'}</p>
+          <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed bg-purple-50/30 p-2.5 rounded-2xl border border-purple-50">${b.shortPreview || b.story || ''}</p>
           <div class="flex justify-between items-center text-[10px] text-slate-400 pt-0.5">
             <span class="flex items-center gap-1"><i class="fa-solid fa-comments text-violet-400"></i> ${b.rooms ? b.rooms.length : 1} ห้องเนื้อเรื่อง</span>
             ${managementBtns ? managementBtns : '<span class="text-purple-600 font-semibold hover:underline">แตะเพื่อดูโปรไฟล์ & สตอรี่ →</span>'}
@@ -1699,225 +1618,53 @@
       });
     }
 
-    function filterExploreBots() {
-      renderExploreBotCards(document.getElementById('bot-search-input').value);
-    }
-
-    function renderBotExtraSlots(existingSlots = []) {
-      const container = document.getElementById('bot-extra-slots-container');
-      const badge = document.getElementById('extra-slots-badge');
-      if (!container) return;
-      container.innerHTML = '';
-
-      const totalSlots = 5 + (userEconomy.extraBotSlots || 0);
-      if (badge) badge.innerText = `${totalSlots} ช่องพร้อมใช้`;
-
-      for (let i = 1; i <= totalSlots; i++) {
-        const slotVal = (existingSlots && existingSlots[i - 1]) ? existingSlots[i - 1].content : '';
-        const div = document.createElement('div');
-        div.className = 'border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition space-y-1';
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <label class="block text-xs font-bold text-slate-700">ช่องข้อมูลหลังบ้านที่ ${i} (ข้อมูลที่ให้บอทจำ)</label>
-            <span id="extra-slot-counter-${i}" class="text-[10px] text-slate-400">0/1500 คำ</span>
-          </div>
-          <textarea id="bot-extra-slot-${i}" oninput="updateWordCounter(this, 'extra-slot-counter-${i}', 1500)" rows="2" placeholder="พิมพ์ข้อมูลที่ให้บอทจำ (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none">${slotVal}</textarea>
-        `;
-        container.appendChild(div);
-        if (slotVal) {
-          updateWordCounter(div.querySelector('textarea'), `extra-slot-counter-${i}`, 1500);
-        }
-      }
-    }
-
-    function unlockExtraBotSlot() {
-      showCustomConfirm(
-        'ปลดล็อคช่องเพิ่ม',
-        `เลือกรับการปลดล็อคช่องเพิ่ม:\n(คงเหลือ: ${userEconomy.coins} 🐰 | ${userEconomy.catCoins} 🐱)\n\nกด "ตกลง" เพื่อใช้ 3 🐰 หรือ ยกเลิกหากต้องการเลือกใช้ 🐱`,
-        (confirmed) => {
-          if (confirmed) {
-            if (userEconomy.coins >= 3) {
-              userEconomy.coins -= 3;
-              userEconomy.extraBotSlots = (userEconomy.extraBotSlots || 0) + 1;
-              saveUserData(); updateCoinDisplay(); renderBotExtraSlots();
-              showToast("ปลดล็อคช่องเพิ่มด้วยเหรียญกระต่ายสำเร็จ! 🐰", 'success', '🎉');
-            } else {
-              showToast("เหรียญกระต่ายไม่เพียงพอ!", 'error', '❌');
-            }
-          }
-        },
-        'fa-solid fa-lock-open text-violet-500'
-      );
-    }
-
+    function filterExploreBots() { renderExploreBotCards(document.getElementById('bot-search-input').value); }
     function submitSaveBot(isPublishNow = true) {
-      const editingId = document.getElementById('editing-bot-id').value;
       const name = document.getElementById('bot-name-input').value.trim();
-      if (!name) { 
-        switchBotTab('profile'); 
-        return showToast('กรุณากรอกชื่อตัวละครก่อนนะครับ', 'error', '⚠️'); 
-      }
-
-      const totalSlots = 5 + (userEconomy.extraBotSlots || 0);
-      let extraDetails = [];
-      let botSlots = [];
-      for (let i = 1; i <= totalSlots; i++) {
-        const val = document.getElementById(`bot-extra-slot-${i}`)?.value.trim();
-        if (val) {
-          extraDetails.push(val);
-          botSlots.push({ title: `ข้อมูลส่วนที่ ${i}`, content: val });
-        }
-      }
-
-      const isConnected = document.getElementById('bot-connect-toggle').checked;
-      const connBotId = isConnected ? document.getElementById('connected-bot-select').value : '';
-      const connRelation = isConnected ? document.getElementById('connected-bot-relation-input').value.trim() : '';
-      const hashtags = document.getElementById('bot-hashtags-input').value.trim();
-
-      if (editingId) {
-        const targetBot = getBot(editingId);
-        if (targetBot) {
-          targetBot.name = name;
-          targetBot.avatar = tempBotAvatar;
-          targetBot.gender = document.querySelector('input[name="bot-gender"]:checked')?.value || 'none';
-          targetBot.age = document.getElementById('bot-age-input').value.trim();
-          targetBot.career = document.getElementById('bot-career-input').value.trim();
-          targetBot.quote = document.getElementById('bot-quote-input').value.trim();
-          targetBot.shortPreview = document.getElementById('bot-preview-input').value.trim();
-          targetBot.story = document.getElementById('bot-story-input').value.trim();
-          targetBot.basicInfo = document.getElementById('bot-info-input').value.trim();
-          targetBot.personality = document.getElementById('bot-personality-input').value.trim();
-          targetBot.height = document.getElementById('bot-height-input').value.trim();
-          targetBot.weight = document.getElementById('bot-weight-input').value.trim();
-          targetBot.mbti = document.getElementById('bot-mbti-input').value.trim();
-          targetBot.idealType = document.getElementById('bot-ideal-type-input').value.trim();
-          targetBot.playerRelation = document.getElementById('bot-player-relation-input').value.trim();
-          targetBot.firstEncounter = document.getElementById('bot-first-encounter-input').value.trim();
-          targetBot.extraDetails = extraDetails;
-          targetBot.botSlots = botSlots;
-          targetBot.hashtags = hashtags;
-          targetBot.connectedBotId = connBotId;
-          targetBot.connectedBotRelation = connRelation;
-          targetBot.isPublished = isPublishNow;
-
-          saveUserData();
-          showToast(isPublishNow ? `อัปเดตและเผยแพร่บอท "${name}" เรียบร้อย!` : `บันทึกฉบับร่างของบอท "${name}" เรียบร้อย!`, 'success', '✨');
-        }
-      } else {
-        const newBot = {
-          id: 'bot_' + Date.now(),
-          name: name,
-          avatar: tempBotAvatar,
-          gender: document.querySelector('input[name="bot-gender"]:checked')?.value || 'none',
-          age: document.getElementById('bot-age-input').value.trim(),
-          career: document.getElementById('bot-career-input').value.trim(),
-          quote: document.getElementById('bot-quote-input').value.trim(),
-          shortPreview: document.getElementById('bot-preview-input').value.trim(),
-          story: document.getElementById('bot-story-input').value.trim(),
-          basicInfo: document.getElementById('bot-info-input').value.trim(),
-          personality: document.getElementById('bot-personality-input').value.trim(),
-          height: document.getElementById('bot-height-input').value.trim(),
-          weight: document.getElementById('bot-weight-input').value.trim(),
-          mbti: document.getElementById('bot-mbti-input').value.trim(),
-          idealType: document.getElementById('bot-ideal-type-input').value.trim(),
-          playerRelation: document.getElementById('bot-player-relation-input').value.trim(),
-          firstEncounter: document.getElementById('bot-first-encounter-input').value.trim(),
-          extraDetails: extraDetails,
-          botSlots: botSlots,
-          playerSlots: [],
-          hashtags: hashtags,
-          connectedBotId: connBotId,
-          connectedBotRelation: connRelation,
-          likesCount: 0,
-          likedUsers: [],
-          playedUsers: [],
-          reviews: [],
-          isPublished: isPublishNow,
-          rooms: [],
-          dmHistory: [{ sender: "bot", text: "ทักทายครับ ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }],
-          posts: [{ img: tempBotAvatar, caption: "เริ่มต้นเรื่องราวใหม่ไปด้วยกัน ✨", time: "เมื่อครู่" }]
-        };
-
-        bots.unshift(newBot);
-        saveUserData();
-        showToast(isPublishNow ? `สร้างและเผยแพร่ตัวละคร "${name}" เรียบร้อย!` : `บันทึกฉบับร่างตัวละคร "${name}" เรียบร้อย!`, 'success', '🎉');
-      }
-
+      if (!name) return showToast('กรุณากรอกชื่อตัวละครก่อนนะครับ', 'error', '⚠️');
+      const newBot = {
+        id: 'bot_' + Date.now(),
+        name: name,
+        avatar: tempBotAvatar,
+        quote: document.getElementById('bot-quote-input').value.trim(),
+        shortPreview: document.getElementById('bot-preview-input').value.trim(),
+        story: document.getElementById('bot-story-input').value.trim(),
+        hashtags: document.getElementById('bot-hashtags-input').value.trim(),
+        likesCount: 0,
+        likedUsers: [],
+        playedUsers: [],
+        reviews: [],
+        isPublished: isPublishNow,
+        rooms: [],
+        dmHistory: [{ sender: "bot", text: "ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }],
+        posts: []
+      };
+      bots.unshift(newBot);
+      saveUserData();
       switchToBotDiscovery();
+      showToast('บันทึกตัวละครเรียบร้อย!', 'success', '🎉');
     }
 
     async function callDynamicNarrativeEngine(userText, bot) {
       const apiKey = appSettings.apiKey;
-      const provider = appSettings.provider || 'gemini';
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
-
-      const playerSlotsText = (bot.playerSlots && bot.playerSlots.length > 0) ? bot.playerSlots.map(s => `${s.title}: ${s.content}`).join("\n") : "ไม่มี";
-      const botSlotsText = (bot.botSlots && bot.botSlots.length > 0) ? bot.botSlots.map(s => `${s.title}: ${s.content}`).join("\n") : "ไม่มี";
-
-      let connectedBotContext = "ไม่มีบอทเชื่อมโยง";
-      if (bot.connectedBotId) {
-        const connBot = getBot(bot.connectedBotId);
-        if (connBot) {
-          connectedBotContext = `ตัวละครนี้มีความสัมพันธ์กับ ${connBot.name} (${connBot.career || ''}) ในฐานะ: ${bot.connectedBotRelation || 'ผู้เกี่ยวข้อง'}`;
-        }
-      }
-
       if (apiKey) {
         try {
-          const systemPrompt = `
-คุณคือนักประพันธ์นวนิยายโรแมนติก โดยรับบทบาทเป็นตัวละคร "${bot.name}"
-ข้อมูลตัวละคร:
-- ชื่อ: ${bot.name} (${bot.gender}, ${bot.age}, ${bot.career})
-- นิสัย: ${bot.personality || ''} | MBTI: ${bot.mbti || ''}
-- ความสัมพันธ์กับผู้เล่น: ${bot.playerRelation || 'ไม่มีกำหนด'}
-- บันทึกความเชื่อมโยงกับบอทอื่น: ${connectedBotContext}
-- บันทึกเฉพาะตัวของบอท:
-${botSlotsText}
-
-ข้อมูลผู้เล่น (${persona.name}):
-- เพศ: ${persona.gender}, อายุ: ${persona.age}, รูปลักษณ์: ${persona.appearance || ''}, นิสัย: ${persona.personality || ''}
-- บันทึกเฉพาะตัวของผู้เล่นในบทนี้:
-${playerSlotsText}
-
-ข้อความล่าสุดจากผู้เล่น: "${userText}"
-ข้อกำหนด: ความยาว 4,000 - 6,000 ตัวอักษร สลับบทบรรยายภาษากายและความรู้สึกกับคำพูดอย่างสละสลวย
-ตอบเป็น JSON เท่านั้น:
-{
-  "thought": "ความคิดในใจของบอท",
-  "paragraphs": [
-    { "type": "narration", "text": "บทบรรยาย..." },
-    { "type": "speech", "text": "คำพูด..." }
-  ]
-}`;
-          if (provider === 'gemini') {
-            let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ contents: [{ parts: [{ text: systemPrompt }] }], generationConfig: { responseMimeType: "application/json" } })
-            });
-            let data = await res.json();
-            const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (raw) return JSON.parse(raw);
-          } else {
-            const endpoint = provider === 'groq' ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
-            const modelName = provider === 'groq' ? 'llama-3.3-70b-versatile' : 'meta-llama/llama-3.3-70b-instruct:free';
-            const res = await fetch(endpoint, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-              body: JSON.stringify({ model: modelName, messages: [{ role: 'system', content: 'Respond in JSON' }, { role: 'user', content: systemPrompt }], response_format: { type: "json_object" } })
-            });
-            const data = await res.json();
-            const raw = data.choices?.[0]?.message?.content;
-            if (raw) return JSON.parse(raw);
-          }
-        } catch (e) { console.warn("API fallback", e); }
+          let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: `คุณคือนวนิยายโรแมนติก รับบทเป็น ${bot.name} คุยกับ ${persona.name} ผู้เล่นพิมพ์ว่า "${userText}". ตอบกลับเป็น JSON มี thought และ paragraphs` }] }], generationConfig: { responseMimeType: "application/json" } })
+          });
+          let data = await res.json();
+          const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (raw) return JSON.parse(raw);
+        } catch(e) {}
       }
-
       return {
-        thought: `ทุกคำพูดของ ${persona.name} ทำให้ใจเต้นแรงเสมอ...`,
+        thought: `ดีใจจังที่ได้คุยกับ ${persona.name}...`,
         paragraphs: [
-          { type: "narration", text: `แสงแดดยามเย็นทอดประกายกระทบเส้นผมของเขาจนเกิดประกายสีทองอบอุ่น สายตาคมคู่นั้นไม่ได้ละไปจากใบหน้าของ ${persona.name} แม้แต่วินาทีเดียว` },
-          { type: "speech", text: `รู้ไหมครับ... ทุกครั้งที่ได้ยินเสียงเธอ มันทำให้เค้าหายเหนื่อยไปหมดเลยนะ ${persona.name}` }
+          { type: "narration", text: `${bot.name} ส่งยิ้มละมุนให้คุณอย่างอบอุ่น` },
+          { type: "speech", text: `ครับคนดี เค้าอยู่ตรงนี้ข้างๆ เสมอนะ` }
         ]
       };
     }
@@ -1966,17 +1713,10 @@ ${playerSlotsText}
       clearAttachedImage();
       renderRoomMessages();
 
-      const sendBtn = document.getElementById('send-chat-btn');
-      sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
-      sendBtn.disabled = true;
-
       const res = await callDynamicNarrativeEngine(text, b);
       room.history.push({ sender: 'bot', thought: res.thought, paragraphs: res.paragraphs, time: getCurrentTimeStr() });
       saveUserData();
       renderRoomMessages();
-
-      sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane text-xs"></i>';
-      sendBtn.disabled = false;
     }
 
     function getBot(id) { return bots.find(b => b.id === id) || bots[0]; }
@@ -1995,28 +1735,11 @@ ${playerSlotsText}
       document.getElementById('view-bot-hub').classList.add('hidden');
       if (tab === 'home') { renderPersonas(); renderHomeFriendsList(); }
       if (tab === 'explore') switchToBotDiscovery();
-      if (tab === 'chats') renderChatRecords();
-      if (tab === 'relations') renderGroupChats();
-      if (tab === 'community') renderCommunityPosts();
     }
 
     function switchBotTab(tab) {
       ['profile', 'basic', 'first', 'extra', 'advanced'].forEach(t => {
         document.getElementById(`btab-${t}`).classList.toggle('hidden', t !== tab);
-        document.getElementById(`btab-btn-${t}`).className = t === tab ? 'text-violet-600 border-b-2 border-violet-500 pb-1 px-1 transition font-bold' : 'text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium';
-      });
-    }
-
-    function renderPersonas() {
-      const container = document.getElementById('persona-list-container');
-      if (!container) return;
-      container.innerHTML = '';
-      userPersonas.forEach(p => {
-        const div = document.createElement('div');
-        div.className = `p-2.5 rounded-2xl border flex items-center justify-between transition cursor-pointer ${p.isSelected ? 'bg-purple-100/70 border-violet-400' : 'bg-purple-50/20 border-purple-100'}`;
-        div.onclick = () => { userPersonas.forEach(x => x.isSelected = (x.id === p.id)); saveUserData(); renderPersonas(); };
-        div.innerHTML = `<div class="flex items-center gap-2"><img src="${p.avatar}" class="w-8 h-8 rounded-full object-cover"><div><span class="text-xs font-bold text-slate-800">${p.name}</span><p class="text-[9px] text-slate-400">${p.personality || ''}</p></div></div><i class="fa-solid ${p.isSelected ? 'fa-circle-check text-violet-500' : 'fa-circle text-slate-300'}"></i>`;
-        container.appendChild(div);
       });
     }
 
@@ -2030,19 +1753,8 @@ ${playerSlotsText}
     function openCoinShopModal() { updateCoinDisplay(); document.getElementById('coin-shop-modal').classList.remove('hidden'); }
     function closeCoinShopModal() { document.getElementById('coin-shop-modal').classList.add('hidden'); }
     
-    function addFreeCoins(amt) { 
-      userEconomy.coins += amt; 
-      saveUserData(); 
-      updateCoinDisplay(); 
-      showToast(`ได้รับ ${amt} เหรียญกระต่ายเยลลี่เรียบร้อย! 🐰`, 'success', '🐰'); 
-    }
-    
-    function claimDailyCatCoins() { 
-      userEconomy.catCoins += 50; 
-      saveUserData(); 
-      updateCoinDisplay(); 
-      showToast("รับฟรี 50 เหรียญแมวเยลลี่ประจำวันสำเร็จ! 🐱", 'success', '🐱'); 
-    }
+    function addFreeCoins(amt) { userEconomy.coins += amt; saveUserData(); updateCoinDisplay(); showToast(`ได้รับ ${amt} เหรียญ! 🐰`, 'success', '🐰'); }
+    function claimDailyCatCoins() { userEconomy.catCoins += 50; saveUserData(); updateCoinDisplay(); showToast("รับฟรี 50 เหรียญแมวสำเร็จ! 🐱", 'success', '🐱'); }
 
     function openChatRoom(id, specificRoomId = null) {
       currentBotId = id;
@@ -2073,7 +1785,6 @@ ${playerSlotsText}
       currentRoomId = newRoom.id;
       saveUserData();
       openChatRoom(b.id, newRoom.id);
-      showToast(`สร้างห้องเนื้อเรื่อง "${name}" เรียบร้อย`, 'success', '📖');
     }
 
     function openRoomPickerModal() {
@@ -2090,61 +1801,8 @@ ${playerSlotsText}
       document.getElementById('room-picker-modal').classList.remove('hidden');
     }
 
-    function renderChatRecords() {
-      const list = document.getElementById('chat-records-list');
-      list.innerHTML = '';
-      bots.forEach(b => {
-        (b.rooms || []).forEach(r => {
-          const div = document.createElement('div');
-          div.className = 'p-3 bg-white border border-purple-100 rounded-2xl flex gap-3 cursor-pointer hover:border-violet-300 transition';
-          div.onclick = () => openChatRoom(b.id, r.id);
-          div.innerHTML = `<img src="${b.avatar}" class="w-10 h-10 rounded-full object-cover"><div><h4 class="text-xs font-bold text-slate-800">${b.name} (${r.name})</h4><p class="text-[11px] text-slate-400 mt-1">${r.history?.length || 0} ตอน</p></div>`;
-          list.appendChild(div);
-        });
-      });
-    }
-
     function openPhoneModal() { document.getElementById('phone-modal').classList.remove('hidden'); }
     function closePhoneModal() { document.getElementById('phone-modal').classList.add('hidden'); }
-    function sendDmMessage() {
-      const input = document.getElementById('dm-input');
-      const text = input.value.trim();
-      if (!text) return;
-      const b = getBot(currentBotId);
-      if (!b.dmHistory) b.dmHistory = [];
-      b.dmHistory.push({ sender: 'user', text: text, time: getCurrentTimeStr() });
-      input.value = '';
-      const c = document.getElementById('dm-messages');
-      c.innerHTML += `<div class="text-right"><span class="pastel-btn-primary px-3 py-1.5 rounded-2xl inline-block">${text}</span></div>`;
-      setTimeout(() => {
-        b.dmHistory.push({ sender: 'bot', text: 'เค้าคิดถึงเธอเหมือนกันนะ 🤍', time: getCurrentTimeStr() });
-        c.innerHTML += `<div class="text-left"><span class="bg-purple-100 text-purple-900 px-3 py-1.5 rounded-2xl inline-block">เค้าคิดถึงเธอเหมือนกันนะ 🤍</span></div>`;
-        c.scrollTop = c.scrollHeight;
-        saveUserData();
-      }, 600);
-    }
-
-    function renderGroupChats() {
-      const list = document.getElementById('group-chats-list');
-      list.innerHTML = '';
-      groupChats.forEach(g => {
-        const div = document.createElement('div');
-        div.className = 'p-3 bg-white border border-purple-100 rounded-2xl space-y-1';
-        div.innerHTML = `<h4 class="text-xs font-bold text-slate-800">${g.title}</h4><p class="text-[10px] text-slate-500">${g.relations}</p>`;
-        list.appendChild(div);
-      });
-    }
-
-    function renderCommunityPosts() {
-      const c = document.getElementById('community-posts-container');
-      c.innerHTML = '';
-      communityPosts.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'p-3 bg-white border border-purple-100 rounded-2xl space-y-1';
-        div.innerHTML = `<span class="text-xs font-bold text-slate-800">${p.author}</span><p class="text-xs text-slate-600">${p.content}</p>`;
-        c.appendChild(div);
-      });
-    }
 
     function handleLogin() {
       const email = document.getElementById('login-email-input').value.trim();
