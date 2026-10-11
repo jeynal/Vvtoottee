@@ -134,7 +134,6 @@
         
         <!-- TAB 1: HOME -->
         <section id="tab-home" class="space-y-4">
-          
           <!-- การ์ดบัญชีหลัก -->
           <div class="bg-gradient-to-br from-violet-100/70 via-white to-sky-100/60 p-4 rounded-3xl border border-purple-200/60 shadow-sm relative overflow-hidden">
             <div class="flex items-center gap-3.5">
@@ -199,31 +198,43 @@
         </section>
 
         <!-- TAB 2: EXPLORE & BOT MARKETPLACE & BOT CREATOR -->
-        <section id="tab-explore" class="hidden space-y-3 pb-8">
+        <section id="tab-explore" class="hidden space-y-3.5 pb-8">
           
-          <!-- SUB-VIEW A: หน้ารวมค้นหาบอท (Marketplace) -->
+          <!-- SUB-VIEW A: หน้ารวมบอท (แยกแท็บ "ค้นหาบอท" กับ "บอทที่ฉันสร้าง") -->
           <div id="explore-discovery-view" class="space-y-3.5">
-            <div class="flex items-center justify-between gap-2">
-              <div>
-                <h2 class="text-xs font-bold text-indigo-950">ค้นหาและพบปะเพื่อนบอท</h2>
-                <p class="text-[10px] text-slate-500">เลือกบอทที่ถูกใจเพื่อเริ่มคุย หรือสร้างขึ้นเอง</p>
-              </div>
-              <button onclick="switchToBotCreatorForm()" class="px-3 py-1.5 pastel-btn-primary rounded-2xl text-[11px] font-bold flex items-center gap-1 shadow-sm flex-shrink-0">
-                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> + สร้างบอทเอง
+            
+            <!-- 2 แท็บย่อยด้านบน: ค้นหาบอท vs บอทที่ฉันสร้าง -->
+            <div class="flex p-1 bg-purple-100/60 rounded-2xl border border-purple-200 text-xs font-bold">
+              <button onclick="switchExploreSubTab('public')" id="subtab-btn-public" class="flex-1 py-2 rounded-xl bg-white text-purple-700 shadow-sm transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-compass text-xs"></i> ค้นหาบอท
+              </button>
+              <button onclick="switchExploreSubTab('mybots')" id="subtab-btn-mybots" class="flex-1 py-2 rounded-xl text-slate-500 hover:text-purple-700 transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-robot text-xs"></i> บอทที่ฉันสร้าง
               </button>
             </div>
 
-            <!-- กล่องค้นหา -->
-            <div class="relative">
+            <!-- กล่องหัวข้อ & ปุ่มสร้างบอท -->
+            <div class="flex items-center justify-between gap-2 px-0.5">
+              <div>
+                <h2 id="explore-subtab-title" class="text-xs font-bold text-indigo-950">ค้นหาบอทสาธารณะ</h2>
+                <p id="explore-subtab-desc" class="text-[10px] text-slate-500">เลือกบอทที่เผยแพร่แล้วเพื่อเข้าสู่บทสนทนา</p>
+              </div>
+              <button onclick="switchToBotCreatorForm()" class="px-3 py-1.5 pastel-btn-primary rounded-2xl text-[11px] font-bold flex items-center gap-1 shadow-sm flex-shrink-0">
+                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> + สร้างบอทใหม่
+              </button>
+            </div>
+
+            <!-- กล่องค้นหา (แสดงเฉพาะตอนอยู่แท็บค้นหาบอท) -->
+            <div id="explore-search-bar" class="relative">
               <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
               <input id="bot-search-input" oninput="filterExploreBots()" type="text" placeholder="ค้นหาชื่อบอท, นิสัย, แนวเนื้อเรื่อง..." class="w-full pastel-input rounded-2xl pl-9 pr-3.5 py-2 text-xs focus:outline-none">
             </div>
 
-            <!-- รายการบอทที่ค้นพบ -->
+            <!-- รายการบอทที่จะเรนเดอร์ -->
             <div id="explore-bot-cards-container" class="space-y-2.5 pt-1"></div>
           </div>
 
-          <!-- SUB-VIEW B: หน้าฟอร์มสร้างบอท (Custom Bot Creator) -->
+          <!-- SUB-VIEW B: หน้าฟอร์มสร้างบอท -->
           <div id="explore-creator-view" class="hidden space-y-3">
             <div class="flex items-center justify-between text-slate-500 text-xs px-1">
               <div class="flex items-center gap-1.5 cursor-pointer hover:text-violet-600 transition font-medium" onclick="switchToBotDiscovery()">
@@ -247,14 +258,12 @@
               
               <!-- 1. Profile Tab -->
               <div id="btab-profile" class="space-y-3.5">
-                <!-- ชื่อบอท -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ</label>
                   <input id="bot-name-input" type="text" placeholder="กรุณากรอกชื่อตัวละคร" maxlength="20" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
                   <div class="text-[10px] text-right text-slate-400 mt-1">0/20</div>
                 </div>
 
-                <!-- เพศ -->
                 <div>
                   <label class="block text-xs font-bold text-slate-700 mb-2">เพศ</label>
                   <div class="flex items-center gap-4 text-xs text-slate-600">
@@ -270,7 +279,6 @@
                   </div>
                 </div>
 
-                <!-- อายุ & อาชีพ -->
                 <div class="grid grid-cols-2 gap-2">
                   <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                     <label class="block text-xs font-bold text-slate-700 mb-1">อายุ</label>
@@ -282,13 +290,11 @@
                   </div>
                 </div>
 
-                <!-- คำพูดเปิดตัว -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">คำพูดจากตัวละคร (เปิดตัว)</label>
                   <input id="bot-quote-input" type="text" placeholder="กรุณาใส่บทพูดเปิดตัวของบอท" maxlength="100" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
                 </div>
 
-                <!-- พรีวิวบอทแบบสั้นๆ (Short Preview) -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <div class="flex justify-between items-center mb-1">
                     <label class="block text-xs font-bold text-slate-700">พรีวิวสั้นๆ (Short Preview)</label>
@@ -298,7 +304,6 @@
                   <div class="text-[10px] text-right text-slate-400 mt-1">สรุปจุดเด่นสั้นๆ 1-2 ประโยค</div>
                 </div>
 
-                <!-- สตอรี่แบบละเอียด (ไม่เกิน 2,000 คำ) -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <div class="flex justify-between items-center mb-1">
                     <label class="block text-xs font-bold text-slate-700">เรื่องเล่า / สตอรี่แบบละเอียด</label>
@@ -307,7 +312,6 @@
                   <textarea id="bot-story-input" oninput="updateStoryWordCount(this)" rows="5" placeholder="เขียนเนื้อเรื่อง ปูมหลัง บรรยากาศ หรือพล็อตละเอียดเพื่อให้ผู้เล่นอ่านก่อนตัดสินใจเข้าเล่น (ไม่เกิน 2,000 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
                 </div>
 
-                <!-- อัปโหลดรูปภาพตัวละคร -->
                 <div class="border border-dashed border-purple-200 rounded-2xl p-3 space-y-2 bg-purple-50/40">
                   <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-slate-700">รูปภาพตัวละคร (จากเครื่อง)</span>
@@ -323,7 +327,7 @@
                 </div>
               </div>
 
-              <!-- 2. ข้อมูลบอท (เปลี่ยนชื่อจาก ตั้งค่าพื้นฐาน) -->
+              <!-- 2. ข้อมูลบอท -->
               <div id="btab-basic" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ข้อมูลพื้นฐานของบอท</label>
@@ -335,7 +339,6 @@
                   <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัย การกระทำ สิ่งที่ชอบทำเป็นประจำ กิริยาท่าทาง..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
 
-                <!-- รายละเอียดเฉพาะ: ความสูง น้ำหนัก MBTI สเปก ความสัมพันธ์ -->
                 <div class="grid grid-cols-2 gap-2">
                   <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-2.5 focus-within:border-violet-400 focus-within:bg-white transition">
                     <label class="block text-[11px] font-bold text-slate-700 mb-0.5">ส่วนสูง</label>
@@ -369,10 +372,8 @@
                 </div>
               </div>
 
-              <!-- 3. สถานการณ์ (เปลี่ยนชื่อจาก ฉากแรก) -->
+              <!-- 3. สถานการณ์ -->
               <div id="btab-first" class="hidden space-y-3.5">
-                
-                <!-- กล่องคำแนะนำวิธีเขียนบท -->
                 <div class="p-3 bg-gradient-to-r from-purple-50 to-sky-50 rounded-2xl border border-purple-200/80 text-[11px] space-y-1.5 leading-relaxed text-slate-600">
                   <div class="font-bold text-purple-800 flex items-center gap-1.5">
                     <i class="fa-solid fa-circle-info text-violet-500"></i> รูปแบบและไวยากรณ์ในการเขียนฉากแรก:
@@ -384,7 +385,6 @@
                   </ul>
                 </div>
 
-                <!-- ช่องแรกเจอ -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ฉากแรกเจอ (ทั้งการกระทำและคำพูดเปิดฉาก)</label>
                   <textarea id="bot-first-encounter-input" rows="6" placeholder="ตัวอย่าง:
@@ -430,10 +430,10 @@
                 </div>
               </div>
 
-              <!-- ปุ่มด้านล่างแบบ 2 แท็บ: บันทึกฉบับร่าง & เผยแพร่ -->
+              <!-- ปุ่มด้านล่างแบบ 2 แท็บ -->
               <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-purple-100">
                 <button onclick="submitSaveBotWithStatus(false)" class="w-full py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-2xl text-xs border border-purple-200 transition shadow-sm active:scale-95">
-                  <i class="fa-solid fa-bookmark mr-1 text-[11px]"></i> บันทึกฉบับร่าง (ยังไม่เผยแพร่)
+                  <i class="fa-solid fa-bookmark mr-1 text-[11px]"></i> บันทึกฉบับร่าง
                 </button>
                 <button onclick="submitSaveBotWithStatus(true)" class="w-full py-3 pastel-btn-primary font-bold rounded-2xl text-xs transition shadow-md active:scale-95">
                   <i class="fa-solid fa-earth-asia mr-1 text-[11px]"></i> เผยแพร่บอท (Public)
@@ -696,7 +696,6 @@
 
         <!-- รายละเอียดกายภาพ & นิสัยในการ์ดพรีวิว -->
         <div id="modal-bot-additional-info" class="p-2.5 bg-purple-50/30 rounded-2xl border border-purple-100 text-[10.5px] text-slate-600 space-y-1 hidden">
-          <!-- จะเติมข้อมูลผ่านสคริปต์ -->
         </div>
 
         <div class="space-y-2 pt-1 border-t border-purple-100">
@@ -994,6 +993,8 @@
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
     let tempLoginAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
     let tempPersonaAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
+    let currentExploreSubTab = 'public'; // 'public' หรือ 'mybots'
+    let selectedPersonaForChatId = null;
 
     function getUserKey(key) {
       return `lovey_${currentUserEmail}_${key}`;
@@ -1027,7 +1028,7 @@
         firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี เสียงเปียโนที่ก้องกังวานค่อยๆ เงียบลงเมื่อเขาหยุดปลายนิ้วลงบนคีย์ไม้ เร็นเงยหน้าขึ้นมาสบตากับ {user} ก่อนที่รอยยิ้มอบอุ่นจะปรากฏขึ้นที่มุมปากอย่างปิดไม่มิด*
 
 "เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย... เข้ามานั่งข้างๆ เค้าตรงนี้สิครับ"`,
-        isPublished: true, // เผยแพร่แล้ว
+        isPublished: true,
         rooms: [
           {
             id: "room_default",
@@ -1148,7 +1149,31 @@
       localStorage.setItem(getUserKey('community'), JSON.stringify(communityPosts));
     }
 
-    // ==================== EXPLORE VIEW SWITCHER & DISCOVERY ====================
+    // ==================== EXPLORE SUB-TAB SWITCHER & DISCOVERY ====================
+    function switchExploreSubTab(tab) {
+      currentExploreSubTab = tab;
+      const btnPub = document.getElementById('subtab-btn-public');
+      const btnMy = document.getElementById('subtab-btn-mybots');
+      const searchBar = document.getElementById('explore-search-bar');
+      const title = document.getElementById('explore-subtab-title');
+      const desc = document.getElementById('explore-subtab-desc');
+
+      if (tab === 'public') {
+        btnPub.className = 'flex-1 py-2 rounded-xl bg-white text-purple-700 shadow-sm transition flex items-center justify-center gap-1.5';
+        btnMy.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-purple-700 transition flex items-center justify-center gap-1.5';
+        searchBar.classList.remove('hidden');
+        title.innerText = 'ค้นหาบอทสาธารณะ';
+        desc.innerText = 'เลือกบอทที่เผยแพร่แล้วเพื่อเข้าสู่บทสนทนา';
+      } else {
+        btnMy.className = 'flex-1 py-2 rounded-xl bg-white text-purple-700 shadow-sm transition flex items-center justify-center gap-1.5';
+        btnPub.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-purple-700 transition flex items-center justify-center gap-1.5';
+        searchBar.classList.add('hidden');
+        title.innerText = 'บอทที่ฉันสร้าง';
+        desc.innerText = 'จัดการบอทของคุณ ทั้งฉบับร่างและบอทที่เผยแพร่แล้ว';
+      }
+      renderExploreBotCards();
+    }
+
     function switchToBotDiscovery() {
       document.getElementById('explore-discovery-view').classList.remove('hidden');
       document.getElementById('explore-creator-view').classList.add('hidden');
@@ -1172,28 +1197,33 @@
       if (!container) return;
       container.innerHTML = '';
 
+      let listToRender = [];
       const query = filterKeyword.toLowerCase().trim();
-      // แสดงเฉพาะบอทที่มีสถานะเผยแพร่แล้ว (isPublished = true หรือบอทเดิม)
-      const filtered = bots.filter(b => {
-        if (b.isPublished === false) return false;
-        if (!query) return true;
-        return (b.name && b.name.toLowerCase().includes(query)) ||
-               (b.shortPreview && b.shortPreview.toLowerCase().includes(query)) ||
-               (b.personality && b.personality.toLowerCase().includes(query)) ||
-               (b.career && b.career.toLowerCase().includes(query));
-      });
 
-      if (filtered.length === 0) {
+      if (currentExploreSubTab === 'public') {
+        listToRender = bots.filter(b => {
+          if (b.isPublished === false) return false;
+          if (!query) return true;
+          return (b.name && b.name.toLowerCase().includes(query)) ||
+                 (b.shortPreview && b.shortPreview.toLowerCase().includes(query)) ||
+                 (b.personality && b.personality.toLowerCase().includes(query)) ||
+                 (b.career && b.career.toLowerCase().includes(query));
+        });
+      } else {
+        listToRender = bots;
+      }
+
+      if (listToRender.length === 0) {
         container.innerHTML = `
           <div class="text-center py-8 text-slate-400 space-y-2">
-            <i class="fa-solid fa-ghost text-2xl text-purple-300"></i>
-            <p class="text-xs">ไม่พบบอทที่ตรงกับคำค้นหา</p>
+            <i class="fa-solid fa-robot text-2xl text-purple-300"></i>
+            <p class="text-xs">${currentExploreSubTab === 'public' ? 'ไม่พบบอทที่ตรงกับคำค้นหา' : 'คุณยังไม่ได้สร้างบอท กดปุ่ม "+ สร้างบอทใหม่" ด้านบนได้เลย'}</p>
           </div>
         `;
         return;
       }
 
-      filtered.forEach(b => {
+      listToRender.forEach(b => {
         const div = document.createElement('div');
         div.className = 'p-3.5 bg-white border border-purple-100 rounded-3xl space-y-2.5 shadow-sm hover:border-violet-300 transition cursor-pointer select-none';
         div.onclick = () => openBotPreviewModal(b.id);
@@ -1201,13 +1231,25 @@
         const previewSnippet = b.shortPreview || (b.story ? b.story.substring(0, 90) + '...' : 'ตัวละครพร้อมสำหรับเข้าสู่บทบาท');
         const metaText = `${b.career || 'ไม่ระบุอาชีพ'} • ${b.age || 'ไม่ระบุอายุ'}`;
 
+        let statusBadge = '';
+        if (currentExploreSubTab === 'mybots') {
+          if (b.isPublished) {
+            statusBadge = '<span class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold">เผยแพร่แล้ว</span>';
+          } else {
+            statusBadge = '<span class="text-[9px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200 font-semibold">ฉบับร่าง</span>';
+          }
+        }
+
         div.innerHTML = `
           <div class="flex items-center gap-3">
             <img src="${b.avatar}" class="w-12 h-12 rounded-full object-cover border-2 border-purple-200 flex-shrink-0">
             <div class="flex-1 overflow-hidden">
               <div class="flex justify-between items-center">
                 <h4 class="text-xs font-bold text-slate-800 truncate">${b.name}</h4>
-                <span class="text-[9px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full border border-purple-100">${metaText}</span>
+                <div class="flex items-center gap-1.5">
+                  ${statusBadge}
+                  <span class="text-[9px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full border border-purple-100">${metaText}</span>
+                </div>
               </div>
               <p class="text-[11px] text-purple-700 font-medium truncate mt-0.5">${b.quote || ''}</p>
             </div>
@@ -1230,8 +1272,6 @@
     }
 
     // ==================== STORY PREVIEW & PERSONA SELECTION MODAL ====================
-    let selectedPersonaForChatId = null;
-
     function openBotPreviewModal(botId) {
       const b = getBot(botId);
       pendingBotToPlay = b;
@@ -1242,7 +1282,6 @@
       document.getElementById('modal-bot-quote').innerText = b.quote || 'ยินดีที่ได้พบกันนะคนดี...';
       document.getElementById('modal-bot-story').innerText = b.story || 'ไม่มีเนื้อเรื่องเพิ่มเติม ตัวละครพร้อมเปิดรับบทบาทตามจินตนาการของคุณ';
 
-      // แสดงข้อมูลเพิ่มเติมในพรีวิว
       const extraBox = document.getElementById('modal-bot-additional-info');
       if (b.height || b.weight || b.mbti || b.preferredRelation) {
         extraBox.classList.remove('hidden');
@@ -1255,7 +1294,6 @@
         extraBox.classList.add('hidden');
       }
 
-      // เช็คว่ามีประวัติคุยค้างไว้ไหม
       const currentRoom = getCurrentRoom(b);
       const hasHistory = currentRoom.history && currentRoom.history.length > 0;
       const continueBtn = document.getElementById('modal-btn-continue-chat');
@@ -1265,7 +1303,6 @@
         continueBtn.classList.add('hidden');
       }
 
-      // แสดงรายการ Persona ให้เลือกว่าจะเข้าเล่นด้วยตัวละครไหน
       const personaList = document.getElementById('modal-persona-picker-list');
       personaList.innerHTML = '';
       selectedPersonaForChatId = getActivePersona().id;
@@ -1316,12 +1353,9 @@
 
     function createNewRoomForCurrentBotFast(bot) {
       const persona = getActivePersona();
-      
-      // แปลงแท็ก {user} ในข้อความแรกเจอ
-      let initialDialogue = bot.firstEncounter || bot.sceneDialogue || bot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
+      let initialDialogue = bot.firstEncounter || bot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
       initialDialogue = initialDialogue.replace(/\{user\}/g, persona.name);
 
-      // แยกบรรยายกับคำพูด
       let parsedNarration = "";
       let parsedSpeech = "";
 
@@ -1795,7 +1829,6 @@
       });
     }
 
-    // บันทึกบอทแบบกำหนดสถานะ: เผยแพร่ (Public) หรือ ฉบับร่าง (Draft)
     function submitSaveBotWithStatus(isPublish) {
       const name = document.getElementById('bot-name-input').value.trim();
       if (!name) {
@@ -1810,7 +1843,6 @@
       const age = document.getElementById('bot-age-input').value.trim();
       const gender = document.querySelector('input[name="bot-gender"]:checked')?.value || 'none';
 
-      // ข้อมูลบอท
       const basicInfo = document.getElementById('bot-info-input').value.trim();
       const personality = document.getElementById('bot-personality-input').value.trim() || 'อบอุ่น ขี้อ้อน';
       const height = document.getElementById('bot-height-input').value.trim();
@@ -1820,10 +1852,8 @@
       const preferredRelation = document.getElementById('bot-preferred-relation-input').value.trim();
       const speakingStyle = document.getElementById('bot-speaking-style-input').value.trim();
 
-      // สถานการณ์
       const firstEncounter = document.getElementById('bot-first-encounter-input').value.trim();
 
-      // รายละเอียด & อื่นๆ
       const likes = document.getElementById('bot-likes-input').value.trim();
       const dislikes = document.getElementById('bot-dislikes-input').value.trim();
       const birthday = document.getElementById('bot-birthday-input').value.trim();
@@ -1856,7 +1886,7 @@
         eventTrigger: eventTrigger,
         eventBehavior: eventBehavior,
         lorebook: lorebook,
-        isPublished: isPublish, // สถานะเผยแพร่หรือไม่
+        isPublished: isPublish,
         rooms: [],
         dmHistory: [
           { sender: "bot", text: quote || "ทักทายครับ ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }
