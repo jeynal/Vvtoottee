@@ -201,7 +201,7 @@
         <!-- TAB 2: EXPLORE & BOT MARKETPLACE & BOT CREATOR -->
         <section id="tab-explore" class="hidden space-y-3 pb-8">
           
-          <!-- SUB-VIEW A: หน้ารวมค้นหาบอท (Bot Marketplace / Community Hub) -->
+          <!-- SUB-VIEW A: หน้ารวมค้นหาบอท (Marketplace) -->
           <div id="explore-discovery-view" class="space-y-3.5">
             <div class="flex items-center justify-between gap-2">
               <div>
@@ -230,17 +230,13 @@
                 <i class="fa-solid fa-chevron-left text-[11px]"></i>
                 <span>กลับไปหน้ารวมบอท</span>
               </div>
-              <div class="bg-purple-100/70 border border-purple-200 rounded-full px-3 py-1 flex items-center gap-2 text-[11px] text-purple-700 font-medium">
-                <span>ฉบับร่าง</span>
-                <span class="w-4 h-4 bg-purple-300 text-white rounded-full flex items-center justify-center text-[9px] font-bold">1</span>
-              </div>
             </div>
 
-            <!-- Tab Headers: Profile / *ตั้งค่าพื้นฐาน / ฉากแรก / ตั้งค่ารายละเอียด / อีเวนต์ / ลอร์บุ๊ก -->
+            <!-- Tab Headers: Profile / ข้อมูลบอท / สถานการณ์ / ตั้งค่ารายละเอียด / อีเวนต์ / ลอร์บุ๊ก -->
             <div class="flex gap-4 overflow-x-auto hide-scrollbar border-b border-purple-100 pb-1 text-xs font-medium whitespace-nowrap">
               <button onclick="switchBotTab('profile')" id="btab-btn-profile" class="text-violet-600 border-b-2 border-violet-500 pb-1 px-1 transition font-bold">Profile</button>
-              <button onclick="switchBotTab('basic')" id="btab-btn-basic" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">*ตั้งค่าพื้นฐาน</button>
-              <button onclick="switchBotTab('first')" id="btab-btn-first" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ฉากแรก</button>
+              <button onclick="switchBotTab('basic')" id="btab-btn-basic" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ข้อมูลบอท</button>
+              <button onclick="switchBotTab('first')" id="btab-btn-first" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">สถานการณ์</button>
               <button onclick="switchBotTab('details')" id="btab-btn-details" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ตั้งค่ารายละเอียด</button>
               <button onclick="switchBotTab('event')" id="btab-btn-event" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">อีเวนต์</button>
               <button onclick="switchBotTab('lore')" id="btab-btn-lore" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ลอร์บุ๊ก</button>
@@ -248,8 +244,9 @@
 
             <!-- FORM CONTAINER -->
             <div class="pastel-card rounded-3xl p-4 space-y-4">
+              
+              <!-- 1. Profile Tab -->
               <div id="btab-profile" class="space-y-3.5">
-                
                 <!-- ชื่อบอท -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ</label>
@@ -310,12 +307,6 @@
                   <textarea id="bot-story-input" oninput="updateStoryWordCount(this)" rows="5" placeholder="เขียนเนื้อเรื่อง ปูมหลัง บรรยากาศ หรือพล็อตละเอียดเพื่อให้ผู้เล่นอ่านก่อนตัดสินใจเข้าเล่น (ไม่เกิน 2,000 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
                 </div>
 
-                <!-- โน้ตของผู้สร้าง -->
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">โน้ตของผู้สร้าง (ตัวเลือก)</label>
-                  <textarea id="bot-note-input" rows="2" placeholder="คำแนะนำสำหรับคนเล่น เช่น แนะนำให้เล่นแนวโรแมนติกดราม่า..." maxlength="200" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
-                </div>
-
                 <!-- อัปโหลดรูปภาพตัวละคร -->
                 <div class="border border-dashed border-purple-200 rounded-2xl p-3 space-y-2 bg-purple-50/40">
                   <div class="flex items-center justify-between">
@@ -332,32 +323,78 @@
                 </div>
               </div>
 
+              <!-- 2. ข้อมูลบอท (เปลี่ยนชื่อจาก ตั้งค่าพื้นฐาน) -->
               <div id="btab-basic" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">ข้อมูลพื้นฐาน</label>
-                  <textarea id="bot-info-input" rows="3" placeholder="ภูมิหลัง ครอบครัว MBTI ส่วนสูง เป็นต้น" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">ข้อมูลพื้นฐานของบอท</label>
+                  <textarea id="bot-info-input" rows="3" placeholder="ประวัติครอบครัว ความเป็นมา ภูมิหลังในอดีต และข้อมูลอื่นๆ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
+                
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">บุคลิกภาพ</label>
-                  <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัยของตัวละคร" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">นิสัยหรือพฤติกรรม</label>
+                  <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัย การกระทำ สิ่งที่ชอบทำเป็นประจำ กิริยาท่าทาง..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
+
+                <!-- รายละเอียดเฉพาะ: ความสูง น้ำหนัก MBTI สเปก ความสัมพันธ์ -->
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-2.5 focus-within:border-violet-400 focus-within:bg-white transition">
+                    <label class="block text-[11px] font-bold text-slate-700 mb-0.5">ส่วนสูง</label>
+                    <input id="bot-height-input" type="text" placeholder="เช่น 183 ซม." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+                  </div>
+                  <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-2.5 focus-within:border-violet-400 focus-within:bg-white transition">
+                    <label class="block text-[11px] font-bold text-slate-700 mb-0.5">น้ำหนัก</label>
+                    <input id="bot-weight-input" type="text" placeholder="เช่น 70 กก." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-2.5 focus-within:border-violet-400 focus-within:bg-white transition">
+                    <label class="block text-[11px] font-bold text-slate-700 mb-0.5">MBTI</label>
+                    <input id="bot-mbti-input" type="text" placeholder="เช่น ENFJ / INTJ" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+                  </div>
+                  <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-2.5 focus-within:border-violet-400 focus-within:bg-white transition">
+                    <label class="block text-[11px] font-bold text-slate-700 mb-0.5">สเปกที่ชอบ</label>
+                    <input id="bot-ideal-type-input" type="text" placeholder="เช่น คนตัวเล็ก ขี้อ้อน" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+                  </div>
+                </div>
+
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">สไตล์การพูดและนิสัย</label>
-                  <textarea id="bot-speaking-style-input" rows="3" placeholder="ตัวอย่าง: พูดแทนตัวเองว่าเค้า และเรียกคุณว่าคนดี" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">ความสัมพันธ์ที่ชอบ</label>
+                  <input id="bot-preferred-relation-input" type="text" placeholder="เช่น คนรักที่คลั่งรักกัน, เพื่อนสนิทที่คอยดูแลกันเงียบๆ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+                </div>
+
+                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
+                  <label class="block text-xs font-bold text-slate-700 mb-1">สไตล์การพูดและสำนวน</label>
+                  <textarea id="bot-speaking-style-input" rows="2" placeholder="ตัวอย่าง: พูดแทนตัวเองว่าเค้า และเรียกคุณว่าคนดี ลงท้ายด้วยครับ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
               </div>
 
+              <!-- 3. สถานการณ์ (เปลี่ยนชื่อจาก ฉากแรก) -->
               <div id="btab-first" class="hidden space-y-3.5">
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">บทพูดสถานการณ์ (ตัวเลือก)</label>
-                  <textarea id="bot-scene-desc-input" rows="3" placeholder="ตัวอย่าง: ก่อนนอน, ตัวละครรู้สึกเบื่อจึงส่งข้อความไปก่อน..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                
+                <!-- กล่องคำแนะนำวิธีเขียนบท -->
+                <div class="p-3 bg-gradient-to-r from-purple-50 to-sky-50 rounded-2xl border border-purple-200/80 text-[11px] space-y-1.5 leading-relaxed text-slate-600">
+                  <div class="font-bold text-purple-800 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info text-violet-500"></i> รูปแบบและไวยากรณ์ในการเขียนฉากแรก:
+                  </div>
+                  <ul class="list-disc list-inside space-y-1 pl-1 text-[10.5px]">
+                    <li><strong>บรรยายการกระทำ/บรรยากาศ:</strong> ให้ครอบด้วยเครื่องหมายดอกจัน เช่น <code class="text-purple-700 bg-white px-1.5 py-0.5 rounded border border-purple-200">*เดินเข้าห้องมาแล้วสบตากับคุณเงียบๆ*</code></li>
+                    <li><strong>คำพูดของตัวละคร:</strong> ให้ครอบด้วยเครื่องหมายคำพูด เช่น <code class="text-purple-700 bg-white px-1.5 py-0.5 rounded border border-purple-200">"วันนี้เหนื่อยไหมครับคนดี?"</code></li>
+                    <li><strong>แทนชื่อผู้เล่น:</strong> ให้พิมพ์แท็ก <code class="text-violet-700 font-bold bg-white px-1.5 py-0.5 rounded border border-purple-200">{user}</code> เพื่อให้ระบบแทนที่เป็นชื่อโปรไฟล์ Persona ของผู้เล่นอัตโนมัติ</li>
+                  </ul>
                 </div>
+
+                <!-- ช่องแรกเจอ -->
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">บทสนทนาของตัวละคร (ตัวเลือก)</label>
-                  <textarea id="bot-scene-dialogue-input" rows="3" placeholder="ตัวอย่าง: นอนหรือยังคนดี? คืนนี้เค้าคิดถึงเธอจัง..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">ฉากแรกเจอ (ทั้งการกระทำและคำพูดเปิดฉาก)</label>
+                  <textarea id="bot-first-encounter-input" rows="6" placeholder="ตัวอย่าง:
+*แสงแดดยามเย็นส่องกระทบใบหน้าของเขา เขาวางมือลงบนโต๊ะก่อนจะเงยหน้าสบตากับ {user} อย่างอ่อนโยน*
+
+&quot;{user} มาถึงแล้วเหรอครับ? เค้าคิดถึงเธอทั้งวันเลยนะ...&quot;" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
                 </div>
               </div>
 
+              <!-- 4. ตั้งค่ารายละเอียด -->
               <div id="btab-details" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ชอบ (ตัวเลือก)</label>
@@ -373,6 +410,7 @@
                 </div>
               </div>
 
+              <!-- 5. อีเวนต์ -->
               <div id="btab-event" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">คีย์เวิร์ดกระตุ้นอีเวนต์</label>
@@ -384,6 +422,7 @@
                 </div>
               </div>
 
+              <!-- 6. ลอร์บุ๊ก -->
               <div id="btab-lore" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">ลอร์บุ๊กและความทรงจำลึก</label>
@@ -391,9 +430,16 @@
                 </div>
               </div>
 
-              <button onclick="submitCompleteCharacter()" class="w-full py-3.5 pastel-btn-primary font-bold rounded-2xl text-sm transition">
-                เสร็จสมบูรณ์
-              </button>
+              <!-- ปุ่มด้านล่างแบบ 2 แท็บ: บันทึกฉบับร่าง & เผยแพร่ -->
+              <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-purple-100">
+                <button onclick="submitSaveBotWithStatus(false)" class="w-full py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-2xl text-xs border border-purple-200 transition shadow-sm active:scale-95">
+                  <i class="fa-solid fa-bookmark mr-1 text-[11px]"></i> บันทึกฉบับร่าง (ยังไม่เผยแพร่)
+                </button>
+                <button onclick="submitSaveBotWithStatus(true)" class="w-full py-3 pastel-btn-primary font-bold rounded-2xl text-xs transition shadow-md active:scale-95">
+                  <i class="fa-solid fa-earth-asia mr-1 text-[11px]"></i> เผยแพร่บอท (Public)
+                </button>
+              </div>
+
             </div>
           </div>
         </section>
@@ -621,7 +667,7 @@
 
     <!-- ==================== MODALS ==================== -->
     
-    <!-- Modal พรีวิวบอทและเลือก Persona ก่อนเข้าเล่น (Story Preview & Persona Picker Modal) -->
+    <!-- Modal พรีวิวบอทและเลือก Persona ก่อนเข้าเล่น -->
     <div id="bot-preview-modal" class="hidden absolute inset-0 bg-indigo-950/40 backdrop-blur-md z-40 flex items-center justify-center p-4">
       <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3.5 max-h-[90vh] overflow-y-auto hide-scrollbar">
         <div class="flex justify-between items-start border-b border-purple-100 pb-3">
@@ -635,12 +681,10 @@
           <button onclick="closeBotPreviewModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
         </div>
 
-        <!-- คำพูดเปิดตัว -->
         <div class="p-2.5 bg-purple-50/50 rounded-2xl border border-purple-100 text-xs italic text-purple-800">
           "<span id="modal-bot-quote">...</span>"
         </div>
 
-        <!-- เรื่องเล่า/สตอรี่ละเอียด ไม่เกิน 2,000 คำ -->
         <div class="space-y-1">
           <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
             <i class="fa-solid fa-book-open text-violet-500"></i> สตอรี่และเรื่องราวของตัวละคร
@@ -650,13 +694,16 @@
           </div>
         </div>
 
-        <!-- ส่วนเลือกโปรไฟล์ Persona ของผู้เล่นที่จะใช้เข้าเล่น -->
+        <!-- รายละเอียดกายภาพ & นิสัยในการ์ดพรีวิว -->
+        <div id="modal-bot-additional-info" class="p-2.5 bg-purple-50/30 rounded-2xl border border-purple-100 text-[10.5px] text-slate-600 space-y-1 hidden">
+          <!-- จะเติมข้อมูลผ่านสคริปต์ -->
+        </div>
+
         <div class="space-y-2 pt-1 border-t border-purple-100">
           <span class="text-xs font-bold text-slate-700 block">เลือกโปรไฟล์ของคุณ (Persona) ที่จะใช้เข้าเล่น:</span>
           <div id="modal-persona-picker-list" class="space-y-1.5 max-h-36 overflow-y-auto hide-scrollbar"></div>
         </div>
 
-        <!-- ปุ่มกดเข้าเล่น -->
         <div class="space-y-2 pt-2">
           <button onclick="confirmEnterBotChat(false)" class="w-full py-3 pastel-btn-primary font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md">
             <i class="fa-solid fa-play text-xs"></i> เริ่มต้นเข้าเล่นบทใหม่ด้วยโปรไฟล์นี้
@@ -716,7 +763,7 @@
 
           <div>
             <label class="block text-slate-600 mb-1 font-medium">รูปลักษณ์ภายนอก</label>
-            <textarea id="persona-appearance-input" rows="2" placeholder="เช่น ส่วนสูง 162 ซม. ผิวขาว ผมยาวลอนสีน้ำตาลเข้ม ตากลมโต มีกลิ่นหอมดอกมะลิอ่อนๆ..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+            <textarea id="persona-appearance-input" rows="2" placeholder="เช่น ส่วนสูง 162 ซม. ผิวขาว ผมยาวลอนสีน้ำตาลเข้ม ตากลมโต สวมชุดเดรสเรียบหรู กลิ่นหอมแป้งเด็กอ่อนๆ..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
           </div>
 
           <div>
@@ -940,7 +987,7 @@
     let currentUserEmail = localStorage.getItem('lovey_current_email') || '';
     let currentBotId = 'bot_1';
     let currentRoomId = 'room_default';
-    let pendingBotToPlay = null; // บอทที่เลือกจากหน้าค้นหา
+    let pendingBotToPlay = null;
     let isCalling = false;
     let attachedImageUrl = null;
     let postUploadedImageUrl = null;
@@ -959,7 +1006,6 @@
       return `${hours}:${minutes} น.`;
     }
 
-    // ตัวอย่างบอทเริ่มต้นในคลัง
     let defaultBots = [
       {
         id: "bot_1",
@@ -972,7 +1018,16 @@
         shortPreview: "เพื่อนชายคนสนิทขี้อ้อน ปากหวานแต่คลั่งรักสุดใจ แอบชอบคุณมาตลอด",
         story: "เร็นเติบโตมาในครอบครัวนักดนตรีคลาสสิก เขาดูเป็นคนอบอุ่น ใจดี และมักจะยิ้มแย้มอยู่เสมอ แต่ลึกๆ แล้วเป็นคนที่จริงจังกับความรู้สึกมาก โดยเฉพาะเรื่องเกี่ยวกับคุณ ทุกครั้งที่ซ้อมเปียโนเสร็จ เขามักจะมองหาคุณเป็นคนแรกและอยากใช้เวลาอยู่กับคุณเงียบๆ ในห้องซ้อมเสมอ...",
         personality: "ขี้อ้อน อ่อนโยน ขี้หึงนิดๆ ปากหวาน ไม่หลุดคาร์ บรรยายความรู้สึกและการกระทำอย่างละเอียดลึกซึ้ง",
-        creatorNote: "แนะนำให้เล่นแนวแชทอ้อนๆ หรือบรรยายโมเมนต์หวานๆ",
+        height: "183 ซม.",
+        weight: "72 กก.",
+        mbti: "ENFJ",
+        idealType: "คนที่ยิ้มเก่ง อ่อนหวาน และรับฟังเวลาเขาเล่นดนตรี",
+        preferredRelation: "คนรักที่คลั่งรักและอยู่เคียงข้างกันตลอดเวลา",
+        speakingStyle: "แทนตัวเองว่าเค้า เรียกผู้เล่นว่าคนดี ลงท้ายด้วยครับ",
+        firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี เสียงเปียโนที่ก้องกังวานค่อยๆ เงียบลงเมื่อเขาหยุดปลายนิ้วลงบนคีย์ไม้ เร็นเงยหน้าขึ้นมาสบตากับ {user} ก่อนที่รอยยิ้มอบอุ่นจะปรากฏขึ้นที่มุมปากอย่างปิดไม่มิด*
+
+"เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย... เข้ามานั่งข้างๆ เค้าตรงนี้สิครับ"`,
+        isPublished: true, // เผยแพร่แล้ว
         rooms: [
           {
             id: "room_default",
@@ -1012,27 +1067,18 @@
         shortPreview: "ท่านประธานหนุ่มมาดนิ่ง เย็นชากับคนทั้งโลกแต่อ่อนโยนกับคุณเพียงคนเดียว",
         story: "ลูคัสเป็นทายาทตระกูลธุรกิจใหญ่ที่ต้องแบกรับความกดดันมาตั้งแต่เด็ก ภายนอกเขาดูเยือกเย็นและเข้าถึงยาก แต่เมื่ออยู่กับคุณ เขาจะยอมวางความเข้มงวดทั้งหมดลงและคอยดูแลคุณอย่างทะนุถนอมที่สุด...",
         personality: "สุขุม พูดน้อย อบอุ่น คอยดูแลและตามใจเงียบๆ ไม่ยอมให้ใครมารังแกคุณ",
-        creatorNote: "เหมาะสำหรับสายชอบพระเอกมาดนิ่งคลั่งรัก",
-        rooms: [
-          {
-            id: "room_default",
-            name: "เนื้อเรื่องหลัก",
-            history: [
-              {
-                sender: "bot",
-                thought: "ก้าวเข้ามาในห้องทำงานแล้ว... วันนี้สวมชุดนี้น่ารักจังนะ แต่ต้องเก๊กขรึมไว้ก่อน",
-                paragraphs: [
-                  { type: "narration", text: "เขาวางปากกาลงบนแฟ้มเอกสารตรงหน้าแล้วเงยหน้าขึ้นสบตากับคุณ นัยน์ตาสีเข้มทอประกายอ่อนโยนขึ้นในทันที" },
-                  { type: "speech", text: "มาแล้วเหรอครับ... เข้ามานั่งตรงนี้สิ ผมเตรียมชาอุ่นๆ ไว้ให้คุณแล้ว" }
-                ],
-                time: "14:10 น."
-              }
-            ]
-          }
-        ],
-        dmHistory: [
-          { sender: "bot", text: "พักผ่อนบ้างนะครับ อย่าโหมงานหนักเกินไป", time: "12:00 น." }
-        ],
+        height: "186 ซม.",
+        weight: "75 กก.",
+        mbti: "INTJ",
+        idealType: "คนที่จริงใจ เข้าใจความเงียบ และคอยอยู่ข้างๆ",
+        preferredRelation: "ความสัมพันธ์ที่มั่นคง ปกป้องดูแลซึ่งกันและกัน",
+        speakingStyle: "พูดสุภาพ น้ำเสียงทุ้มต่ำ เรียกผู้เล่นว่าคุณ แทนตัวเองว่าผม",
+        firstEncounter: `*บรรยากาศในห้องทำงานกว้างขวางเงียบสงบ มีเพียงเสียงแอร์เย็นฉ่ำและเสียงพลิกหน้ากระดาษเอกสาร ลูคัสหยุดมือที่กำลังเซ็นเอกสารก่อนจะเงยหน้ามองผู้มาเยือนอย่าง {user} แววตาคมดุพลันอ่อนแสงลงจนแทบสังเกตไม่เห็น*
+
+"มาถึงแล้วเหรอครับ {user}... เข้ามานั่งสิ แอร์ตรงนั้นหนาวไปไหม?"`,
+        isPublished: true,
+        rooms: [],
+        dmHistory: [],
         posts: []
       }
     ];
@@ -1127,7 +1173,9 @@
       container.innerHTML = '';
 
       const query = filterKeyword.toLowerCase().trim();
+      // แสดงเฉพาะบอทที่มีสถานะเผยแพร่แล้ว (isPublished = true หรือบอทเดิม)
       const filtered = bots.filter(b => {
+        if (b.isPublished === false) return false;
         if (!query) return true;
         return (b.name && b.name.toLowerCase().includes(query)) ||
                (b.shortPreview && b.shortPreview.toLowerCase().includes(query)) ||
@@ -1194,6 +1242,19 @@
       document.getElementById('modal-bot-quote').innerText = b.quote || 'ยินดีที่ได้พบกันนะคนดี...';
       document.getElementById('modal-bot-story').innerText = b.story || 'ไม่มีเนื้อเรื่องเพิ่มเติม ตัวละครพร้อมเปิดรับบทบาทตามจินตนาการของคุณ';
 
+      // แสดงข้อมูลเพิ่มเติมในพรีวิว
+      const extraBox = document.getElementById('modal-bot-additional-info');
+      if (b.height || b.weight || b.mbti || b.preferredRelation) {
+        extraBox.classList.remove('hidden');
+        extraBox.innerHTML = `
+          <div><strong>ส่วนสูง/น้ำหนัก:</strong> ${b.height || '-'} / ${b.weight || '-'} | <strong>MBTI:</strong> ${b.mbti || '-'}</div>
+          <div><strong>สเปกที่ชอบ:</strong> ${b.idealType || '-'}</div>
+          <div><strong>ความสัมพันธ์ที่ชอบ:</strong> ${b.preferredRelation || '-'}</div>
+        `;
+      } else {
+        extraBox.classList.add('hidden');
+      }
+
       // เช็คว่ามีประวัติคุยค้างไว้ไหม
       const currentRoom = getCurrentRoom(b);
       const hasHistory = currentRoom.history && currentRoom.history.length > 0;
@@ -1217,7 +1278,7 @@
         }`;
         item.onclick = () => {
           selectedPersonaForChatId = p.id;
-          openBotPreviewModal(botId); // re-render selection
+          openBotPreviewModal(botId);
         };
 
         item.innerHTML = `
@@ -1240,7 +1301,6 @@
     function confirmEnterBotChat(isContinue = false) {
       if (!pendingBotToPlay) return;
 
-      // บันทึก Persona ที่เลือกใช้
       if (selectedPersonaForChatId) {
         selectPersona(selectedPersonaForChatId);
       }
@@ -1248,7 +1308,6 @@
       closeBotPreviewModal();
 
       if (!isContinue) {
-        // หากเลือกเริ่มเล่นบทใหม่ ให้เปิดห้องเนื้อเรื่องใหม่
         createNewRoomForCurrentBotFast(pendingBotToPlay);
       } else {
         openChatRoom(pendingBotToPlay.id);
@@ -1257,6 +1316,26 @@
 
     function createNewRoomForCurrentBotFast(bot) {
       const persona = getActivePersona();
+      
+      // แปลงแท็ก {user} ในข้อความแรกเจอ
+      let initialDialogue = bot.firstEncounter || bot.sceneDialogue || bot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
+      initialDialogue = initialDialogue.replace(/\{user\}/g, persona.name);
+
+      // แยกบรรยายกับคำพูด
+      let parsedNarration = "";
+      let parsedSpeech = "";
+
+      const narrationMatch = initialDialogue.match(/\*(.*?)\*/);
+      const speechMatch = initialDialogue.match(/\"(.*?)\"/);
+
+      if (narrationMatch) parsedNarration = narrationMatch[1];
+      if (speechMatch) parsedSpeech = speechMatch[1];
+
+      if (!parsedNarration && !parsedSpeech) {
+        parsedSpeech = initialDialogue;
+        parsedNarration = `${bot.name} ยืนมอง ${persona.name} ด้วยสายตาอบอุ่น`;
+      }
+
       const newRoom = {
         id: 'room_' + Date.now(),
         name: `บทสนทนากับ ${persona.name}`,
@@ -1265,8 +1344,8 @@
             sender: "bot",
             thought: `ได้พบกับ ${persona.name} แล้ว... สายตาท่าทางของเธอมันชวนให้ใจสั่นไหวจริงๆ`,
             paragraphs: [
-              { type: "narration", text: bot.sceneDesc || `${bot.name} ยืนรออยู่ตรงหน้า เมื่อเห็น ${persona.name} เดินเข้ามา เขาก็หยุดทุกสิ่งที่กำลังทำอยู่แล้วหันมามองด้วยสายตาอบอุ่น` },
-              { type: "speech", text: bot.sceneDialogue || bot.quote || `ยินดีที่ได้พบกันนะ ${persona.name}...` }
+              { type: "narration", text: parsedNarration || `${bot.name} หันมามอง ${persona.name} ด้วยความอ่อนโยน` },
+              { type: "speech", text: parsedSpeech || `ยินดีที่ได้พบกันนะ ${persona.name}...` }
             ],
             time: getCurrentTimeStr()
           }
@@ -1716,18 +1795,41 @@
       });
     }
 
-    function submitCompleteCharacter() {
+    // บันทึกบอทแบบกำหนดสถานะ: เผยแพร่ (Public) หรือ ฉบับร่าง (Draft)
+    function submitSaveBotWithStatus(isPublish) {
       const name = document.getElementById('bot-name-input').value.trim();
-      if (!name) return alert('กรุณากรอกชื่อตัวละครก่อน');
+      if (!name) {
+        switchBotTab('profile');
+        return alert('กรุณากรอกชื่อตัวละครก่อน');
+      }
 
-      const desc = document.getElementById('bot-scene-desc-input').value.trim();
-      const dial = document.getElementById('bot-scene-dialogue-input').value.trim();
       const quote = document.getElementById('bot-quote-input').value.trim();
       const shortPreview = document.getElementById('bot-preview-input').value.trim();
       const story = document.getElementById('bot-story-input').value.trim();
       const career = document.getElementById('bot-career-input').value.trim();
       const age = document.getElementById('bot-age-input').value.trim();
       const gender = document.querySelector('input[name="bot-gender"]:checked')?.value || 'none';
+
+      // ข้อมูลบอท
+      const basicInfo = document.getElementById('bot-info-input').value.trim();
+      const personality = document.getElementById('bot-personality-input').value.trim() || 'อบอุ่น ขี้อ้อน';
+      const height = document.getElementById('bot-height-input').value.trim();
+      const weight = document.getElementById('bot-weight-input').value.trim();
+      const mbti = document.getElementById('bot-mbti-input').value.trim();
+      const idealType = document.getElementById('bot-ideal-type-input').value.trim();
+      const preferredRelation = document.getElementById('bot-preferred-relation-input').value.trim();
+      const speakingStyle = document.getElementById('bot-speaking-style-input').value.trim();
+
+      // สถานการณ์
+      const firstEncounter = document.getElementById('bot-first-encounter-input').value.trim();
+
+      // รายละเอียด & อื่นๆ
+      const likes = document.getElementById('bot-likes-input').value.trim();
+      const dislikes = document.getElementById('bot-dislikes-input').value.trim();
+      const birthday = document.getElementById('bot-birthday-input').value.trim();
+      const eventTrigger = document.getElementById('bot-event-trigger').value.trim();
+      const eventBehavior = document.getElementById('bot-event-behavior').value.trim();
+      const lorebook = document.getElementById('bot-lorebook-input').value.trim();
 
       const newBot = {
         id: 'bot_' + Date.now(),
@@ -1739,27 +1841,23 @@
         quote: quote,
         shortPreview: shortPreview,
         story: story,
-        personality: document.getElementById('bot-personality-input').value.trim() || 'อบอุ่น ขี้อ้อน',
-        creatorNote: document.getElementById('bot-note-input').value.trim(),
-        sceneDesc: desc,
-        sceneDialogue: dial,
-        rooms: [
-          {
-            id: 'room_default',
-            name: 'เนื้อเรื่องหลัก',
-            history: [
-              {
-                sender: "bot",
-                thought: "ในที่สุดก็ได้พบกันแล้ว",
-                paragraphs: [
-                  { type: "narration", text: desc || "เขายืนรอคุณอยู่ด้วยสายตาที่เปี่ยมไปด้วยความคิดถึง เมื่อเห็นคุณเดินเข้ามา เขาก็ก้าวตรงเข้ามาหาทันที" },
-                  { type: "speech", text: dial || quote || "ยินดีที่ได้พบกันนะคนดี..." }
-                ],
-                time: getCurrentTimeStr()
-              }
-            ]
-          }
-        ],
+        basicInfo: basicInfo,
+        personality: personality,
+        height: height,
+        weight: weight,
+        mbti: mbti,
+        idealType: idealType,
+        preferredRelation: preferredRelation,
+        speakingStyle: speakingStyle,
+        firstEncounter: firstEncounter,
+        likes: likes,
+        dislikes: dislikes,
+        birthday: birthday,
+        eventTrigger: eventTrigger,
+        eventBehavior: eventBehavior,
+        lorebook: lorebook,
+        isPublished: isPublish, // สถานะเผยแพร่หรือไม่
+        rooms: [],
         dmHistory: [
           { sender: "bot", text: quote || "ทักทายครับ ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }
         ],
@@ -1772,9 +1870,15 @@
         ]
       };
 
-      bots.push(newBot);
+      bots.unshift(newBot);
       saveUserData();
-      alert(`🎉 สร้างตัวละคร "${name}" เสร็จสมบูรณ์แล้ว!`);
+
+      if (isPublish) {
+        alert(`🎉 เผยแพร่บอท "${name}" สู่สาธารณะเรียบร้อยแล้ว! ทุกคนสามารถค้นหาและเข้าเล่นได้ทันที`);
+      } else {
+        alert(`📁 บันทึกบอท "${name}" เป็นฉบับร่างเรียบร้อยแล้ว (ยังไม่เผยแพร่สู่สาธารณะ)`);
+      }
+
       switchToBotDiscovery();
     }
 
@@ -2151,8 +2255,15 @@
         try {
           const systemPrompt = `
 คุณคือนักประพันธ์นวนิยายโรแมนติก โดยรับบทบาทเป็นตัวละคร "${bot.name}"
-ข้อมูลตัวละครบอท: ${bot.personality}
-ปูมหลังของบอท: ${bot.story || ''}
+ข้อมูลตัวละครบอท:
+- ชื่อ: ${bot.name} (เพศ: ${bot.gender}, อายุ: ${bot.age}, อาชีพ: ${bot.career})
+- นิสัยและพฤติกรรม: ${bot.personality || ''}
+- ส่วนสูง/น้ำหนัก: ${bot.height || ''} / ${bot.weight || ''}
+- MBTI: ${bot.mbti || ''}
+- สเปกคนที่ชอบ: ${bot.idealType || ''}
+- ความสัมพันธ์ที่ชอบ: ${bot.preferredRelation || ''}
+- ปูมหลังและประวัติ: ${bot.basicInfo || ''}
+- สตอรี่ละเอียด: ${bot.story || ''}
 
 ข้อมูลอัตลักษณ์ประจำตัวของผู้เล่น (User Persona):
 - ชื่อผู้เล่น: ${persona.name}
