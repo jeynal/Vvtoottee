@@ -405,6 +405,7 @@
                 <i id="hub-like-icon" class="fa-regular fa-heart"></i>
                 <span id="hub-like-count">0</span>
               </button>
+              <!-- จำนวนคนเล่น (1 บัญชีอีเมลนับเป็น 1 คน ต่อให้เปลี่ยน Persona กี่ตัวก็ยังเป็น 1 คน) -->
               <div class="flex items-center gap-1 px-3 py-1 bg-white border border-purple-100 rounded-full text-purple-700 text-xs font-bold shadow-sm">
                 <i class="fa-solid fa-user-group text-[10px]"></i>
                 <span id="hub-player-count">0</span> คนเล่น
@@ -466,7 +467,7 @@
             </div>
           </div>
 
-          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว เม้ามอยแบบเรียลไทม์ พร้อมปุ่มตอบกลับ -->
+          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว (พร้อมปุ่มแก้ไข, ลบ, ตอบกลับ) -->
           <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
             <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
             
@@ -776,11 +777,10 @@
     let currentRoomId = 'room_default';
     let currentHubBot = null;
     let activeReplyReviewIndex = null;
+    let editingReviewIndex = null; // สถานะกำลังแก้ไขรีวิว
     let isCalling = false;
     let attachedImageUrl = null;
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
-    let tempLoginAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
-    let tempPersonaAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
     let currentExploreSubTab = 'public';
     let currentHubTab = 'story';
 
@@ -828,8 +828,8 @@
           { title: "สถานะความสัมพันธ์", content: "เพื่อนสนิทคนพิเศษที่รู้ใจกันทุกเรื่อง" }
         ],
         likesCount: 124,
-        likedUsers: [], // รายชื่ออีเมลคนที่กดถูกใจ
-        playersCount: 89,
+        likedUsers: [],
+        playedUsers: [], // บันทึกรายชื่ออีเมลผู้เล่นที่เคยคุยแชท (นับ 1 คนต่อ 1 บัญชี)
         reviews: [
           { author: "มินนี่_Reader", text: "เร็นน่ารักมากกก กวนใจแต่หวานเจี๊ยบ บรรยายดีมากค่ะ!", time: "10 นาทีที่แล้ว", likes: 5, replies: [] }
         ],
@@ -903,7 +903,7 @@
       document.getElementById('hub-preview').innerText = b.shortPreview || b.personality || '';
 
       updateHubLikeState();
-      document.getElementById('hub-player-count').innerText = b.playersCount || 0;
+      updatePlayerCountDisplay();
 
       switchHubSubTab('story');
     }
@@ -939,17 +939,32 @@
 
       const idx = currentHubBot.likedUsers.indexOf(currentUserEmail);
       if (idx > -1) {
-        // ถ้ายกเลิกกดถูกใจ (-1)
         currentHubBot.likedUsers.splice(idx, 1);
         currentHubBot.likesCount = Math.max(0, (currentHubBot.likesCount || 1) - 1);
       } else {
-        // ถ้ากดถูกใจ (+1)
         currentHubBot.likedUsers.push(currentUserEmail);
         currentHubBot.likesCount = (currentHubBot.likesCount || 0) + 1;
       }
 
       saveUserData();
       updateHubLikeState();
+    }
+
+    // ฟังก์ชันนับจำนวนคนเล่น (1 บัญชีต่อให้คุยหลายโปรไฟล์ ก็นับเป็น 1 คน)
+    function updatePlayerCountDisplay() {
+      if (!currentHubBot) return;
+      if (!currentHubBot.playedUsers) currentHubBot.playedUsers = [];
+      document.getElementById('hub-player-count').innerText = currentHubBot.playedUsers.length;
+    }
+
+    function registerPlayerAccount() {
+      if (!currentHubBot) return;
+      if (!currentHubBot.playedUsers) currentHubBot.playedUsers = [];
+      if (!currentHubBot.playedUsers.includes(currentUserEmail)) {
+        currentHubBot.playedUsers.push(currentUserEmail);
+        saveUserData();
+        updatePlayerCountDisplay();
+      }
     }
 
     function switchHubSubTab(tab) {
@@ -1067,7 +1082,7 @@
       renderHubSlotsTab();
     }
 
-    // ==================== REVIEWS & REPLY SYSTEM ====================
+    // ==================== REVIEWS, EDIT, DELETE & REPLY SYSTEM ====================
     function renderHubReviewsTab() {
       if (!currentHubBot) return;
       const container = document.getElementById('hub-reviews-container');
@@ -1082,14 +1097,26 @@
         const div = document.createElement('div');
         div.className = 'p-3 bg-purple-50/40 rounded-2xl border border-purple-100 space-y-2';
 
+        const isOwner = r.author === userProfile.name;
+        const isEditing = editingReviewIndex === idx;
+
+        let actionBtns = isOwner ? `
+          <button onclick="startEditReview(${idx})" class="hover:text-purple-600 text-[10px] font-medium"><i class="fa-solid fa-pen"></i> แก้ไข</button>
+          <button onclick="deleteReview(${idx})" class="hover:text-rose-600 text-[10px] font-medium"><i class="fa-solid fa-trash"></i> ลบ</button>
+        ` : '';
+
         let repliesHtml = '';
         if (r.replies && r.replies.length > 0) {
-          r.replies.forEach(rep => {
+          r.replies.forEach((rep, repIdx) => {
+            const isRepOwner = rep.author === userProfile.name;
             repliesHtml += `
               <div class="ml-4 p-2 bg-white rounded-xl border border-purple-100 space-y-0.5 text-[11px]">
                 <div class="flex justify-between items-center">
                   <span class="font-bold text-purple-700">${rep.author}</span>
-                  <span class="text-[9px] text-slate-400">${rep.time}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] text-slate-400">${rep.time}</span>
+                    ${isRepOwner ? `<button onclick="deleteReply(${idx}, ${repIdx})" class="text-rose-500 text-[10px]"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                  </div>
                 </div>
                 <p class="text-slate-600">${rep.text}</p>
               </div>
@@ -1099,37 +1126,82 @@
 
         const isRepOpen = activeReplyReviewIndex === idx;
 
-        div.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-800">${r.author}</span>
-            <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
-          </div>
-          <p class="text-xs text-slate-600 leading-relaxed">${r.text}</p>
-          <div class="flex gap-4 text-[10px] text-slate-400 pt-0.5 items-center">
-            <button onclick="likeHubReview(${idx})" class="hover:text-rose-500 flex items-center gap-1"><i class="fa-regular fa-heart"></i> ${r.likes || 0}</button>
-            <button onclick="toggleReplyBox(${idx})" class="hover:text-purple-600 font-medium"><i class="fa-solid fa-reply text-[9px]"></i> ตอบกลับ (${r.replies ? r.replies.length : 0})</button>
-          </div>
-
-          ${repliesHtml ? `<div class="space-y-1.5 pt-1">${repliesHtml}</div>` : ''}
-
-          <!-- กล่องพิมพ์ตอบกลับ -->
-          ${isRepOpen ? `
-            <div class="pt-2 flex gap-1.5">
-              <input id="reply-input-${idx}" type="text" placeholder="ตอบกลับ ${r.author}..." class="flex-1 pastel-input text-xs px-3 py-1.5 rounded-xl focus:outline-none">
-              <button onclick="submitReviewReply(${idx})" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ส่ง</button>
+        if (isEditing) {
+          div.innerHTML = `
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-800">${r.author} (กำลังแก้ไข)</span>
+              <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
             </div>
-          ` : ''}
-        `;
+            <textarea id="edit-review-input-${idx}" rows="2" class="w-full pastel-input rounded-xl p-2 text-xs focus:outline-none">${r.text}</textarea>
+            <div class="flex justify-end gap-2 pt-1">
+              <button onclick="cancelEditReview()" class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold">ยกเลิก</button>
+              <button onclick="saveEditReview(${idx})" class="px-2.5 py-1 pastel-btn-primary rounded-lg text-[10px] font-bold">บันทึก</button>
+            </div>
+          `;
+        } else {
+          div.innerHTML = `
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-800">${r.author}</span>
+              <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">${r.text}</p>
+            <div class="flex gap-4 text-[10px] text-slate-400 pt-0.5 items-center">
+              <button onclick="likeHubReview(${idx})" class="hover:text-rose-500 flex items-center gap-1"><i class="fa-regular fa-heart"></i> ${r.likes || 0}</button>
+              <button onclick="toggleReplyBox(${idx})" class="hover:text-purple-600 font-medium"><i class="fa-solid fa-reply text-[9px]"></i> ตอบกลับ (${r.replies ? r.replies.length : 0})</button>
+              ${actionBtns}
+            </div>
+
+            ${repliesHtml ? `<div class="space-y-1.5 pt-1">${repliesHtml}</div>` : ''}
+
+            ${isRepOpen ? `
+              <div class="pt-2 flex gap-1.5">
+                <input id="reply-input-${idx}" type="text" placeholder="ตอบกลับ ${r.author}..." class="flex-1 pastel-input text-xs px-3 py-1.5 rounded-xl focus:outline-none">
+                <button onclick="submitReviewReply(${idx})" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ส่ง</button>
+              </div>
+            ` : ''}
+          `;
+        }
         container.appendChild(div);
       });
     }
 
+    function startEditReview(idx) {
+      editingReviewIndex = idx;
+      renderHubReviewsTab();
+    }
+
+    function cancelEditReview() {
+      editingReviewIndex = null;
+      renderHubReviewsTab();
+    }
+
+    function saveEditReview(idx) {
+      const input = document.getElementById(`edit-review-input-${idx}`);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      currentHubBot.reviews[idx].text = text;
+      editingReviewIndex = null;
+      saveUserData();
+      renderHubReviewsTab();
+    }
+
+    function deleteReview(idx) {
+      if (!confirm("คุณต้องการลบความคิดเห็นนี้ใช่หรือไม่?")) return;
+      currentHubBot.reviews.splice(idx, 1);
+      saveUserData();
+      renderHubReviewsTab();
+    }
+
+    function deleteReply(reviewIdx, replyIdx) {
+      if (!confirm("คุณต้องการลบข้อความตอบกลับนี้ใช่หรือไม่?")) return;
+      currentHubBot.reviews[reviewIdx].replies.splice(replyIdx, 1);
+      saveUserData();
+      renderHubReviewsTab();
+    }
+
     function toggleReplyBox(idx) {
-      if (activeReplyReviewIndex === idx) {
-        activeReplyReviewIndex = null;
-      } else {
-        activeReplyReviewIndex = idx;
-      }
+      activeReplyReviewIndex = activeReplyReviewIndex === idx ? null : idx;
       renderHubReviewsTab();
     }
 
@@ -1180,8 +1252,9 @@
 
     function startChatFromBotHub() {
       if (!currentHubBot) return;
-      currentHubBot.playersCount = (currentHubBot.playersCount || 0) + 1;
-      saveUserData();
+      
+      // บันทึกสถิติว่าบัญชีนี้เข้ามาคุยแล้ว (นับ 1 คน)
+      registerPlayerAccount();
 
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
       let initialDialogue = currentHubBot.firstEncounter || currentHubBot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
@@ -1402,7 +1475,7 @@
         playerSlots: [],
         likesCount: 0,
         likedUsers: [],
-        playersCount: 0,
+        playedUsers: [],
         reviews: [],
         isPublished: isPublish,
         rooms: [],
@@ -1541,7 +1614,7 @@ ${playerSlotsText}
       sendBtn.disabled = false;
     }
 
-    // ==================== REST OF THE HELPERS ====================
+    // ==================== OTHER HELPERS ====================
     function getBot(id) { return bots.find(b => b.id === id) || bots[0]; }
     function getCurrentRoom(bot) {
       if (!bot.rooms || bot.rooms.length === 0) bot.rooms = [{ id: "room_default", name: "เนื้อเรื่องหลัก", history: [] }];
