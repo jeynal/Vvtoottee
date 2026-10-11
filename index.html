@@ -26,6 +26,7 @@
       font-family: 'Prompt', sans-serif;
       background: linear-gradient(135deg, #ede9fe 0%, #e0f2fe 50%, #fce7f3 100%) !important;
       color: var(--text-main) !important;
+      user-select: none;
     }
 
     .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -85,6 +86,22 @@
         <button id="confirm-modal-cancel-btn" onclick="closeCustomConfirm(false)" class="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-2xl text-xs font-bold transition">ยกเลิก</button>
         <button id="confirm-modal-ok-btn" onclick="closeCustomConfirm(true)" class="py-2.5 pastel-btn-primary rounded-2xl text-xs font-bold transition">ตกลง</button>
       </div>
+    </div>
+  </div>
+
+  <!-- LONG PRESS COMMENT CONTEXT MENU MODAL -->
+  <div id="comment-context-modal" class="hidden fixed inset-0 bg-indigo-950/40 backdrop-blur-md z-[95] flex items-center justify-center p-4">
+    <div class="w-full max-w-xs pastel-card rounded-3xl p-4 space-y-2 shadow-2xl">
+      <h4 class="text-xs font-bold text-indigo-950 text-center pb-2 border-b border-purple-100">จัดการความคิดเห็นของคุณ</h4>
+      <button onclick="triggerEditFromContext()" class="w-full py-2.5 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 transition">
+        <i class="fa-solid fa-pen text-xs"></i> แก้ไขความคิดเห็น
+      </button>
+      <button onclick="triggerDeleteFromContext()" class="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 border border-rose-200 transition">
+        <i class="fa-solid fa-trash text-xs"></i> ลบความคิดเห็น
+      </button>
+      <button onclick="closeCommentContextModal()" class="w-full py-2 text-slate-400 hover:text-slate-600 font-medium text-xs text-center transition">
+        ยกเลิก
+      </button>
     </div>
   </div>
 
@@ -444,10 +461,21 @@
           </div>
         </section>
 
-        <!-- TAB 3: CHAT HISTORIES -->
+        <!-- TAB 3: CHAT HISTORIES / STORIES (UPDATED HEADER BAR & MANAGEMENT) -->
         <section id="tab-chats" class="hidden space-y-3">
-          <div class="text-xs font-bold text-indigo-950 px-1">ประวัติเนื้อเรื่องทั้งหมด</div>
-          <div id="chat-records-list" class="space-y-2"></div>
+          <!-- Styled Header Bar -->
+          <div class="bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-500 p-3.5 rounded-2xl text-white shadow-md flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-comments text-base text-purple-200"></i>
+              <h3 class="text-sm font-bold tracking-wide">ข้อความ</h3>
+            </div>
+            <button onclick="toggleManageChatMode()" id="btn-manage-chats" class="px-3 py-1 bg-white/20 hover:bg-white/30 backdrop-blur border border-white/30 rounded-xl text-xs font-bold transition flex items-center gap-1 text-white shadow-sm">
+              <i class="fa-solid fa-sliders text-[10px]"></i> <span id="manage-btn-label">จัดการ</span>
+            </button>
+          </div>
+
+          <!-- Chat List Container -->
+          <div id="chat-records-list" class="space-y-2.5"></div>
         </section>
 
         <!-- TAB 4: BOT RELATIONSHIPS & GROUP CHAT -->
@@ -637,7 +665,7 @@
           </div>
         </div>
 
-        <!-- REVIEWS & COMMENTS SUB-TAB (UPDATED WITH REPLY, LIKE, EDIT, DELETE) -->
+        <!-- REVIEWS & COMMENTS SUB-TAB -->
         <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
           <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
           <div class="space-y-2">
@@ -706,7 +734,7 @@
       </div>
     </div>
 
-    <!-- MODALS -->
+    <!-- ALL MODALS -->
     <div id="edit-player-slot-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
       <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
@@ -893,6 +921,9 @@
     let currentHubBot = null;
     let activeReplyReviewIndex = null;
     let editingReviewIndex = null;
+    let targetContextReviewIndex = null;
+    let isManageChatMode = false;
+    let longPressTimer = null;
     let isCalling = false;
     let attachedImageUrl = null;
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
@@ -934,9 +965,7 @@
         preferredRelation: "คนรักที่คลั่งรักและอยู่เคียงข้างกันตลอดเวลา",
         playerRelation: "เพื่อนสนิทที่แอบชอบคุณมาตลอด",
         speakingStyle: "แทนตัวเองว่าเค้า เรียกผู้เล่นว่าคนดี ลงท้ายด้วยครับ",
-        firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี...*
-
-"เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย..."`,
+        firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี...*\n\n"เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย..."`,
         extraDetails: ["ชอบดื่มช็อกโกแลตร้อนหวานน้อย"],
         botSlots: [
           { title: "ความลับตอนซ้อมดนตรี", content: "ทุกเพลงรักที่เร็นแต่งขึ้นมาในห้องซ้อม ล้วนมีภาพของ {user} อยู่ในหัวเสมอ" }
@@ -956,6 +985,7 @@
           {
             id: "room_default",
             name: "เนื้อเรื่องหลัก",
+            isPinned: true,
             history: [
               {
                 sender: "bot",
@@ -1395,7 +1425,39 @@
       }, 'fa-solid fa-trash text-rose-500');
     }
 
-    // ==================== ADVANCED REVIEWS & COMMENTS SYSTEM ====================
+    // ==================== COMMENT LONG PRESS & EDIT/DELETE SYSTEM ====================
+    function openCommentContextModal(idx) {
+      targetContextReviewIndex = idx;
+      document.getElementById('comment-context-modal').classList.remove('hidden');
+    }
+
+    function closeCommentContextModal() {
+      document.getElementById('comment-context-modal').classList.add('hidden');
+      targetContextReviewIndex = null;
+    }
+
+    function triggerEditFromContext() {
+      const idx = targetContextReviewIndex;
+      closeCommentContextModal();
+      if (idx !== null) startEditReview(idx);
+    }
+
+    function triggerDeleteFromContext() {
+      const idx = targetContextReviewIndex;
+      closeCommentContextModal();
+      if (idx !== null) deleteReview(idx);
+    }
+
+    function handleCommentTouchStart(idx) {
+      longPressTimer = setTimeout(() => {
+        openCommentContextModal(idx);
+      }, 600);
+    }
+
+    function handleCommentTouchEnd() {
+      if (longPressTimer) clearTimeout(longPressTimer);
+    }
+
     function renderHubReviewsTab() {
       if (!currentHubBot) return;
       const container = document.getElementById('hub-reviews-container');
@@ -1410,16 +1472,22 @@
         if (!r.likedUsers) r.likedUsers = [];
         if (!r.replies) r.replies = [];
         const isLiked = r.likedUsers.includes(currentUserEmail);
-        const isOwner = r.userEmail === currentUserEmail;
+        const isOwner = (r.userEmail === currentUserEmail || r.author === userProfile.name);
 
         const div = document.createElement('div');
-        div.className = 'p-3.5 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-2 shadow-sm';
+        div.className = `p-3.5 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-2 shadow-sm relative transition ${isOwner ? 'cursor-pointer hover:border-purple-300' : ''}`;
 
-        // Display edit form or text content
+        if (isOwner) {
+          div.setAttribute('ontouchstart', `handleCommentTouchStart(${idx})`);
+          div.setAttribute('ontouchend', `handleCommentTouchEnd()`);
+          div.setAttribute('onmousedown', `handleCommentTouchStart(${idx})`);
+          div.setAttribute('onmouseup', `handleCommentTouchEnd()`);
+        }
+
         let contentHtml = '';
         if (editingReviewIndex === idx) {
           contentHtml = `
-            <div class="space-y-2 pt-1">
+            <div class="space-y-2 pt-1" onclick="event.stopPropagation()">
               <textarea id="edit-review-input-${idx}" rows="2" class="w-full pastel-input rounded-xl p-2 text-xs focus:outline-none">${r.text}</textarea>
               <div class="flex justify-end gap-1.5">
                 <button onclick="cancelEditReview()" class="px-2.5 py-1 bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold">ยกเลิก</button>
@@ -1431,15 +1499,13 @@
           contentHtml = `<p class="text-xs text-slate-700 leading-relaxed font-medium">${r.text}</p>`;
         }
 
-        // Action buttons (Like, Reply, Edit, Delete)
         let ownerActions = isOwner ? `
-          <button onclick="startEditReview(${idx})" class="text-[10px] text-slate-400 hover:text-violet-600 font-medium">แก้ไข</button>
+          <button onclick="event.stopPropagation(); startEditReview(${idx});" class="text-[10px] text-purple-600 hover:underline font-bold">แก้ไข</button>
           <span class="text-slate-300">•</span>
-          <button onclick="deleteReview(${idx})" class="text-[10px] text-slate-400 hover:text-rose-500 font-medium">ลบ</button>
+          <button onclick="event.stopPropagation(); deleteReview(${idx});" class="text-[10px] text-rose-500 hover:underline font-bold">ลบ</button>
           <span class="text-slate-300">•</span>
         ` : '';
 
-        // Replies list HTML
         let repliesHtml = '';
         if (r.replies.length > 0) {
           repliesHtml = `<div class="pl-3 border-l-2 border-purple-200 space-y-2 pt-1.5 mt-2">`;
@@ -1457,11 +1523,10 @@
           repliesHtml += `</div>`;
         }
 
-        // Reply input form
         let replyFormHtml = '';
         if (activeReplyReviewIndex === idx) {
           replyFormHtml = `
-            <div class="flex gap-1.5 pt-2">
+            <div class="flex gap-1.5 pt-2" onclick="event.stopPropagation()">
               <input id="reply-input-${idx}" type="text" placeholder="พิมพ์ข้อความตอบกลับ..." class="flex-1 pastel-input text-xs px-3 py-1.5 rounded-xl focus:outline-none">
               <button onclick="submitReviewReply(${idx})" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ส่ง</button>
             </div>
@@ -1472,19 +1537,19 @@
           <div class="flex justify-between items-center">
             <div class="flex items-center gap-1.5">
               <span class="text-xs font-bold text-indigo-950">${r.author}</span>
-              ${isOwner ? '<span class="text-[9px] bg-purple-100 text-purple-600 px-1.5 py-0.2 rounded font-semibold">คุณ</span>' : ''}
+              ${isOwner ? '<span class="text-[9px] bg-purple-100 text-purple-600 px-1.5 py-0.2 rounded font-semibold">คุณ (กดค้างเพื่อจัดการ)</span>' : ''}
             </div>
             <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
           </div>
           ${contentHtml}
           <div class="flex items-center justify-between text-[10px] pt-1 border-t border-purple-100/60">
             <div class="flex items-center gap-2">
-              <button onclick="toggleReviewLike(${idx})" class="flex items-center gap-1 ${isLiked ? 'text-rose-500 font-bold' : 'text-slate-500 hover:text-rose-500'} transition">
+              <button onclick="event.stopPropagation(); toggleReviewLike(${idx});" class="flex items-center gap-1 ${isLiked ? 'text-rose-500 font-bold' : 'text-slate-500 hover:text-rose-500'} transition">
                 <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
                 <span>${r.likes || 0}</span>
               </button>
               <span class="text-slate-300">•</span>
-              <button onclick="toggleReplyForm(${idx})" class="text-slate-500 hover:text-violet-600 font-medium flex items-center gap-1">
+              <button onclick="event.stopPropagation(); toggleReplyForm(${idx});" class="text-slate-500 hover:text-violet-600 font-medium flex items-center gap-1">
                 <i class="fa-regular fa-comment"></i> ตอบกลับ (${r.replies.length})
               </button>
             </div>
@@ -1598,6 +1663,47 @@
           showToast("ลบความคิดเห็นสำเร็จ", "success", "🗑️");
         }
       }, "fa-solid fa-trash text-rose-500");
+    }
+
+    function startChatFromBotHub() {
+      if (!currentHubBot) return;
+      registerPlayerAccount();
+      const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
+      let initialDialogue = currentHubBot.firstEncounter || currentHubBot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
+      initialDialogue = initialDialogue.replace(/\{user\}/g, persona.name);
+
+      let parsedNarration = "";
+      let parsedSpeech = "";
+      const narrationMatch = initialDialogue.match(/\*(.*?)\*/);
+      const speechMatch = initialDialogue.match(/\"(.*?)\"/);
+      if (narrationMatch) parsedNarration = narrationMatch[1];
+      if (speechMatch) parsedSpeech = speechMatch[1];
+      if (!parsedNarration && !parsedSpeech) {
+        parsedSpeech = initialDialogue;
+        parsedNarration = `${currentHubBot.name} สบตากับ ${persona.name}`;
+      }
+
+      const newRoom = {
+        id: 'room_' + Date.now(),
+        name: `บทสนทนากับ ${persona.name}`,
+        isPinned: false,
+        history: [{
+          sender: "bot",
+          thought: `ได้พบกับ ${persona.name} แล้ว...`,
+          paragraphs: [
+            { type: "narration", text: parsedNarration },
+            { type: "speech", text: parsedSpeech }
+          ],
+          time: getCurrentTimeStr()
+        }]
+      };
+
+      if (!currentHubBot.rooms) currentHubBot.rooms = [];
+      currentHubBot.rooms.unshift(newRoom);
+      currentRoomId = newRoom.id;
+      saveUserData();
+      backFromBotHub();
+      openChatRoom(currentHubBot.id, newRoom.id);
     }
 
     function switchExploreSubTab(tab) {
@@ -1776,6 +1882,127 @@
       showToast('บันทึกตัวละครเรียบร้อย!', 'success', '🎉');
     }
 
+    // ==================== TAB 3: CHAT MANAGEMENT SYSTEM ====================
+    function toggleManageChatMode() {
+      isManageChatMode = !isManageChatMode;
+      const label = document.getElementById('manage-btn-label');
+      if (label) label.innerText = isManageChatMode ? 'เสร็จสิ้น' : 'จัดการ';
+      renderChatRecordsList();
+    }
+
+    function renderChatRecordsList() {
+      const container = document.getElementById('chat-records-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let allRooms = [];
+      bots.forEach(b => {
+        if (b.rooms) {
+          b.rooms.forEach((r, idx) => {
+            allRooms.push({ bot: b, room: r, roomIndex: idx });
+          });
+        }
+      });
+
+      allRooms.sort((a, b) => (b.room.isPinned ? 1 : 0) - (a.room.isPinned ? 1 : 0));
+
+      if (allRooms.length === 0) {
+        container.innerHTML = '<div class="p-8 text-center text-slate-400 text-xs">ยังไม่มีประวัติข้อความบทสนทนา</div>';
+        return;
+      }
+
+      allRooms.forEach((item, index) => {
+        const { bot, room } = item;
+        const lastMsg = (room.history && room.history.length > 0) ? room.history[room.history.length - 1] : null;
+        let lastText = 'เริ่มต้นบทสนทนาใหม่...';
+        if (lastMsg) {
+          if (lastMsg.userText) lastText = lastMsg.userText;
+          else if (lastMsg.paragraphs && lastMsg.paragraphs.length > 0) {
+            lastText = lastMsg.paragraphs[0].text;
+          }
+        }
+
+        const div = document.createElement('div');
+        div.className = `p-3.5 bg-white border rounded-3xl flex items-center justify-between shadow-sm transition ${room.isPinned ? 'border-amber-300 bg-amber-50/20' : 'border-purple-100'} hover:border-violet-300 cursor-pointer`;
+        div.onclick = () => { if (!isManageChatMode) openChatRoom(bot.id, room.id); };
+
+        let actionControls = '';
+        if (isManageChatMode) {
+          actionControls = `
+            <div class="flex items-center gap-1.5 flex-shrink-0" onclick="event.stopPropagation()">
+              <button onclick="togglePinChatRoom('${bot.id}', '${room.id}')" class="p-1.5 ${room.isPinned ? 'bg-amber-100 text-amber-600' : 'bg-slate-100 text-slate-400'} rounded-xl text-xs" title="ปักหมุด">
+                <i class="fa-solid fa-thumbtack"></i>
+              </button>
+              <button onclick="renameChatRoom('${bot.id}', '${room.id}')" class="p-1.5 bg-purple-50 text-purple-600 rounded-xl text-xs" title="แก้ไขชื่อ">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteChatRoom('${bot.id}', '${room.id}')" class="p-1.5 bg-rose-50 text-rose-500 rounded-xl text-xs" title="ลบแชท">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          `;
+        } else {
+          actionControls = room.isPinned ? '<i class="fa-solid fa-thumbtack text-amber-500 text-xs pl-2"></i>' : '';
+        }
+
+        div.innerHTML = `
+          <div class="flex items-center gap-3 overflow-hidden flex-1 pr-2">
+            <img src="${bot.avatar}" class="w-11 h-11 rounded-2xl object-cover border border-purple-200 flex-shrink-0">
+            <div class="truncate">
+              <div class="flex items-center gap-1.5">
+                <h4 class="text-xs font-bold text-slate-800 truncate">${bot.name}</h4>
+                <span class="text-[9px] bg-purple-100 text-purple-700 px-2 py-0.2 rounded-full font-semibold">${room.name}</span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate mt-0.5">${lastText}</p>
+            </div>
+          </div>
+          ${actionControls}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function togglePinChatRoom(botId, roomId) {
+      const bot = bots.find(b => b.id === botId);
+      if (!bot) return;
+      const room = bot.rooms.find(r => r.id === roomId);
+      if (room) {
+        room.isPinned = !room.isPinned;
+        saveUserData();
+        renderChatRecordsList();
+        showToast(room.isPinned ? 'ปักหมุดแชทเรียบร้อย' : 'ยกเลิกการปักหมุด', 'success', '📌');
+      }
+    }
+
+    function renameChatRoom(botId, roomId) {
+      const bot = bots.find(b => b.id === botId);
+      if (!bot) return;
+      const room = bot.rooms.find(r => r.id === roomId);
+      if (room) {
+        const newName = prompt('แก้ไขชื่อห้องเนื้อเรื่อง:', room.name);
+        if (newName && newName.trim()) {
+          room.name = newName.trim();
+          saveUserData();
+          renderChatRecordsList();
+          showToast('แก้ไขชื่อสำเร็จ', 'success', '✏️');
+        }
+      }
+    }
+
+    function deleteChatRoom(botId, roomId) {
+      const bot = bots.find(b => b.id === botId);
+      if (!bot) return;
+
+      showCustomConfirm('ลบประวัติแชท', 'คุณแน่ใจหรือไม่ว่าต้องการลบแชทห้องนี้?', (confirmed) => {
+        if (confirmed) {
+          bot.rooms = bot.rooms.filter(r => r.id !== roomId);
+          saveUserData();
+          renderChatRecordsList();
+          showToast('ลบประวัติแชทเรียบร้อย', 'success', '🗑️');
+        }
+      }, 'fa-solid fa-trash text-rose-500');
+    }
+
     async function callDynamicNarrativeEngine(userText, bot) {
       const apiKey = appSettings.apiKey;
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
@@ -1860,17 +2087,21 @@
       currentLobbyTab = tab;
       localStorage.setItem('lovey_lobby_tab', tab);
       ['home', 'explore', 'chats', 'relations', 'community', 'settings'].forEach(t => {
-        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
-        document.getElementById(`btn-tab-${t}`).className = t === tab ? 'flex flex-col items-center gap-0.5 text-violet-600 transition font-bold' : 'flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition';
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById(`btn-tab-${t}`);
+        if (btn) btn.className = t === tab ? 'flex flex-col items-center gap-0.5 text-violet-600 transition font-bold' : 'flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition';
       });
       document.getElementById('view-bot-hub').classList.add('hidden');
       if (tab === 'home') { renderPersonas(); renderHomeFriendsList(); }
       if (tab === 'explore') switchToBotDiscovery();
+      if (tab === 'chats') renderChatRecordsList();
     }
 
     function switchBotTab(tab) {
       ['profile', 'basic', 'first', 'extra', 'advanced'].forEach(t => {
-        document.getElementById(`btab-${t}`).classList.toggle('hidden', t !== tab);
+        const el = document.getElementById(`btab-${t}`);
+        if (el) el.classList.toggle('hidden', t !== tab);
       });
     }
 
