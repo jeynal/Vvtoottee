@@ -405,7 +405,7 @@
                 <i id="hub-like-icon" class="fa-regular fa-heart"></i>
                 <span id="hub-like-count">0</span>
               </button>
-              <!-- จำนวนคนเล่น (1 บัญชีอีเมลนับเป็น 1 คน ต่อให้เปลี่ยน Persona กี่ตัวก็ยังเป็น 1 คน) -->
+              <!-- จำนวนคนเล่น (1 บัญชีอีเมลนับเป็น 1 คน) -->
               <div class="flex items-center gap-1 px-3 py-1 bg-white border border-purple-100 rounded-full text-purple-700 text-xs font-bold shadow-sm">
                 <i class="fa-solid fa-user-group text-[10px]"></i>
                 <span id="hub-player-count">0</span> คนเล่น
@@ -467,7 +467,7 @@
             </div>
           </div>
 
-          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว (พร้อมปุ่มแก้ไข, ลบ, ตอบกลับ) -->
+          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว (พร้อมปุ่มแก้ไข, ลบ, ตอบกลับ และระบบกดไลก์ได้ 1 ครั้ง/บัญชี) -->
           <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
             <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
             
@@ -777,7 +777,7 @@
     let currentRoomId = 'room_default';
     let currentHubBot = null;
     let activeReplyReviewIndex = null;
-    let editingReviewIndex = null; // สถานะกำลังแก้ไขรีวิว
+    let editingReviewIndex = null;
     let isCalling = false;
     let attachedImageUrl = null;
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
@@ -829,9 +829,9 @@
         ],
         likesCount: 124,
         likedUsers: [],
-        playedUsers: [], // บันทึกรายชื่ออีเมลผู้เล่นที่เคยคุยแชท (นับ 1 คนต่อ 1 บัญชี)
+        playedUsers: [],
         reviews: [
-          { author: "มินนี่_Reader", text: "เร็นน่ารักมากกก กวนใจแต่หวานเจี๊ยบ บรรยายดีมากค่ะ!", time: "10 นาทีที่แล้ว", likes: 5, replies: [] }
+          { author: "มินนี่_Reader", text: "เร็นน่ารักมากกก กวนใจแต่หวานเจี๊ยบ บรรยายดีมากค่ะ!", time: "10 นาทีที่แล้ว", likes: 5, likedUsers: [], replies: [] }
         ],
         isPublished: true,
         rooms: [
@@ -950,7 +950,6 @@
       updateHubLikeState();
     }
 
-    // ฟังก์ชันนับจำนวนคนเล่น (1 บัญชีต่อให้คุยหลายโปรไฟล์ ก็นับเป็น 1 คน)
     function updatePlayerCountDisplay() {
       if (!currentHubBot) return;
       if (!currentHubBot.playedUsers) currentHubBot.playedUsers = [];
@@ -1082,7 +1081,7 @@
       renderHubSlotsTab();
     }
 
-    // ==================== REVIEWS, EDIT, DELETE & REPLY SYSTEM ====================
+    // ==================== REVIEWS, EDIT, DELETE & TOGGLE LIKE SYSTEM ====================
     function renderHubReviewsTab() {
       if (!currentHubBot) return;
       const container = document.getElementById('hub-reviews-container');
@@ -1099,6 +1098,9 @@
 
         const isOwner = r.author === userProfile.name;
         const isEditing = editingReviewIndex === idx;
+
+        if (!r.likedUsers) r.likedUsers = [];
+        const hasLiked = r.likedUsers.includes(currentUserEmail);
 
         let actionBtns = isOwner ? `
           <button onclick="startEditReview(${idx})" class="hover:text-purple-600 text-[10px] font-medium"><i class="fa-solid fa-pen"></i> แก้ไข</button>
@@ -1146,7 +1148,9 @@
             </div>
             <p class="text-xs text-slate-600 leading-relaxed">${r.text}</p>
             <div class="flex gap-4 text-[10px] text-slate-400 pt-0.5 items-center">
-              <button onclick="likeHubReview(${idx})" class="hover:text-rose-500 flex items-center gap-1"><i class="fa-regular fa-heart"></i> ${r.likes || 0}</button>
+              <button onclick="likeHubReview(${idx})" class="${hasLiked ? 'text-rose-500 font-bold' : 'hover:text-rose-500'} flex items-center gap-1 transition">
+                <i class="${hasLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i> ${r.likes || 0}
+              </button>
               <button onclick="toggleReplyBox(${idx})" class="hover:text-purple-600 font-medium"><i class="fa-solid fa-reply text-[9px]"></i> ตอบกลับ (${r.replies ? r.replies.length : 0})</button>
               ${actionBtns}
             </div>
@@ -1237,6 +1241,7 @@
         text: text,
         time: getCurrentTimeStr(),
         likes: 0,
+        likedUsers: [],
         replies: []
       });
       input.value = '';
@@ -1244,8 +1249,23 @@
       renderHubReviewsTab();
     }
 
+    // กดไลก์รีวิวได้แค่ครั้งเดียวต่อ 1 บัญชีอีเมล (กดซ้ำเพื่อยกเลิก)
     function likeHubReview(idx) {
-      currentHubBot.reviews[idx].likes = (currentHubBot.reviews[idx].likes || 0) + 1;
+      const r = currentHubBot.reviews[idx];
+      if (!r) return;
+      if (!r.likedUsers) r.likedUsers = [];
+
+      const userIdx = r.likedUsers.indexOf(currentUserEmail);
+      if (userIdx > -1) {
+        // ถ้ายกเลิกกดถูกใจ (-1)
+        r.likedUsers.splice(userIdx, 1);
+        r.likes = Math.max(0, (r.likes || 1) - 1);
+      } else {
+        // ถ้ากดถูกใจ (+1)
+        r.likedUsers.push(currentUserEmail);
+        r.likes = (r.likes || 0) + 1;
+      }
+
       saveUserData();
       renderHubReviewsTab();
     }
@@ -1253,7 +1273,6 @@
     function startChatFromBotHub() {
       if (!currentHubBot) return;
       
-      // บันทึกสถิติว่าบัญชีนี้เข้ามาคุยแล้ว (นับ 1 คน)
       registerPlayerAccount();
 
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
