@@ -560,7 +560,7 @@
       </nav>
     </div>
 
-    <!-- ==================== VIEW 3: FULLSCREEN BOT PROFILE HUB PAGE (STANDALONE VIEW) ==================== -->
+    <!-- ==================== VIEW 3: FULLSCREEN BOT PROFILE HUB PAGE ==================== -->
     <div id="view-bot-hub" class="hidden absolute inset-0 bg-slate-50 z-30 flex flex-col overflow-hidden">
       <!-- Top Header -->
       <header class="p-3 bg-white/95 backdrop-blur border-b border-purple-100 flex items-center justify-between z-20">
@@ -637,6 +637,7 @@
           </div>
         </div>
 
+        <!-- REVIEWS & COMMENTS SUB-TAB (UPDATED WITH REPLY, LIKE, EDIT, DELETE) -->
         <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
           <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
           <div class="space-y-2">
@@ -645,7 +646,7 @@
               <button onclick="submitHubReview()" class="px-3.5 py-1.5 pastel-btn-primary rounded-xl text-[11px] font-bold">ส่งความคิดเห็น</button>
             </div>
           </div>
-          <div id="hub-reviews-container" class="space-y-3 pt-2 border-t border-purple-100 max-h-80 overflow-y-auto hide-scrollbar"></div>
+          <div id="hub-reviews-container" class="space-y-3 pt-2 border-t border-purple-100 max-h-96 overflow-y-auto hide-scrollbar"></div>
         </div>
       </div>
 
@@ -1152,7 +1153,7 @@
       });
     }
 
-    // ==================== HOME FRIENDS LIST & BOT HUB (FIXED OVERLAY) ====================
+    // ==================== HOME FRIENDS LIST & BOT HUB ====================
     function renderHomeFriendsList() {
       const container = document.getElementById('home-friends-list');
       const countBadge = document.getElementById('friend-count');
@@ -1185,12 +1186,10 @@
       });
     }
 
-    // เปิดหน้าโปรไฟล์บอทแบบวินโดวส์เดี่ยวครอบเต็มหน้าจอ
     function openBotHubPage(botId) {
       const b = getBot(botId);
       currentHubBot = b;
 
-      // แสดงหน้า HUB เดี่ยวๆ ซ้อนทับแบบ Fullscreen
       document.getElementById('view-bot-hub').classList.remove('hidden');
 
       document.getElementById('hub-avatar').src = b.avatar;
@@ -1396,6 +1395,7 @@
       }, 'fa-solid fa-trash text-rose-500');
     }
 
+    // ==================== ADVANCED REVIEWS & COMMENTS SYSTEM ====================
     function renderHubReviewsTab() {
       if (!currentHubBot) return;
       const container = document.getElementById('hub-reviews-container');
@@ -1405,12 +1405,95 @@
         container.innerHTML = '<p class="text-center text-xs text-slate-400 py-4">ยังไม่มีรีวิว มาเป็นคนแรกที่เขียนรีวิวกัน!</p>';
         return;
       }
+
       currentHubBot.reviews.forEach((r, idx) => {
+        if (!r.likedUsers) r.likedUsers = [];
+        if (!r.replies) r.replies = [];
+        const isLiked = r.likedUsers.includes(currentUserEmail);
+        const isOwner = r.userEmail === currentUserEmail;
+
         const div = document.createElement('div');
-        div.className = 'p-3 bg-purple-50/40 rounded-2xl border border-purple-100 space-y-1.5';
+        div.className = 'p-3.5 bg-purple-50/50 rounded-2xl border border-purple-100 space-y-2 shadow-sm';
+
+        // Display edit form or text content
+        let contentHtml = '';
+        if (editingReviewIndex === idx) {
+          contentHtml = `
+            <div class="space-y-2 pt-1">
+              <textarea id="edit-review-input-${idx}" rows="2" class="w-full pastel-input rounded-xl p-2 text-xs focus:outline-none">${r.text}</textarea>
+              <div class="flex justify-end gap-1.5">
+                <button onclick="cancelEditReview()" class="px-2.5 py-1 bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold">ยกเลิก</button>
+                <button onclick="saveEditReview(${idx})" class="px-2.5 py-1 pastel-btn-primary rounded-lg text-[10px] font-bold">บันทึก</button>
+              </div>
+            </div>
+          `;
+        } else {
+          contentHtml = `<p class="text-xs text-slate-700 leading-relaxed font-medium">${r.text}</p>`;
+        }
+
+        // Action buttons (Like, Reply, Edit, Delete)
+        let ownerActions = isOwner ? `
+          <button onclick="startEditReview(${idx})" class="text-[10px] text-slate-400 hover:text-violet-600 font-medium">แก้ไข</button>
+          <span class="text-slate-300">•</span>
+          <button onclick="deleteReview(${idx})" class="text-[10px] text-slate-400 hover:text-rose-500 font-medium">ลบ</button>
+          <span class="text-slate-300">•</span>
+        ` : '';
+
+        // Replies list HTML
+        let repliesHtml = '';
+        if (r.replies.length > 0) {
+          repliesHtml = `<div class="pl-3 border-l-2 border-purple-200 space-y-2 pt-1.5 mt-2">`;
+          r.replies.forEach(sub => {
+            repliesHtml += `
+              <div class="bg-white/80 p-2.5 rounded-xl border border-purple-100 text-xs space-y-1">
+                <div class="flex justify-between items-center">
+                  <span class="font-bold text-violet-800 text-[11px]">${sub.author}</span>
+                  <span class="text-[9px] text-slate-400">${sub.time}</span>
+                </div>
+                <p class="text-slate-600 text-[11px]">${sub.text}</p>
+              </div>
+            `;
+          });
+          repliesHtml += `</div>`;
+        }
+
+        // Reply input form
+        let replyFormHtml = '';
+        if (activeReplyReviewIndex === idx) {
+          replyFormHtml = `
+            <div class="flex gap-1.5 pt-2">
+              <input id="reply-input-${idx}" type="text" placeholder="พิมพ์ข้อความตอบกลับ..." class="flex-1 pastel-input text-xs px-3 py-1.5 rounded-xl focus:outline-none">
+              <button onclick="submitReviewReply(${idx})" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ส่ง</button>
+            </div>
+          `;
+        }
+
         div.innerHTML = `
-          <div class="flex justify-between items-center"><span class="text-xs font-bold text-slate-800">${r.author}</span><span class="text-[9px] text-slate-400">${r.time}</span></div>
-          <p class="text-xs text-slate-600">${r.text}</p>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-indigo-950">${r.author}</span>
+              ${isOwner ? '<span class="text-[9px] bg-purple-100 text-purple-600 px-1.5 py-0.2 rounded font-semibold">คุณ</span>' : ''}
+            </div>
+            <span class="text-[9px] text-slate-400 font-mono">${r.time}</span>
+          </div>
+          ${contentHtml}
+          <div class="flex items-center justify-between text-[10px] pt-1 border-t border-purple-100/60">
+            <div class="flex items-center gap-2">
+              <button onclick="toggleReviewLike(${idx})" class="flex items-center gap-1 ${isLiked ? 'text-rose-500 font-bold' : 'text-slate-500 hover:text-rose-500'} transition">
+                <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                <span>${r.likes || 0}</span>
+              </button>
+              <span class="text-slate-300">•</span>
+              <button onclick="toggleReplyForm(${idx})" class="text-slate-500 hover:text-violet-600 font-medium flex items-center gap-1">
+                <i class="fa-regular fa-comment"></i> ตอบกลับ (${r.replies.length})
+              </button>
+            </div>
+            <div class="flex items-center gap-1">
+              ${ownerActions}
+            </div>
+          </div>
+          ${replyFormHtml}
+          ${repliesHtml}
         `;
         container.appendChild(div);
       });
@@ -1419,53 +1502,102 @@
     function submitHubReview() {
       const input = document.getElementById('hub-review-input');
       const text = input.value.trim();
-      if (!text) return;
+      if (!text) return showToast("กรุณากรอกข้อความก่อนส่งครับ", "error", "⚠️");
+
       if (!currentHubBot.reviews) currentHubBot.reviews = [];
-      currentHubBot.reviews.unshift({ author: userProfile.name, text: text, time: getCurrentTimeStr(), likes: 0, likedUsers: [], replies: [] });
+      currentHubBot.reviews.unshift({
+        userEmail: currentUserEmail,
+        author: userProfile.name,
+        text: text,
+        time: getCurrentTimeStr(),
+        likes: 0,
+        likedUsers: [],
+        replies: []
+      });
+
       input.value = '';
       saveUserData();
       renderHubReviewsTab();
-      showToast("ส่งความคิดเห็นเรียบร้อยแล้ว!", 'success', '💖');
+      showToast("ส่งความคิดเห็นเรียบร้อยแล้ว!", "success", "💖");
     }
 
-    function startChatFromBotHub() {
-      if (!currentHubBot) return;
-      registerPlayerAccount();
-      const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
-      let initialDialogue = currentHubBot.firstEncounter || currentHubBot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
-      initialDialogue = initialDialogue.replace(/\{user\}/g, persona.name);
+    function toggleReviewLike(idx) {
+      if (!currentHubBot || !currentHubBot.reviews[idx]) return;
+      const r = currentHubBot.reviews[idx];
+      if (!r.likedUsers) r.likedUsers = [];
 
-      let parsedNarration = "";
-      let parsedSpeech = "";
-      const narrationMatch = initialDialogue.match(/\*(.*?)\*/);
-      const speechMatch = initialDialogue.match(/\"(.*?)\"/);
-      if (narrationMatch) parsedNarration = narrationMatch[1];
-      if (speechMatch) parsedSpeech = speechMatch[1];
-      if (!parsedNarration && !parsedSpeech) {
-        parsedSpeech = initialDialogue;
-        parsedNarration = `${currentHubBot.name} สบตากับ ${persona.name}`;
+      const userIdx = r.likedUsers.indexOf(currentUserEmail);
+      if (userIdx > -1) {
+        r.likedUsers.splice(userIdx, 1);
+        r.likes = Math.max(0, (r.likes || 1) - 1);
+      } else {
+        r.likedUsers.push(currentUserEmail);
+        r.likes = (r.likes || 0) + 1;
       }
 
-      const newRoom = {
-        id: 'room_' + Date.now(),
-        name: `บทสนทนากับ ${persona.name}`,
-        history: [{
-          sender: "bot",
-          thought: `ได้พบกับ ${persona.name} แล้ว...`,
-          paragraphs: [
-            { type: "narration", text: parsedNarration },
-            { type: "speech", text: parsedSpeech }
-          ],
-          time: getCurrentTimeStr()
-        }]
-      };
-
-      if (!currentHubBot.rooms) currentHubBot.rooms = [];
-      currentHubBot.rooms.unshift(newRoom);
-      currentRoomId = newRoom.id;
       saveUserData();
-      backFromBotHub();
-      openChatRoom(currentHubBot.id, newRoom.id);
+      renderHubReviewsTab();
+    }
+
+    function toggleReplyForm(idx) {
+      activeReplyReviewIndex = (activeReplyReviewIndex === idx) ? null : idx;
+      renderHubReviewsTab();
+    }
+
+    function submitReviewReply(idx) {
+      const input = document.getElementById(`reply-input-${idx}`);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return showToast("กรุณากรอกข้อความตอบกลับครับ", "error", "⚠️");
+
+      const r = currentHubBot.reviews[idx];
+      if (!r.replies) r.replies = [];
+
+      r.replies.push({
+        userEmail: currentUserEmail,
+        author: userProfile.name,
+        text: text,
+        time: getCurrentTimeStr()
+      });
+
+      activeReplyReviewIndex = null;
+      saveUserData();
+      renderHubReviewsTab();
+      showToast("ตอบกลับความคิดเห็นสำเร็จ!", "success", "💬");
+    }
+
+    function startEditReview(idx) {
+      editingReviewIndex = idx;
+      renderHubReviewsTab();
+    }
+
+    function cancelEditReview() {
+      editingReviewIndex = null;
+      renderHubReviewsTab();
+    }
+
+    function saveEditReview(idx) {
+      const input = document.getElementById(`edit-review-input-${idx}`);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return showToast("ข้อความต้องไม่ว่างเปล่าครับ", "error", "⚠️");
+
+      currentHubBot.reviews[idx].text = text;
+      editingReviewIndex = null;
+      saveUserData();
+      renderHubReviewsTab();
+      showToast("แก้ไขความคิดเห็นเรียบร้อย", "success", "✏️");
+    }
+
+    function deleteReview(idx) {
+      showCustomConfirm("ลบความคิดเห็น", "คุณแน่ใจหรือไม่ว่าต้องการลบความคิดเห็นนี้?", (confirmed) => {
+        if (confirmed) {
+          currentHubBot.reviews.splice(idx, 1);
+          saveUserData();
+          renderHubReviewsTab();
+          showToast("ลบความคิดเห็นสำเร็จ", "success", "🗑️");
+        }
+      }, "fa-solid fa-trash text-rose-500");
     }
 
     function switchExploreSubTab(tab) {
