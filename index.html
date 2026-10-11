@@ -8,42 +8,90 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Prompt', sans-serif; }
+    
+    :root {
+      --bg-main: #f5f3ff;
+      --card-bg: #ffffff;
+      --card-sub: #faf5ff;
+      --accent-purple: #8b5cf6;
+      --accent-soft-purple: #c4b5fd;
+      --accent-blue: #38bdf8;
+      --accent-soft-blue: #bae6fd;
+      --text-main: #1e1b4b;
+      --text-muted: #64748b;
+      --border-soft: #e9d5ff;
+    }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: linear-gradient(135deg, #ede9fe 0%, #e0f2fe 50%, #fce7f3 100%) !important;
+      color: var(--text-main) !important;
+    }
+
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Pastel Custom UI Components */
+    .pastel-card {
+      background: rgba(255, 255, 255, 0.9) !important;
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-soft) !important;
+      box-shadow: 0 8px 24px -4px rgba(139, 92, 246, 0.08);
+    }
+
+    .pastel-input {
+      background: rgba(250, 245, 255, 0.7) !important;
+      border: 1px solid #e9d5ff !important;
+      color: #1e1b4b !important;
+      transition: all 0.2s ease;
+    }
+    .pastel-input:focus {
+      background: #ffffff !important;
+      border-color: #8b5cf6 !important;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+
+    .pastel-btn-primary {
+      background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px 0 rgba(167, 139, 250, 0.35);
+    }
+    .pastel-btn-primary:active {
+      transform: scale(0.97);
+    }
   </style>
 </head>
-<body class="bg-gradient-to-br from-purple-100 via-sky-50 to-pink-50 flex justify-center items-center min-h-screen text-slate-700 p-0 sm:p-4">
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4">
 
   <!-- ==================== 0. LOGIN MODAL OVERLAY ==================== -->
-  <div id="login-screen" class="fixed inset-0 bg-purple-950/40 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-white/95 border border-purple-100 rounded-3xl p-6 space-y-4 shadow-2xl shadow-purple-500/10">
+  <div id="login-screen" class="fixed inset-0 bg-indigo-950/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm pastel-card rounded-3xl p-6 space-y-4">
       <div class="text-center space-y-1">
-        <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-tr from-purple-400 to-sky-400 flex items-center justify-center text-white text-lg font-bold shadow-lg shadow-purple-300/40">
+        <div class="w-14 h-14 mx-auto rounded-full bg-gradient-to-tr from-violet-400 to-sky-300 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-violet-200">
           LC
         </div>
-        <h2 class="text-base font-bold text-slate-800 pt-2">เข้าสู่ระบบ Lovey-Companion</h2>
-        <p class="text-xs text-purple-600/80">ป้อนอีเมลของคุณเพื่อโหลดและบันทึกประวัติการคุยแยกบัญชี</p>
+        <h2 class="text-base font-bold text-indigo-950 pt-2">เข้าสู่ระบบ Lovey-Companion</h2>
+        <p class="text-xs text-purple-600">ป้อนอีเมลของคุณเพื่อเชื่อมต่อความทรงจำของบอท</p>
       </div>
 
       <div class="space-y-3 pt-2">
         <div>
           <label class="block text-xs text-slate-600 font-medium mb-1">อีเมลของคุณ</label>
-          <input id="login-email-input" type="email" placeholder="name@example.com" class="w-full bg-purple-50/50 border border-purple-200 rounded-2xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-purple-400 focus:bg-white transition">
+          <input id="login-email-input" type="email" placeholder="name@example.com" class="w-full pastel-input rounded-2xl px-3.5 py-2.5 text-xs focus:outline-none">
         </div>
         <div>
           <label class="block text-xs text-slate-600 font-medium mb-1">ชื่อเล่นในเกม</label>
-          <input id="login-name-input" type="text" placeholder="คุณหนูนักท่องฝัน" class="w-full bg-purple-50/50 border border-purple-200 rounded-2xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-purple-400 focus:bg-white transition">
+          <input id="login-name-input" type="text" placeholder="คุณหนูนักท่องฝัน" class="w-full pastel-input rounded-2xl px-3.5 py-2.5 text-xs focus:outline-none">
         </div>
       </div>
 
-      <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white font-bold rounded-2xl text-xs transition shadow-lg shadow-purple-300/30">
+      <button onclick="handleLogin()" class="w-full py-3 pastel-btn-primary font-bold rounded-2xl text-xs transition">
         เข้าสู่ระบบ
       </button>
     </div>
   </div>
 
-  <!-- Mobile Container -->
+  <!-- Mobile Container (Pastel Shell) -->
   <div class="w-full max-w-md h-screen sm:h-[860px] bg-white sm:rounded-[36px] flex flex-col overflow-hidden shadow-2xl border border-purple-100 relative">
     
     <!-- ==================== VIEW 1: LOBBY ==================== -->
@@ -52,13 +100,13 @@
       <!-- Top Lobby Header -->
       <header class="p-3.5 bg-white/90 backdrop-blur border-b border-purple-100 flex justify-between items-center z-10">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-400 to-sky-400 flex items-center justify-center text-white text-xs font-bold shadow-md shadow-purple-300/30">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-violet-400 to-sky-300 flex items-center justify-center text-white text-xs font-bold shadow-sm">
             LC
           </div>
-          <span id="lobby-header-title" class="text-sm font-semibold text-slate-800 tracking-wide">หน้าแรก</span>
+          <span id="lobby-header-title" class="text-sm font-bold text-indigo-950 tracking-wide">หน้าแรก</span>
         </div>
         <div class="flex items-center gap-2 text-slate-500 text-xs">
-          <span id="api-status-dot" class="w-2 h-2 rounded-full bg-purple-300"></span>
+          <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-purple-300"></span>
           <span id="api-status-label" class="text-[11px] font-medium text-slate-500">ออฟไลน์</span>
         </div>
       </header>
@@ -67,12 +115,12 @@
       <div class="flex-1 overflow-y-auto hide-scrollbar p-4 space-y-4">
         
         <!-- TAB 1: HOME (Profile & Friends) -->
-        <section id="tab-home" class="space-y-5">
-          <div class="bg-gradient-to-br from-purple-100/70 via-white to-sky-100/60 p-4 rounded-3xl border border-purple-200/60 shadow-sm relative overflow-hidden">
+        <section id="tab-home" class="space-y-4">
+          <div class="bg-gradient-to-br from-violet-100/70 via-white to-sky-100/60 p-4 rounded-3xl border border-purple-200/60 shadow-sm relative overflow-hidden">
             <div class="flex items-center gap-3.5">
               <label class="relative cursor-pointer group">
                 <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-md">
-                <div class="absolute inset-0 bg-purple-900/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                <div class="absolute inset-0 bg-violet-900/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
                   <i class="fa-solid fa-camera text-white text-xs"></i>
                 </div>
                 <input type="file" accept="image/*" class="hidden" onchange="uploadUserAvatar(event)">
@@ -80,12 +128,12 @@
               <div class="flex-1">
                 <div class="flex justify-between items-start">
                   <div>
-                    <h2 id="user-name" class="text-base font-bold text-slate-800">คุณหนูนักท่องฝัน</h2>
-                    <p id="user-email-display" class="text-[10px] text-purple-500 font-mono"></p>
+                    <h2 id="user-name" class="text-base font-bold text-indigo-950">คุณหนูนักท่องฝัน</h2>
+                    <p id="user-email-display" class="text-[10px] text-violet-500 font-mono"></p>
                     <p id="user-bio" class="text-[11px] text-slate-600 mt-0.5">"ชอบบทบรรยายโรแมนติกแฟนตาซีและตัวละครขี้อ้อน"</p>
                   </div>
                   <div class="flex items-center gap-1">
-                    <button onclick="openEditProfileModal()" class="p-1.5 text-purple-400 hover:text-purple-600 rounded-xl hover:bg-white/80 transition" title="แก้ไขโปรไฟล์">
+                    <button onclick="openEditProfileModal()" class="p-1.5 text-violet-400 hover:text-violet-600 rounded-xl hover:bg-white/80 transition" title="แก้ไขโปรไฟล์">
                       <i class="fa-solid fa-pen text-xs"></i>
                     </button>
                     <button onclick="handleLogout()" class="p-1.5 text-slate-400 hover:text-rose-500 rounded-xl hover:bg-white/80 transition" title="ออกจากระบบ">
@@ -103,10 +151,10 @@
 
           <div>
             <div class="flex justify-between items-center mb-3 px-1">
-              <h3 class="text-xs font-semibold text-slate-700 tracking-wide flex items-center gap-1.5">
-                <i class="fa-solid fa-user-group text-purple-400"></i> บอทเพื่อนสนิท
+              <h3 class="text-xs font-bold text-indigo-950 tracking-wide flex items-center gap-1.5">
+                <i class="fa-solid fa-user-group text-violet-500"></i> บอทเพื่อนสนิท
               </h3>
-              <span id="friend-count" class="text-[10px] text-slate-500 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">1 คน</span>
+              <span id="friend-count" class="text-[10px] text-slate-500 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">1 คน</span>
             </div>
             <div id="home-friends-list" class="space-y-2.5"></div>
           </div>
@@ -115,34 +163,35 @@
         <!-- TAB 2: EXPLORE & BOT CREATOR -->
         <section id="tab-explore" class="hidden space-y-3 pb-8">
           <div class="flex items-center justify-between text-slate-500 text-xs px-1">
-            <div class="flex items-center gap-1.5 cursor-pointer hover:text-purple-600 transition" onclick="switchLobbyTab('home')">
+            <div class="flex items-center gap-1.5 cursor-pointer hover:text-violet-600 transition font-medium" onclick="switchLobbyTab('home')">
               <i class="fa-solid fa-chevron-left text-[11px]"></i>
               <span>ดูเพิ่มเติม</span>
             </div>
-            <div class="bg-purple-100/60 border border-purple-200/70 rounded-full px-3 py-1 flex items-center gap-2 text-[11px] text-purple-700">
+            <div class="bg-purple-100/70 border border-purple-200 rounded-full px-3 py-1 flex items-center gap-2 text-[11px] text-purple-700 font-medium">
               <span>การจัดเก็บชั่วคราว</span>
               <span class="w-4 h-4 bg-purple-300 text-white rounded-full flex items-center justify-center text-[9px] font-bold">1</span>
             </div>
           </div>
 
+          <!-- Sliding Navigation Tabs -->
           <div class="flex gap-4 overflow-x-auto hide-scrollbar border-b border-purple-100 pb-1 text-xs font-medium whitespace-nowrap">
-            <button onclick="switchBotTab('profile')" id="btab-btn-profile" class="text-purple-600 border-b-2 border-purple-500 pb-1 px-1 transition font-bold">*โปรไฟล์</button>
-            <button onclick="switchBotTab('basic')" id="btab-btn-basic" class="text-slate-400 hover:text-purple-600 pb-1 px-1 transition font-medium">*ตั้งค่าพื้นฐาน</button>
-            <button onclick="switchBotTab('first')" id="btab-btn-first" class="text-slate-400 hover:text-purple-600 pb-1 px-1 transition font-medium">ฉากแรก</button>
-            <button onclick="switchBotTab('details')" id="btab-btn-details" class="text-slate-400 hover:text-purple-600 pb-1 px-1 transition font-medium">ตั้งค่ารายละเอียด</button>
-            <button onclick="switchBotTab('event')" id="btab-btn-event" class="text-slate-400 hover:text-purple-600 pb-1 px-1 transition font-medium">อีเวนต์</button>
-            <button onclick="switchBotTab('lore')" id="btab-btn-lore" class="text-slate-400 hover:text-purple-600 pb-1 px-1 transition font-medium">ลอร์บุ๊ก</button>
+            <button onclick="switchBotTab('profile')" id="btab-btn-profile" class="text-violet-600 border-b-2 border-violet-500 pb-1 px-1 transition font-bold">*โปรไฟล์</button>
+            <button onclick="switchBotTab('basic')" id="btab-btn-basic" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">*ตั้งค่าพื้นฐาน</button>
+            <button onclick="switchBotTab('first')" id="btab-btn-first" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ฉากแรก</button>
+            <button onclick="switchBotTab('details')" id="btab-btn-details" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ตั้งค่ารายละเอียด</button>
+            <button onclick="switchBotTab('event')" id="btab-btn-event" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">อีเวนต์</button>
+            <button onclick="switchBotTab('lore')" id="btab-btn-lore" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ลอร์บุ๊ก</button>
           </div>
 
           <!-- FORM CONTAINER -->
-          <div class="bg-white text-slate-700 rounded-3xl p-4 space-y-4 shadow-sm border border-purple-100">
+          <div class="pastel-card rounded-3xl p-4 space-y-4">
             <div id="btab-profile" class="space-y-3.5">
               <div class="inline-flex items-center gap-1.5 bg-purple-50 text-purple-700 px-3 py-1 rounded-xl text-xs font-semibold border border-purple-200/60">
                 <span class="bg-purple-200 text-purple-800 rounded-md w-4 h-4 flex items-center justify-center text-[10px]">ก</span>
                 ภาษาไทย
               </div>
 
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อ</label>
                 <input id="bot-name-input" type="text" placeholder="กรุณากรอกชื่อตัวละคร" maxlength="20" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
                 <div class="text-[10px] text-right text-slate-400 mt-1">0/20</div>
@@ -152,122 +201,117 @@
                 <label class="block text-xs font-bold text-slate-700 mb-2">เพศ</label>
                 <div class="flex items-center gap-4 text-xs text-slate-600">
                   <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="radio" name="bot-gender" value="male" class="accent-purple-500"> ผู้ชาย
+                    <input type="radio" name="bot-gender" value="male" class="accent-violet-500"> ผู้ชาย
                   </label>
                   <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="radio" name="bot-gender" value="female" class="accent-purple-500"> หญิง
+                    <input type="radio" name="bot-gender" value="female" class="accent-violet-500"> หญิง
                   </label>
                   <label class="flex items-center gap-1.5 cursor-pointer">
-                    <input type="radio" name="bot-gender" value="none" checked class="accent-purple-500"> ไม่ได้ตั้งค่า
+                    <input type="radio" name="bot-gender" value="none" checked class="accent-violet-500"> ไม่ได้ตั้งค่า
                   </label>
                 </div>
               </div>
 
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">อายุ</label>
                 <input id="bot-age-input" type="text" placeholder="กรุณากรอกอายุของตัวละคร" maxlength="20" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                <div class="text-[10px] text-right text-slate-400 mt-1">0/20</div>
               </div>
 
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">อาชีพ</label>
                 <input id="bot-career-input" type="text" placeholder="กรุณากรอกอาชีพของตัวละคร" maxlength="20" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                <div class="text-[10px] text-right text-slate-400 mt-1">0/20</div>
               </div>
 
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">คำพูดจากตัวละคร</label>
                 <input id="bot-quote-input" type="text" placeholder="กรุณาใส่บทพูด" maxlength="100" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                <div class="text-[10px] text-right text-slate-400 mt-1">0/100</div>
               </div>
 
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">เรื่องเล่า (ตัวเลือก)</label>
                 <textarea id="bot-story-input" rows="3" placeholder="กรุณาใส่เรื่องราว" maxlength="1000" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
-                <div class="text-[10px] text-right text-slate-400 mt-1">0/1000</div>
               </div>
 
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">โน้ตของผู้สร้าง (ตัวเลือก)</label>
                 <textarea id="bot-note-input" rows="2" placeholder="กรุณากรอกโน้ตของผู้สร้าง" maxlength="200" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
-                <div class="text-[10px] text-right text-slate-400 mt-1">0/200</div>
               </div>
 
               <div class="border border-dashed border-purple-200 rounded-2xl p-3 space-y-2 bg-purple-50/40">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-bold text-slate-700">รูปภาพตัวละคร (จากเครื่อง)</span>
-                  <label class="px-2.5 py-1 bg-white text-purple-600 rounded-xl text-[11px] font-semibold cursor-pointer border border-purple-200 shadow-sm hover:bg-purple-50 transition">
+                  <label class="px-2.5 py-1 bg-white text-violet-600 rounded-xl text-[11px] font-semibold cursor-pointer border border-purple-200 shadow-sm hover:bg-purple-50 transition">
                     เลือกรูปโปรไฟล์
                     <input type="file" accept="image/*" class="hidden" onchange="previewNewBotAvatar(event)">
                   </label>
                 </div>
                 <div class="flex items-center gap-3">
                   <img id="new-bot-avatar-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm">
-                  <span class="text-[11px] text-slate-500">รูปนี้จะใช้เป็นโปรไฟล์และรูปโพสต์ใน Photogram</span>
+                  <span class="text-[11px] text-slate-500">ใช้เป็นโปรไฟล์และรูปโพสต์ใน Photogram</span>
                 </div>
               </div>
             </div>
 
             <div id="btab-basic" class="hidden space-y-3.5">
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">ข้อมูลพื้นฐาน</label>
                 <textarea id="bot-info-input" rows="3" placeholder="ภูมิหลัง ครอบครัว MBTI ส่วนสูง เป็นต้น" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">บุคลิกภาพ</label>
                 <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัยของตัวละคร" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">สไตล์การพูดและนิสัย</label>
                 <textarea id="bot-speaking-style-input" rows="3" placeholder="ตัวอย่าง: พูดแทนตัวเองว่าเค้า และเรียกคุณว่าคนดี" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
             </div>
 
             <div id="btab-first" class="hidden space-y-3.5">
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">บทพูดสถานการณ์ (ตัวเลือก)</label>
                 <textarea id="bot-scene-desc-input" rows="3" placeholder="ตัวอย่าง: ก่อนนอน, ตัวละครรู้สึกเบื่อจึงส่งข้อความไปก่อน..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">บทสนทนาของตัวละคร (ตัวเลือก)</label>
                 <textarea id="bot-scene-dialogue-input" rows="3" placeholder="ตัวอย่าง: นอนหรือยังคนดี? คืนนี้เค้าคิดถึงเธอจัง..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
             </div>
 
             <div id="btab-details" class="hidden space-y-3.5">
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">ชอบ (ตัวเลือก)</label>
                 <input id="bot-likes-input" type="text" placeholder="เช่น กาแฟ, หนังสือ, ของหวาน" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
               </div>
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">ไม่ชอบ (ตัวเลือก)</label>
                 <input id="bot-dislikes-input" type="text" placeholder="ป้อนสิ่งที่ตัวละครไม่ชอบ" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
               </div>
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">วันเกิด (ตัวเลือก)</label>
                 <input id="bot-birthday-input" type="text" placeholder="เช่น 14 มีนาคม" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
               </div>
             </div>
 
             <div id="btab-event" class="hidden space-y-3.5">
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">คีย์เวิร์ดกระตุ้นอีเวนต์</label>
                 <input id="bot-event-trigger" type="text" placeholder="เช่น หึง, ป่วย, วันครบรอบ" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
               </div>
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">พฤติกรรมเมื่อเกิดอีเวนต์</label>
                 <textarea id="bot-event-behavior" rows="2" placeholder="เช่น แสดงอาการหวงเป็นพิเศษ และดึงเข้ามากอดแน่น" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
             </div>
 
             <div id="btab-lore" class="hidden space-y-3.5">
-              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-purple-400 focus-within:bg-white transition">
+              <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                 <label class="block text-xs font-bold text-slate-700 mb-1">ลอร์บุ๊กและความทรงจำลึก</label>
                 <textarea id="bot-lorebook-input" rows="4" placeholder="พิมพ์ประวัติศาสตร์โลก ความลับ หรือข้อเท็จจริงสำคัญ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
               </div>
             </div>
 
-            <button onclick="submitCompleteCharacter()" class="w-full py-3.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 active:scale-95 text-white font-bold rounded-2xl text-sm shadow-lg shadow-purple-300/40 transition">
+            <button onclick="submitCompleteCharacter()" class="w-full py-3.5 pastel-btn-primary font-bold rounded-2xl text-sm transition">
               เสร็จสมบูรณ์
             </button>
           </div>
@@ -275,7 +319,7 @@
 
         <!-- TAB 3: CHAT HISTORIES -->
         <section id="tab-chats" class="hidden space-y-3">
-          <div class="text-xs font-semibold text-slate-700 px-1">ประวัติเนื้อเรื่องทั้งหมด</div>
+          <div class="text-xs font-bold text-indigo-950 px-1">ประวัติเนื้อเรื่องทั้งหมด</div>
           <div id="chat-records-list" class="space-y-2"></div>
         </section>
 
@@ -283,10 +327,10 @@
         <section id="tab-relations" class="hidden space-y-4">
           <div class="flex justify-between items-center px-1">
             <div>
-              <h3 class="text-xs font-semibold text-slate-700">เชื่อมโยงบอท & แชทรวมกลุ่ม</h3>
+              <h3 class="text-xs font-bold text-indigo-950">เชื่อมโยงบอท & แชทรวมกลุ่ม</h3>
               <p class="text-[10px] text-slate-500 mt-0.5">รวมบอทหลายตัวมาคุยในห้องเดียวกัน</p>
             </div>
-            <button onclick="openCreateGroupModal()" class="px-3 py-1.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-full text-[11px] font-medium flex items-center gap-1 shadow-sm shadow-purple-300/30">
+            <button onclick="openCreateGroupModal()" class="px-3 py-1.5 pastel-btn-primary text-white rounded-full text-[11px] font-medium flex items-center gap-1 shadow-sm">
               <i class="fa-solid fa-plus text-[10px]"></i> สร้างห้องรวม
             </button>
           </div>
@@ -296,8 +340,8 @@
         <!-- TAB 5: COMMUNITY -->
         <section id="tab-community" class="hidden space-y-3.5">
           <div class="flex justify-between items-center px-1">
-            <h3 class="text-xs font-semibold text-slate-700">บอร์ดพูดคุย & แบ่งปันบอท</h3>
-            <button onclick="openCreatePostModal()" class="text-xs text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1 cursor-pointer">
+            <h3 class="text-xs font-bold text-indigo-950">บอร์ดพูดคุย & แบ่งปันบอท</h3>
+            <button onclick="openCreatePostModal()" class="text-xs text-violet-600 hover:text-violet-700 font-semibold flex items-center gap-1 cursor-pointer">
               <i class="fa-solid fa-circle-plus"></i> สร้างโพสต์ใหม่
             </button>
           </div>
@@ -306,8 +350,8 @@
 
         <!-- TAB 6: SETTINGS -->
         <section id="tab-settings" class="hidden space-y-3.5">
-          <div class="text-xs font-semibold text-slate-700 px-1">การตั้งค่าระบบ & สมอง AI</div>
-          <div class="bg-white border border-purple-100 rounded-3xl divide-y divide-purple-100 text-xs text-slate-600 shadow-sm overflow-hidden">
+          <div class="text-xs font-bold text-indigo-950 px-1">การตั้งค่าระบบ & สมอง AI</div>
+          <div class="pastel-card rounded-3xl divide-y divide-purple-100 text-xs text-slate-600 overflow-hidden">
             
             <div class="p-3.5 flex justify-between items-center">
               <span>ภาษาของระบบ (Language)</span>
@@ -320,7 +364,7 @@
             <div class="p-3.5 flex justify-between items-center">
               <div>
                 <span class="font-medium text-slate-700">สไตล์ความยาวการบรรยาย</span>
-                <p class="text-[10px] text-purple-500">กำหนดเป้าหมาย 4,000 - 6,000 ตัวอักษร</p>
+                <p class="text-[10px] text-violet-500">กำหนดเป้าหมาย 4,000 - 6,000 ตัวอักษร</p>
               </div>
               <select id="setting-length" onchange="saveGeneralSettings()" class="bg-purple-50 border border-purple-200 rounded-xl px-2.5 py-1 text-slate-700 focus:outline-none text-xs">
                 <option value="epic" selected>นวนิยายขนาดยาวพิเศษ</option>
@@ -330,31 +374,31 @@
             </div>
 
             <!-- API Connect Box -->
-            <div class="p-4 space-y-3 bg-purple-50/30">
+            <div class="p-4 space-y-3 bg-purple-50/40">
               <div class="flex justify-between items-center">
                 <span class="font-medium text-slate-700 flex items-center gap-1.5">
-                  <i class="fa-solid fa-brain text-purple-400"></i> เลือกผู้ให้บริการ AI ฟรี
+                  <i class="fa-solid fa-brain text-violet-500"></i> เลือกผู้ให้บริการ AI ฟรี
                 </span>
                 <span id="api-indicator" class="text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium">ยังไม่เชื่อมต่อ</span>
               </div>
 
               <div class="grid grid-cols-3 gap-1.5 text-[11px]">
                 <label class="flex flex-col items-center p-2 bg-white border border-purple-100 rounded-2xl cursor-pointer text-center shadow-sm">
-                  <input type="radio" name="api-provider" value="gemini" checked onchange="switchApiProvider('gemini')" class="accent-purple-500 mb-1">
+                  <input type="radio" name="api-provider" value="gemini" checked onchange="switchApiProvider('gemini')" class="accent-violet-500 mb-1">
                   <span class="text-slate-700">Gemini</span>
                 </label>
                 <label class="flex flex-col items-center p-2 bg-white border border-purple-100 rounded-2xl cursor-pointer text-center shadow-sm">
-                  <input type="radio" name="api-provider" value="groq" onchange="switchApiProvider('groq')" class="accent-purple-500 mb-1">
+                  <input type="radio" name="api-provider" value="groq" onchange="switchApiProvider('groq')" class="accent-violet-500 mb-1">
                   <span class="text-slate-700">Groq (ไวมาก)</span>
                 </label>
                 <label class="flex flex-col items-center p-2 bg-white border border-purple-100 rounded-2xl cursor-pointer text-center shadow-sm">
-                  <input type="radio" name="api-provider" value="openrouter" onchange="switchApiProvider('openrouter')" class="accent-purple-500 mb-1">
+                  <input type="radio" name="api-provider" value="openrouter" onchange="switchApiProvider('openrouter')" class="accent-violet-500 mb-1">
                   <span class="text-slate-700">OpenRouter</span>
                 </label>
               </div>
               
               <div class="relative">
-                <input id="setting-api-key" type="password" placeholder="วางรหัส API Key..." class="w-full bg-white border border-purple-200 rounded-2xl px-3.5 py-2.5 pr-10 text-xs text-slate-800 focus:outline-none focus:border-purple-400 shadow-sm">
+                <input id="setting-api-key" type="password" placeholder="วางรหัส API Key..." class="w-full pastel-input rounded-2xl px-3.5 py-2.5 pr-10 text-xs focus:outline-none">
                 <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
                   <i id="eye-icon" class="fa-solid fa-eye text-xs"></i>
                 </button>
@@ -362,7 +406,7 @@
 
               <div id="api-feedback-msg" class="hidden text-[11px] p-2.5 rounded-2xl"></div>
 
-              <button id="btn-verify-key" onclick="verifyAndSaveApiKey()" class="w-full py-2.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 shadow-sm shadow-purple-300/40 transition">
+              <button id="btn-verify-key" onclick="verifyAndSaveApiKey()" class="w-full py-2.5 pastel-btn-primary font-semibold rounded-2xl text-xs flex items-center justify-center gap-2 transition">
                 <i class="fa-solid fa-circle-check"></i> บันทึก & ทดสอบการเชื่อมต่อ
               </button>
             </div>
@@ -371,7 +415,7 @@
               <span>ระบบแสดงความคิดในใจบอท</span>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" id="setting-thoughts" checked onchange="saveGeneralSettings()" class="sr-only peer">
-                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-400"></div>
+                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-violet-500"></div>
               </label>
             </div>
 
@@ -384,29 +428,29 @@
 
       </div>
 
-      <!-- Bottom Nav (6 TABS) -->
+      <!-- Bottom Nav (6 TABS - Pastel Theme) -->
       <nav class="h-16 bg-white/95 backdrop-blur border-t border-purple-100 flex justify-around items-center px-1 z-10">
-        <button onclick="switchLobbyTab('home')" id="btn-tab-home" class="flex flex-col items-center gap-0.5 text-purple-600 transition">
+        <button onclick="switchLobbyTab('home')" id="btn-tab-home" class="flex flex-col items-center gap-0.5 text-violet-600 transition">
           <i class="fa-solid fa-house text-xs"></i>
           <span class="text-[9px]">โฮม</span>
         </button>
-        <button onclick="switchLobbyTab('explore')" id="btn-tab-explore" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-600 transition">
+        <button onclick="switchLobbyTab('explore')" id="btn-tab-explore" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition">
           <i class="fa-solid fa-compass text-xs"></i>
           <span class="text-[9px]">สร้างบอท</span>
         </button>
-        <button onclick="switchLobbyTab('chats')" id="btn-tab-chats" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-600 transition">
+        <button onclick="switchLobbyTab('chats')" id="btn-tab-chats" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition">
           <i class="fa-solid fa-book-open text-xs"></i>
           <span class="text-[9px]">เนื้อเรื่อง</span>
         </button>
-        <button onclick="switchLobbyTab('relations')" id="btn-tab-relations" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-600 transition">
+        <button onclick="switchLobbyTab('relations')" id="btn-tab-relations" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition">
           <i class="fa-solid fa-link text-xs"></i>
           <span class="text-[9px]">ผูกสัมพันธ์</span>
         </button>
-        <button onclick="switchLobbyTab('community')" id="btn-tab-community" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-600 transition">
+        <button onclick="switchLobbyTab('community')" id="btn-tab-community" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition">
           <i class="fa-solid fa-users text-xs"></i>
           <span class="text-[9px]">ชุมชน</span>
         </button>
-        <button onclick="switchLobbyTab('settings')" id="btn-tab-settings" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-600 transition">
+        <button onclick="switchLobbyTab('settings')" id="btn-tab-settings" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition">
           <i class="fa-solid fa-gear text-xs"></i>
           <span class="text-[9px]">ตั้งค่า</span>
         </button>
@@ -415,7 +459,7 @@
 
 
     <!-- ==================== VIEW 2: MULTI-ROOM CHAT VIEW ==================== -->
-    <div id="view-room" class="hidden flex-1 flex flex-col overflow-hidden relative bg-gradient-to-b from-purple-50/50 via-white to-sky-50/40">
+    <div id="view-room" class="hidden flex-1 flex flex-col overflow-hidden relative bg-gradient-to-b from-purple-50/60 via-white to-sky-50/40">
       
       <!-- Top Chat Header -->
       <header class="p-3 bg-white/95 backdrop-blur border-b border-purple-100 flex items-center justify-between z-20">
@@ -428,7 +472,7 @@
           <img id="room-avatar" src="" class="w-8 h-8 rounded-full object-cover border-2 border-purple-200">
           <div>
             <h2 id="room-name" class="text-xs font-bold text-slate-800 leading-tight">ชื่อบอท</h2>
-            <button onclick="openRoomPickerModal()" class="text-[10px] text-purple-500 font-medium flex items-center gap-1 hover:underline">
+            <button onclick="openRoomPickerModal()" class="text-[10px] text-violet-500 font-medium flex items-center gap-1 hover:underline">
               <i class="fa-solid fa-bookmark text-[9px]"></i>
               <span id="room-current-name">เนื้อเรื่องหลัก</span>
               <i class="fa-solid fa-caret-down text-[9px]"></i>
@@ -437,13 +481,13 @@
         </div>
 
         <div class="flex items-center gap-1">
-          <button onclick="createNewRoomForCurrentBot()" title="เปิดห้องเนื้อเรื่องใหม่" class="p-2 text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 rounded-full transition">
+          <button onclick="createNewRoomForCurrentBot()" title="เปิดห้องเนื้อเรื่องใหม่" class="p-2 text-violet-600 hover:text-violet-800 bg-purple-50 hover:bg-purple-100 rounded-full transition">
             <i class="fa-solid fa-folder-plus text-xs"></i>
           </button>
           <button id="call-toggle-btn" onclick="toggleCallSimulation()" title="โทรหาบอท" class="p-2 text-slate-600 hover:text-slate-800 bg-purple-50 hover:bg-purple-100 rounded-full transition">
             <i class="fa-solid fa-phone text-xs"></i>
           </button>
-          <button onclick="openPhoneModal()" title="เปิดโทรศัพท์เสมือน (IG)" class="p-2 text-purple-500 hover:text-purple-700 bg-purple-100/60 border border-purple-200 rounded-full transition">
+          <button onclick="openPhoneModal()" title="เปิดโทรศัพท์เสมือน (IG)" class="p-2 text-violet-500 hover:text-violet-700 bg-purple-100/60 border border-purple-200 rounded-full transition">
             <i class="fa-solid fa-mobile-screen text-xs"></i>
           </button>
         </div>
@@ -473,20 +517,20 @@
       <!-- Bottom Chat Controls -->
       <div class="p-3 bg-white/95 backdrop-blur border-t border-purple-100 space-y-2">
         <div class="flex items-center gap-2">
-          <label title="เลือกรูปจากเครื่องประกอบฉาก" class="p-2.5 text-purple-500 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 rounded-full border border-purple-200 cursor-pointer transition">
+          <label title="เลือกรูปจากเครื่องประกอบฉาก" class="p-2.5 text-violet-500 hover:text-violet-700 bg-purple-50 hover:bg-purple-100 rounded-full border border-purple-200 cursor-pointer transition">
             <i class="fa-solid fa-image text-xs"></i>
             <input type="file" accept="image/*" class="hidden" onchange="handleAttachImageFromFile(event)">
           </label>
           
           <button onclick="openPhoneModal()" title="จำลองมือถือ (ไอจี/ไลน์)" class="px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 rounded-full text-[11px] flex items-center gap-1.5 font-medium transition">
-            <i class="fa-brands fa-instagram text-purple-500"></i> โทรศัพท์
+            <i class="fa-brands fa-instagram text-violet-500"></i> โทรศัพท์
           </button>
           
           <input id="chat-input" type="text" placeholder="พิมพ์คุยหรือบรรยาย (*ก้าวเข้าไปหา* สวัสดี...)" 
-                 class="flex-1 bg-purple-50/40 border border-purple-200 text-slate-800 text-xs px-3.5 py-2.5 rounded-full focus:outline-none focus:border-purple-400 focus:bg-white transition"
+                 class="flex-1 pastel-input text-xs px-3.5 py-2.5 rounded-full focus:outline-none"
                  onkeydown="if(event.key === 'Enter') handleSendChat()">
 
-          <button id="send-chat-btn" onclick="handleSendChat()" class="p-2.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-full transition shadow-md shadow-purple-300/30">
+          <button id="send-chat-btn" onclick="handleSendChat()" class="p-2.5 pastel-btn-primary rounded-full transition">
             <i class="fa-solid fa-paper-plane text-xs"></i>
           </button>
         </div>
@@ -495,38 +539,38 @@
 
 
     <!-- ==================== MODALS ==================== -->
-    <div id="edit-profile-modal" class="hidden absolute inset-0 bg-purple-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
-      <div class="w-full max-w-sm bg-white border border-purple-100 rounded-3xl p-5 space-y-3.5 shadow-2xl">
+    <div id="edit-profile-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
+      <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3.5">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
-          <h3 class="text-sm font-semibold text-slate-800">แก้ไขโปรไฟล์ผู้ใช้</h3>
+          <h3 class="text-sm font-bold text-indigo-950">แก้ไขโปรไฟล์ผู้ใช้</h3>
           <button onclick="closeEditProfileModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-3 text-xs">
           <div>
             <label class="block text-slate-600 mb-1">ชื่อผู้ใช้</label>
-            <input id="edit-user-name" type="text" class="w-full bg-purple-50/40 border border-purple-200 rounded-2xl px-3 py-2 text-slate-800 focus:outline-none focus:border-purple-400">
+            <input id="edit-user-name" type="text" class="w-full pastel-input rounded-2xl px-3 py-2 text-slate-800 focus:outline-none">
           </div>
           <div>
             <label class="block text-slate-600 mb-1">คำโปรย / ชีวประวัติ (Bio)</label>
-            <textarea id="edit-user-bio" rows="2" class="w-full bg-purple-50/40 border border-purple-200 rounded-2xl px-3 py-2 text-slate-800 focus:outline-none focus:border-purple-400"></textarea>
+            <textarea id="edit-user-bio" rows="2" class="w-full pastel-input rounded-2xl px-3 py-2 text-slate-800 focus:outline-none"></textarea>
           </div>
         </div>
-        <button onclick="saveUserProfile()" class="w-full py-2.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-2xl text-xs font-medium transition shadow-md shadow-purple-300/30">
+        <button onclick="saveUserProfile()" class="w-full py-2.5 pastel-btn-primary font-medium rounded-2xl text-xs transition">
           บันทึกการเปลี่ยนแปลง
         </button>
       </div>
     </div>
 
-    <div id="create-post-modal" class="hidden absolute inset-0 bg-purple-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
-      <div class="w-full max-w-sm bg-white border border-purple-100 rounded-3xl p-5 space-y-3.5 shadow-2xl">
+    <div id="create-post-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
+      <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3.5">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
-          <h3 class="text-sm font-semibold text-slate-800">สร้างโพสต์ใหม่ในคอมมูนิตี้</h3>
+          <h3 class="text-sm font-bold text-indigo-950">สร้างโพสต์ใหม่ในคอมมูนิตี้</h3>
           <button onclick="closeCreatePostModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-3 text-xs">
           <div>
             <label class="block text-slate-600 mb-1">เนื้อหาโพสต์ / คำถาม / แจกบท</label>
-            <textarea id="post-content" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแชร์กับผู้เล่นคนอื่นๆ..." class="w-full bg-purple-50/40 border border-purple-200 rounded-2xl p-3 text-slate-800 focus:outline-none focus:border-purple-400"></textarea>
+            <textarea id="post-content" rows="4" placeholder="พิมพ์ข้อความที่ต้องการแชร์กับผู้เล่นคนอื่นๆ..." class="w-full pastel-input rounded-2xl p-3 text-slate-800 focus:outline-none"></textarea>
           </div>
           <div>
             <label class="block text-slate-600 mb-1">แนบรูปภาพ (เลือกจากเครื่อง)</label>
@@ -537,49 +581,49 @@
             <img id="post-img-preview" src="" class="hidden w-full h-32 object-cover rounded-2xl mt-2 border border-purple-200">
           </div>
         </div>
-        <button onclick="publishCommunityPost()" class="w-full py-2.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-2xl text-xs font-medium transition shadow-md shadow-purple-300/30">
+        <button onclick="publishCommunityPost()" class="w-full py-2.5 pastel-btn-primary font-medium rounded-2xl text-xs transition">
           เผยแพร่โพสต์
         </button>
       </div>
     </div>
 
     <!-- Virtual Smartphone (Pastel Look) -->
-    <div id="phone-modal" class="hidden absolute inset-0 bg-purple-950/40 backdrop-blur-md z-40 flex items-center justify-center p-3">
+    <div id="phone-modal" class="hidden absolute inset-0 bg-indigo-950/40 backdrop-blur-md z-40 flex items-center justify-center p-3">
       <div class="w-full max-w-xs h-[640px] bg-white border-2 border-purple-200 rounded-[32px] flex flex-col overflow-hidden shadow-2xl relative">
         <div class="h-6 bg-purple-50 flex justify-center items-center border-b border-purple-100">
           <div class="w-16 h-2.5 bg-purple-200 rounded-full"></div>
         </div>
         <div class="px-3 py-2 border-b border-purple-100 flex justify-between items-center bg-white">
           <span class="text-xs font-bold text-slate-800 tracking-wider flex items-center gap-1">
-            <i class="fa-brands fa-instagram text-purple-500"></i> Photogram
+            <i class="fa-brands fa-instagram text-violet-500"></i> Photogram
           </span>
           <div class="flex items-center gap-2">
-            <button onclick="openAddBotPostModal()" title="เพิ่มโพสต์ใหม่ให้บอท" class="text-purple-500 hover:text-purple-700 text-xs"><i class="fa-solid fa-square-plus"></i></button>
+            <button onclick="openAddBotPostModal()" title="เพิ่มโพสต์ใหม่ให้บอท" class="text-violet-500 hover:text-violet-700 text-xs"><i class="fa-solid fa-square-plus"></i></button>
             <button onclick="closePhoneModal()" class="text-slate-400 hover:text-slate-600 text-xs"><i class="fa-solid fa-xmark"></i></button>
           </div>
         </div>
         <div class="flex border-b border-purple-100 text-xs bg-purple-50/50">
           <button onclick="switchPhoneTab('feed')" id="p-tab-btn-feed" class="flex-1 py-2 text-slate-500 hover:text-purple-600 font-medium">โพสต์ประจำวัน</button>
-          <button onclick="switchPhoneTab('dm')" id="p-tab-btn-dm" class="flex-1 py-2 text-purple-600 border-b-2 border-purple-500 font-bold">แชท DM ด่วน</button>
+          <button onclick="switchPhoneTab('dm')" id="p-tab-btn-dm" class="flex-1 py-2 text-violet-600 border-b-2 border-violet-500 font-bold">แชท DM ด่วน</button>
         </div>
         <div id="p-tab-feed" class="hidden flex-1 overflow-y-auto p-3 space-y-3.5 hide-scrollbar bg-slate-50/40">
           <div id="phone-feed-container" class="space-y-3.5"></div>
         </div>
-        <div id="p-tab-dm" class="flex-1 flex flex-col overflow-hidden bg-gradient-to-b from-purple-50/30 to-sky-50/20">
+        <div id="p-tab-dm" class="flex-1 flex flex-col overflow-hidden bg-gradient-to-b from-purple-50/40 to-sky-50/20">
           <div id="dm-messages" class="flex-1 overflow-y-auto p-3 space-y-3 text-xs hide-scrollbar"></div>
           <div class="p-2 border-t border-purple-100 flex gap-1.5 bg-white">
-            <input id="dm-input" type="text" placeholder="ส่งข้อความคุยแบบเพื่อน..." class="flex-1 bg-purple-50/40 border border-purple-200 text-slate-800 text-[11px] px-3 py-1.5 rounded-full focus:outline-none focus:border-purple-400" onkeydown="if(event.key === 'Enter') sendDmMessage()">
-            <button id="dm-send-btn" onclick="sendDmMessage()" class="px-3 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-full text-xs transition"><i class="fa-solid fa-arrow-up"></i></button>
+            <input id="dm-input" type="text" placeholder="ส่งข้อความคุยแบบเพื่อน..." class="flex-1 pastel-input text-[11px] px-3 py-1.5 rounded-full focus:outline-none" onkeydown="if(event.key === 'Enter') sendDmMessage()">
+            <button id="dm-send-btn" onclick="sendDmMessage()" class="px-3 pastel-btn-primary rounded-full text-xs transition"><i class="fa-solid fa-arrow-up"></i></button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Room Picker Modal -->
-    <div id="room-picker-modal" class="hidden absolute inset-0 bg-purple-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
-      <div class="w-full max-w-sm bg-white border border-purple-100 rounded-3xl p-5 space-y-3 shadow-2xl">
+    <div id="room-picker-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
+      <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
-          <h3 class="text-xs font-semibold text-slate-800">เลือกห้องเนื้อเรื่องของบอทนี้</h3>
+          <h3 class="text-xs font-bold text-indigo-950">เลือกห้องเนื้อเรื่องของบอทนี้</h3>
           <button onclick="closeRoomPickerModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div id="room-list-container" class="space-y-2 max-h-60 overflow-y-auto pr-1 hide-scrollbar"></div>
@@ -595,16 +639,16 @@
     </div>
 
     <!-- Create Group Chat Modal -->
-    <div id="create-group-modal" class="hidden absolute inset-0 bg-purple-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
-      <div class="w-full max-w-sm bg-white border border-purple-100 rounded-3xl p-5 space-y-3.5 shadow-2xl">
+    <div id="create-group-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
+      <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3.5">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
-          <h3 class="text-xs font-semibold text-slate-800">สร้างห้องแชทรวมบอท</h3>
+          <h3 class="text-xs font-bold text-indigo-950">สร้างห้องแชทรวมบอท</h3>
           <button onclick="closeCreateGroupModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-3 text-xs">
           <div>
             <label class="block text-slate-600 mb-1">ชื่อกลุ่มแชท</label>
-            <input id="group-title-input" type="text" placeholder="เช่น แก๊งเพื่อนสนิท, ครอบครัว" class="w-full bg-purple-50/40 border border-purple-200 rounded-2xl px-3 py-2 text-slate-800 focus:outline-none focus:border-purple-400">
+            <input id="group-title-input" type="text" placeholder="เช่น แก๊งเพื่อนสนิท, ครอบครัว" class="w-full pastel-input rounded-2xl px-3 py-2 text-slate-800 focus:outline-none">
           </div>
           <div>
             <label class="block text-slate-600 mb-1">เลือกบอทที่จะดึงเข้ากลุ่ม (เลือกอย่างน้อย 2 ตัว)</label>
@@ -612,10 +656,10 @@
           </div>
           <div>
             <label class="block text-slate-600 mb-1">ความสัมพันธ์ระหว่างบอทในกลุ่ม</label>
-            <textarea id="group-relations-input" rows="2" placeholder="เช่น เร็นกับลูคัสเป็นเพื่อนสนิทกัน..." class="w-full bg-purple-50/40 border border-purple-200 rounded-2xl p-2.5 text-slate-800 focus:outline-none focus:border-purple-400"></textarea>
+            <textarea id="group-relations-input" rows="2" placeholder="เช่น เร็นกับลูคัสเป็นเพื่อนสนิทกัน..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
           </div>
         </div>
-        <button onclick="submitCreateGroupChat()" class="w-full py-2.5 bg-gradient-to-r from-purple-400 to-sky-400 hover:from-purple-500 hover:to-sky-500 text-white rounded-2xl text-xs font-medium transition shadow-md shadow-purple-300/30">
+        <button onclick="submitCreateGroupChat()" class="w-full py-2.5 pastel-btn-primary font-medium rounded-2xl text-xs transition">
           สร้างห้องแชทรวม
         </button>
       </div>
@@ -766,7 +810,7 @@
       b.rooms.forEach(r => {
         const isCurrent = r.id === currentRoomId;
         const div = document.createElement('div');
-        div.className = `p-3 rounded-2xl border flex justify-between items-center cursor-pointer transition ${isCurrent ? 'bg-purple-100/70 border-purple-400' : 'bg-purple-50/30 border-purple-100 hover:border-purple-300'}`;
+        div.className = `p-3 rounded-2xl border flex justify-between items-center cursor-pointer transition ${isCurrent ? 'bg-purple-100/70 border-violet-400' : 'bg-purple-50/30 border-purple-100 hover:border-purple-300'}`;
         div.onclick = () => {
           currentRoomId = r.id;
           document.getElementById('room-current-name').innerText = r.name;
@@ -777,11 +821,11 @@
           <div>
             <div class="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
               ${r.name}
-              ${isCurrent ? '<span class="text-[9px] bg-purple-500 px-1.5 py-0.2 rounded text-white">ห้องปัจจุบัน</span>' : ''}
+              ${isCurrent ? '<span class="text-[9px] bg-violet-500 px-1.5 py-0.2 rounded text-white">ห้องปัจจุบัน</span>' : ''}
             </div>
             <span class="text-[10px] text-slate-500 mt-0.5 block">${r.history ? r.history.length : 0} ข้อความ</span>
           </div>
-          <i class="fa-solid fa-chevron-right text-xs text-purple-400"></i>
+          <i class="fa-solid fa-chevron-right text-xs text-violet-400"></i>
         `;
         container.appendChild(div);
       });
@@ -836,7 +880,7 @@
         if (!b.rooms || b.rooms.length === 0) return;
         b.rooms.forEach(r => {
           const div = document.createElement('div');
-          div.className = 'p-3 bg-white border border-purple-100 rounded-2xl flex gap-3 cursor-pointer hover:border-purple-300 transition active:scale-[0.98] select-none shadow-sm';
+          div.className = 'p-3 bg-white border border-purple-100 rounded-2xl flex gap-3 cursor-pointer hover:border-violet-300 transition active:scale-[0.98] select-none shadow-sm';
           
           div.onclick = function() {
             openChatRoom(b.id, r.id);
@@ -857,7 +901,7 @@
             <div class="flex-1 overflow-hidden pointer-events-none">
               <div class="flex justify-between items-center">
                 <span class="text-xs font-semibold text-slate-800 truncate max-w-[180px]">${b.name} (${r.name})</span>
-                <span class="text-[10px] text-purple-600 font-medium whitespace-nowrap bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">${r.history ? r.history.length : 0} ตอน</span>
+                <span class="text-[10px] text-violet-600 font-medium whitespace-nowrap bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">${r.history ? r.history.length : 0} ตอน</span>
               </div>
               <p class="text-[11px] text-slate-500 truncate mt-1 italic">${previewText}</p>
             </div>
@@ -875,7 +919,7 @@
 
       bots.forEach(b => {
         const div = document.createElement('div');
-        div.className = 'p-3 bg-white border border-purple-100 rounded-2xl flex items-center justify-between hover:border-purple-300 transition cursor-pointer select-none shadow-sm';
+        div.className = 'p-3 bg-white border border-purple-100 rounded-2xl flex items-center justify-between hover:border-violet-300 transition cursor-pointer select-none shadow-sm';
         div.onclick = function() {
           openChatRoom(b.id);
         };
@@ -887,7 +931,7 @@
               <p class="text-[11px] text-slate-500 truncate max-w-[170px] mt-0.5">${b.rooms ? b.rooms.length : 1} ห้องเนื้อเรื่อง</p>
             </div>
           </div>
-          <button class="px-3 py-1 bg-purple-100/60 text-purple-700 border border-purple-200 rounded-full text-[10px] font-medium pointer-events-none">เข้าบท</button>
+          <button class="px-3 py-1 bg-purple-100/60 text-violet-700 border border-purple-200 rounded-full text-[10px] font-medium pointer-events-none">เข้าบท</button>
         `;
         list.appendChild(div);
       });
@@ -901,10 +945,10 @@
         const btn = document.getElementById(`btab-btn-${t}`);
         if (t === tab) {
           page.classList.remove('hidden');
-          btn.className = 'text-purple-600 border-b-2 border-purple-500 pb-1 px-1 transition font-bold';
+          btn.className = 'text-violet-600 border-b-2 border-violet-500 pb-1 px-1 transition font-bold';
         } else {
           page.classList.add('hidden');
-          btn.className = 'text-slate-400 hover:text-purple-600 pb-1 px-1 transition font-medium';
+          btn.className = 'text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium';
         }
       });
     }
@@ -966,7 +1010,7 @@
         const label = document.createElement('label');
         label.className = 'flex items-center gap-2 p-2 bg-purple-50/50 border border-purple-200 rounded-2xl cursor-pointer';
         label.innerHTML = `
-          <input type="checkbox" value="${b.id}" class="accent-purple-500 group-bot-check">
+          <input type="checkbox" value="${b.id}" class="accent-violet-500 group-bot-check">
           <img src="${b.avatar}" class="w-6 h-6 rounded-full object-cover">
           <span class="text-slate-700">${b.name}</span>
         `;
@@ -1226,7 +1270,7 @@
 
         div.innerHTML = `
           <div class="max-w-[78%] px-3.5 py-2 rounded-2xl text-[11px] leading-relaxed ${
-            isUser ? 'bg-gradient-to-r from-purple-400 to-sky-400 text-white rounded-br-none shadow-sm' : 'bg-white text-slate-700 rounded-bl-none border border-purple-100 shadow-sm'
+            isUser ? 'pastel-btn-primary rounded-br-none shadow-sm' : 'bg-white text-slate-700 rounded-bl-none border border-purple-100 shadow-sm'
           }">
             ${d.text}
           </div>
@@ -1257,13 +1301,13 @@
       if (tab === 'feed') {
         feedTab.classList.remove('hidden');
         dmTab.classList.add('hidden');
-        feedBtn.className = 'flex-1 py-2 text-rose-400 border-b-2 border-rose-500 font-medium';
-        dmBtn.className = 'flex-1 py-2 text-neutral-400 hover:text-white font-medium';
+        feedBtn.className = 'flex-1 py-2 text-violet-600 border-b-2 border-violet-500 font-bold';
+        dmBtn.className = 'flex-1 py-2 text-slate-400 hover:text-purple-600 font-medium';
         renderPhoneFeed(getBot(currentBotId));
       } else {
         feedTab.classList.add('hidden');
         dmTab.classList.remove('hidden');
-        dmBtn.className = 'flex-1 py-2 text-purple-600 border-b-2 border-purple-500 font-bold';
+        dmBtn.className = 'flex-1 py-2 text-violet-600 border-b-2 border-violet-500 font-bold';
         feedBtn.className = 'flex-1 py-2 text-slate-400 hover:text-purple-600 font-medium';
         renderPhoneDm(getBot(currentBotId));
       }
@@ -1285,7 +1329,7 @@
           <img src="${p.img}" class="w-full aspect-square object-cover">
           <div class="p-2.5 space-y-1.5">
             <div class="flex gap-2 text-slate-400 text-sm">
-              <i class="fa-regular fa-heart cursor-pointer hover:text-purple-500"></i>
+              <i class="fa-regular fa-heart cursor-pointer hover:text-violet-500"></i>
               <i class="fa-regular fa-comment cursor-pointer"></i>
             </div>
             <p class="text-[11px] text-slate-700"><strong>${b.name}</strong> ${p.caption}</p>
@@ -1309,113 +1353,6 @@
         saveUserData();
         renderPhoneFeed(b);
       }
-    }
-
-    // ==================== USER PROFILE & COMMUNITY ====================
-    function openEditProfileModal() {
-      document.getElementById('edit-user-name').value = userProfile.name;
-      document.getElementById('edit-user-bio').value = userProfile.bio;
-      document.getElementById('edit-profile-modal').classList.remove('hidden');
-    }
-
-    function closeEditProfileModal() {
-      document.getElementById('edit-profile-modal').classList.add('hidden');
-    }
-
-    function saveUserProfile() {
-      const name = document.getElementById('edit-user-name').value.trim();
-      const bio = document.getElementById('edit-user-bio').value.trim();
-      if (!name) return alert('กรุณาระบุชื่อผู้ใช้');
-
-      userProfile.name = name;
-      userProfile.bio = bio;
-      document.getElementById('user-name').innerText = name;
-      document.getElementById('user-bio').innerText = `"${bio}"`;
-      saveUserData();
-      closeEditProfileModal();
-    }
-
-    function renderCommunityPosts() {
-      const container = document.getElementById('community-posts-container');
-      container.innerHTML = '';
-
-      communityPosts.forEach((post, index) => {
-        const div = document.createElement('div');
-        div.className = 'bg-white border border-purple-100 p-3.5 rounded-2xl space-y-2.5 shadow-sm';
-        let imgHtml = post.image ? `<img src="${post.image}" class="w-full max-h-48 object-cover rounded-xl border border-purple-100">` : '';
-
-        div.innerHTML = `
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-purple-400 to-sky-400 text-white flex items-center justify-center text-[10px] font-bold">
-              ${post.author.charAt(0)}
-            </div>
-            <span class="text-xs font-semibold text-slate-800">${post.author}</span>
-            <span class="text-[10px] text-slate-400">• ${post.time}</span>
-          </div>
-          <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line">${post.content}</p>
-          ${imgHtml}
-          <div class="flex gap-4 text-slate-400 text-[11px] pt-1">
-            <button onclick="toggleLikePost(${index})" class="flex items-center gap-1 hover:text-purple-600 transition ${post.isLiked ? 'text-purple-600 font-semibold' : ''}">
-              <i class="${post.isLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i> <span>${post.likes} ไลก์</span>
-            </button>
-            <span class="flex items-center gap-1 cursor-pointer hover:text-slate-600">
-              <i class="fa-regular fa-comment"></i> <span>ตอบกลับ</span>
-            </span>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function openCreatePostModal() {
-      postUploadedImageUrl = null;
-      document.getElementById('post-content').value = '';
-      document.getElementById('post-img-preview').classList.add('hidden');
-      document.getElementById('create-post-modal').classList.remove('hidden');
-    }
-
-    function closeCreatePostModal() {
-      document.getElementById('create-post-modal').classList.add('hidden');
-    }
-
-    function handlePostImageUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        readFileAsDataUrl(file, (dataUrl) => {
-          postUploadedImageUrl = dataUrl;
-          const prev = document.getElementById('post-img-preview');
-          prev.src = dataUrl;
-          prev.classList.remove('hidden');
-        });
-      }
-    }
-
-    function publishCommunityPost() {
-      const content = document.getElementById('post-content').value.trim();
-      if (!content) return alert('กรุณาพิมพ์เนื้อหาโพสต์');
-
-      const newPost = {
-        id: "post_" + Date.now(),
-        author: userProfile.name,
-        time: "เมื่อสักครู่",
-        content: content,
-        image: postUploadedImageUrl,
-        likes: 1,
-        isLiked: true
-      };
-
-      communityPosts.unshift(newPost);
-      saveUserData();
-      renderCommunityPosts();
-      closeCreatePostModal();
-    }
-
-    function toggleLikePost(index) {
-      const post = communityPosts[index];
-      post.isLiked = !post.isLiked;
-      post.likes += post.isLiked ? 1 : -1;
-      saveUserData();
-      renderCommunityPosts();
     }
 
     // ==================== ROLEPLAY & NOVEL ENGINE ====================
@@ -1503,7 +1440,7 @@
           let imgHtml = m.image ? `<img src="${m.image}" class="w-48 h-32 object-cover rounded-2xl border border-purple-200 mb-1 shadow-sm">` : '';
           userDiv.innerHTML = `
             ${imgHtml}
-            <div class="bg-gradient-to-r from-purple-400 to-sky-400 text-white text-xs px-4 py-2.5 rounded-2xl rounded-tr-sm leading-relaxed shadow-sm">
+            <div class="pastel-btn-primary text-xs px-4 py-2.5 rounded-2xl rounded-tr-sm leading-relaxed shadow-sm">
               ${m.userText}
             </div>
             <span class="text-[9px] text-slate-400 font-mono pr-1">${m.time || getCurrentTimeStr()}</span>
@@ -1515,7 +1452,7 @@
 
           let thoughtHtml = (m.thought && appSettings.showThoughts) ? `
             <div class="bg-purple-100/70 border border-purple-200 text-purple-700 text-[10px] px-3.5 py-2 rounded-2xl flex items-start gap-2 shadow-sm leading-relaxed">
-              <i class="fa-solid fa-brain text-[11px] text-purple-400 mt-0.5"></i>
+              <i class="fa-solid fa-brain text-[11px] text-violet-500 mt-0.5"></i>
               <span><strong>ความคิดในใจ:</strong> ${m.thought}</span>
             </div>
           ` : '';
@@ -1524,7 +1461,7 @@
           if (m.paragraphs) {
             m.paragraphs.forEach(p => {
               if (p.type === 'narration') {
-                contentHtml += `<div class="text-[11px] text-slate-600 italic leading-loose px-3 bg-white/90 p-3.5 rounded-2xl border border-purple-100 shadow-sm">*${p.text}*</div>`;
+                contentHtml += `<div class="text-[11px] text-slate-600 italic leading-loose px-3 bg-white/95 p-3.5 rounded-2xl border border-purple-100 shadow-sm">*${p.text}*</div>`;
               } else {
                 contentHtml += `<div class="bg-purple-50 border border-purple-200 text-purple-900 text-xs px-4 py-2.5 rounded-2xl rounded-tl-sm leading-relaxed shadow-sm font-medium">"${p.text}"</div>`;
               }
@@ -1598,10 +1535,10 @@
         const btn = document.getElementById(`btn-tab-${t}`);
         if (t === tab) {
           sec.classList.remove('hidden');
-          btn.className = 'flex flex-col items-center gap-0.5 text-purple-600 transition font-bold';
+          btn.className = 'flex flex-col items-center gap-0.5 text-violet-600 transition font-bold';
         } else {
           sec.classList.add('hidden');
-          btn.className = 'flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-600 transition';
+          btn.className = 'flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition';
         }
       });
 
@@ -1662,7 +1599,7 @@
       const btn = document.getElementById('call-toggle-btn');
       if (isCalling) {
         bar.classList.remove('hidden');
-        btn.className = 'p-2 text-white bg-purple-500 rounded-full transition shadow-sm';
+        btn.className = 'p-2 text-white bg-violet-500 rounded-full transition shadow-sm';
         speakText("ฮัลโหล ได้ยินเค้าชัดไหมครับ?");
       } else {
         bar.classList.add('hidden');
@@ -1703,6 +1640,35 @@
         localStorage.removeItem(getUserKey('community'));
         location.reload();
       }
+    }
+
+    function openChatRoom(id, specificRoomId = null) {
+      currentBotId = id;
+      const b = getBot(id);
+      
+      if (specificRoomId) {
+        currentRoomId = specificRoomId;
+      } else if (!currentRoomId || !b.rooms.some(r => r.id === currentRoomId)) {
+        currentRoomId = b.rooms && b.rooms.length > 0 ? b.rooms[0].id : 'room_default';
+      }
+
+      const room = getCurrentRoom(b);
+
+      document.getElementById('view-lobby').classList.add('hidden');
+      document.getElementById('view-room').classList.remove('hidden');
+
+      document.getElementById('room-name').innerText = b.name;
+      document.getElementById('room-avatar').src = b.avatar;
+      document.getElementById('room-current-name').innerText = room.name;
+
+      renderRoomMessages();
+    }
+
+    function backToLobby() {
+      document.getElementById('view-room').classList.add('hidden');
+      document.getElementById('view-lobby').classList.remove('hidden');
+      if (isCalling) toggleCallSimulation();
+      switchLobbyTab('home');
     }
 
     function initApp() {
