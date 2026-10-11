@@ -102,7 +102,7 @@
     <!-- ==================== VIEW 1: LOBBY ==================== -->
     <div id="view-lobby" class="flex-1 flex flex-col overflow-hidden bg-slate-50/60">
       
-      <!-- Top Lobby Header: รูป + ชื่อผู้ใช้ + เหรียญกระต่ายเยลลี่ -->
+      <!-- Top Lobby Header -->
       <header class="p-3 bg-white/90 backdrop-blur border-b border-purple-100 flex justify-between items-center z-10">
         <div class="flex items-center gap-2.5">
           <label class="relative cursor-pointer group" title="เปลี่ยนรูปโปรไฟล์หลัก">
@@ -116,7 +116,6 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <!-- กล่องเหรียญกระต่ายเยลลี่ -->
           <button onclick="openCoinShopModal()" class="flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 rounded-full transition shadow-sm" title="ร้านค้าเหรียญกระต่ายเยลลี่">
             <span class="text-sm">🐰</span>
             <span id="user-coin-balance" class="text-xs font-bold text-purple-700">10</span>
@@ -178,7 +177,7 @@
                   <i class="fa-solid fa-id-card-clip text-violet-500"></i> โปรไฟล์ที่ใช้คุยกับบอท (Persona)
                   <span id="persona-quota-badge" class="text-[9px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-semibold">1/15</span>
                 </h3>
-                <p class="text-[10px] text-slate-500 mt-0.5">แตะการ์ดเพื่อสลับใช้งาน หรือกดดินสอเพื่อแก้ไขข้อมูล</p>
+                <p class="text-[10px] text-slate-500 mt-0.5">ข้อมูลตัวตน รูปลักษณ์ และนิสัยของผู้เล่นที่บอทจะจดจำ</p>
               </div>
               <button onclick="checkAndOpenCreatePersona()" class="px-2.5 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-semibold flex items-center gap-1 shadow-sm">
                 <i class="fa-solid fa-plus text-[9px]"></i> สร้างโปรไฟล์
@@ -465,7 +464,7 @@
 
       </div>
 
-      <!-- Bottom Nav (6 TABS - Pastel Theme) -->
+      <!-- Bottom Nav (6 TABS) -->
       <nav class="h-16 bg-white/95 backdrop-blur border-t border-purple-100 flex justify-around items-center px-1 z-10">
         <button onclick="switchLobbyTab('home')" id="btn-tab-home" class="flex flex-col items-center gap-0.5 text-violet-600 transition">
           <i class="fa-solid fa-house text-xs"></i>
@@ -577,7 +576,7 @@
 
     <!-- ==================== MODALS ==================== -->
     
-    <!-- Modal สร้าง/แก้ไข Persona (มีปุ่มบันทึกและลบ) -->
+    <!-- Modal สร้าง/แก้ไข Persona (ปรับปรุงฟอร์มใหม่ตามคำขอ) -->
     <div id="create-persona-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
       <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3.5 max-h-[88vh] overflow-y-auto hide-scrollbar">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
@@ -588,6 +587,7 @@
         <input type="hidden" id="editing-persona-id" value="">
 
         <div class="space-y-3 text-xs">
+          <!-- รูปประจำตัว -->
           <div class="flex items-center gap-3">
             <label class="relative cursor-pointer group">
               <img id="new-persona-avatar-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" class="w-14 h-14 rounded-full object-cover border-2 border-violet-400 shadow-sm">
@@ -598,15 +598,17 @@
             </label>
             <div class="flex-1">
               <span class="text-[11px] font-semibold text-slate-700">รูปประจำตัวในแชท</span>
-              <p class="text-[10px] text-slate-400">รูปนี้จะถูกส่งไปให้บอทมองเห็นรูปร่างหน้าตาของคุณ</p>
+              <p class="text-[10px] text-slate-400">รูปนี้จะถูกส่งไปให้บอทรับรู้หน้าตาของผู้เล่น</p>
             </div>
           </div>
 
+          <!-- ชื่อเรียกในแชท -->
           <div>
             <label class="block text-slate-600 mb-1 font-medium">ชื่อเรียกในแชท</label>
             <input id="persona-name-input" type="text" placeholder="เช่น ริน, คุณหนู, เจ้าหญิง" class="w-full pastel-input rounded-2xl px-3 py-2 text-slate-800 focus:outline-none">
           </div>
 
+          <!-- เพศ & อายุ -->
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-slate-600 mb-1 font-medium">เพศ</label>
@@ -618,14 +620,40 @@
             </div>
           </div>
 
+          <!-- วันเกิด -->
           <div>
-            <label class="block text-slate-600 mb-1 font-medium">นิสัย & บุคลิกภาพของผู้เล่น</label>
-            <textarea id="persona-personality-input" rows="2" placeholder="เช่น เป็นคนขี้อ้อน อ่อนหวาน หรือนิ่งสุขุม..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+            <label class="block text-slate-600 mb-1 font-medium">วันเกิด</label>
+            <input id="persona-birthday-input" type="text" placeholder="เช่น 14 มีนาคม, ราศีมีน" class="w-full pastel-input rounded-2xl px-3 py-2 text-slate-800 focus:outline-none">
           </div>
 
+          <!-- รูปลักษณ์ภายนอก -->
           <div>
-            <label class="block text-slate-600 mb-1 font-medium">ความสัมพันธ์และภูมิหลังที่บอทควรรู้</label>
-            <textarea id="persona-background-input" rows="3" placeholder="เช่น เป็นแฟนสาวที่คบกันมา 1 ปี, เป็นเพื่อนสนิทข้างบ้านที่โตมาด้วยกัน..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+            <label class="block text-slate-600 mb-1 font-medium">รูปลักษณ์ภายนอก</label>
+            <textarea id="persona-appearance-input" rows="2" placeholder="เช่น ส่วนสูง 162 ซม. รูปร่างสมส่วน ผมยาวลอนสีน้ำตาลเข้ม ตากลมโต มีกลิ่นหอมดอกมะลิอ่อนๆ..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+          </div>
+
+          <!-- นิสัย & บุคลิกภาพ -->
+          <div>
+            <label class="block text-slate-600 mb-1 font-medium">นิสัย & บุคลิกภาพของผู้เล่น</label>
+            <textarea id="persona-personality-input" rows="2" placeholder="เช่น เป็นคนขี้อ้อน ปากแข็งนิดๆ ใจดีแต่ขี้งอนง่าย ชอบพูดเสียงหวานเวลานั่งใกล้ๆ..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+          </div>
+
+          <!-- สิ่งที่ชอบ & สิ่งที่ไม่ชอบ -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-slate-600 mb-1 font-medium">สิ่งที่ชอบ</label>
+              <textarea id="persona-likes-input" rows="2" placeholder="เช่น ชานมไข่มุก, แมว, ดอกไฮเดรนเยีย, กอดแน่นๆ" class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1 font-medium">สิ่งที่ไม่ชอบ</label>
+              <textarea id="persona-dislikes-input" rows="2" placeholder="เช่น แมลงสาบ, เสียงฟ้าร้อง, อาหารรสจัด, คนพูดจาเย็นชา" class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
+            </div>
+          </div>
+
+          <!-- ข้อมูลอื่นๆ / เอกลักษณ์เฉพาะตัว -->
+          <div>
+            <label class="block text-slate-600 mb-1 font-medium">ข้อมูลเพิ่มเติม / เอกลักษณ์เฉพาะตัว</label>
+            <textarea id="persona-extra-input" rows="2" placeholder="เช่น ชอบใส่สร้อยข้อมือเงินที่ติดกระดิ่งเล็กๆ, มักจะเผลอหลับเวลาโดนลูบหัว..." class="w-full pastel-input rounded-2xl p-2.5 text-slate-800 focus:outline-none"></textarea>
           </div>
         </div>
 
@@ -894,17 +922,20 @@
         name: "คุณหนูนักท่องฝัน",
         gender: "หญิง",
         age: "20 ปี",
+        birthday: "14 มีนาคม",
+        appearance: "ส่วนสูง 162 ซม. ผิวขาว ผมยาวลอนสีน้ำตาลเข้ม ตากลมโต สวมชุดเดรสเรียบหรู กลิ่นหอมแป้งเด็กอ่อนๆ",
+        personality: "ขี้อ้อน อ่อนหวาน ช่างพูด ช่างสังเกต ขี้งอนนิดๆ เวลาไม่ได้รับความสนใจ",
+        likes: "ชานมไข่มุก, เค้กสตรอว์เบอร์รี, แมว, เสียงดนตรีคลาสสิก",
+        dislikes: "แมลงสาบ, อาหารรสเผ็ด, อากาศร้อนอบอ้าว",
+        extra: "มักจะเผลออมยิ้มเวลาได้รับคำชม และชอบนั่งข้างๆ ชวนคุยไปเรื่อยๆ",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
-        personality: "ขี้อ้อน อ่อนหวาน ช่างพูด",
-        background: "เป็นคนรักของบอท สนิทสนมกันมาก",
         isSelected: true
       }
     ];
 
-    // โควตาฟรี 15 ช่อง + เหรียญเริ่มต้น 10 เหรียญกระต่ายเยลลี่
     let userEconomy = {
       coins: 10,
-      unlockedSlots: 0 // เพิ่มช่องโควตาพิเศษที่ปลดล็อคเพิ่มจาก 15
+      unlockedSlots: 0
     };
 
     let appSettings = { language: "th", length: "epic", provider: "gemini", apiKey: "", showThoughts: true };
@@ -991,14 +1022,18 @@
       document.getElementById('persona-name-input').value = '';
       document.getElementById('persona-gender-input').value = '';
       document.getElementById('persona-age-input').value = '';
+      document.getElementById('persona-birthday-input').value = '';
+      document.getElementById('persona-appearance-input').value = '';
       document.getElementById('persona-personality-input').value = '';
-      document.getElementById('persona-background-input').value = '';
+      document.getElementById('persona-likes-input').value = '';
+      document.getElementById('persona-dislikes-input').value = '';
+      document.getElementById('persona-extra-input').value = '';
+
       document.getElementById('create-persona-modal').classList.remove('hidden');
     }
 
-    // ฟังก์ชันเปิดแก้ไขโปรไฟล์เดิม
     function openEditPersonaModal(id, event) {
-      if (event) event.stopPropagation(); // ป้องกันการเผลอกดสลับเลือก
+      if (event) event.stopPropagation();
       const p = userPersonas.find(item => item.id === id);
       if (!p) return;
 
@@ -1008,11 +1043,15 @@
 
       tempPersonaAvatar = p.avatar;
       document.getElementById('new-persona-avatar-preview').src = p.avatar;
-      document.getElementById('persona-name-input').value = p.name;
+      document.getElementById('persona-name-input').value = p.name || '';
       document.getElementById('persona-gender-input').value = p.gender || '';
       document.getElementById('persona-age-input').value = p.age || '';
+      document.getElementById('persona-birthday-input').value = p.birthday || '';
+      document.getElementById('persona-appearance-input').value = p.appearance || '';
       document.getElementById('persona-personality-input').value = p.personality || '';
-      document.getElementById('persona-background-input').value = p.background || '';
+      document.getElementById('persona-likes-input').value = p.likes || '';
+      document.getElementById('persona-dislikes-input').value = p.dislikes || '';
+      document.getElementById('persona-extra-input').value = p.extra || '';
 
       document.getElementById('create-persona-modal').classList.remove('hidden');
     }
@@ -1037,31 +1076,41 @@
 
       const gender = document.getElementById('persona-gender-input').value.trim();
       const age = document.getElementById('persona-age-input').value.trim();
+      const birthday = document.getElementById('persona-birthday-input').value.trim();
+      const appearance = document.getElementById('persona-appearance-input').value.trim();
       const personality = document.getElementById('persona-personality-input').value.trim();
-      const background = document.getElementById('persona-background-input').value.trim();
+      const likes = document.getElementById('persona-likes-input').value.trim();
+      const dislikes = document.getElementById('persona-dislikes-input').value.trim();
+      const extra = document.getElementById('persona-extra-input').value.trim();
       const editingId = document.getElementById('editing-persona-id').value;
 
       if (editingId) {
-        // แก้ไข Persona เดิม
         const p = userPersonas.find(item => item.id === editingId);
         if (p) {
           p.name = name;
           p.gender = gender || 'ไม่ระบุ';
           p.age = age || 'ไม่ระบุ';
-          p.avatar = tempPersonaAvatar;
+          p.birthday = birthday || 'ไม่ระบุ';
+          p.appearance = appearance || 'ไม่ระบุ';
           p.personality = personality || 'ทั่วไป';
-          p.background = background || 'เพื่อนร่วมทาง';
+          p.likes = likes || 'ไม่ระบุ';
+          p.dislikes = dislikes || 'ไม่ระบุ';
+          p.extra = extra || 'ไม่มี';
+          p.avatar = tempPersonaAvatar;
         }
       } else {
-        // สร้าง Persona ใหม่
         const newPersona = {
           id: 'persona_' + Date.now(),
           name: name,
           gender: gender || 'ไม่ระบุ',
           age: age || 'ไม่ระบุ',
-          avatar: tempPersonaAvatar,
+          birthday: birthday || 'ไม่ระบุ',
+          appearance: appearance || 'ไม่ระบุ',
           personality: personality || 'ทั่วไป',
-          background: background || 'เพื่อนร่วมทาง',
+          likes: likes || 'ไม่ระบุ',
+          dislikes: dislikes || 'ไม่ระบุ',
+          extra: extra || 'ไม่มี',
+          avatar: tempPersonaAvatar,
           isSelected: false
         };
         userPersonas.push(newPersona);
@@ -1106,6 +1155,8 @@
         }`;
         div.onclick = () => selectPersona(p.id);
 
+        const summaryText = p.appearance ? `รูปลักษณ์: ${p.appearance}` : (p.personality ? `นิสัย: ${p.personality}` : 'โปรไฟล์ตัวละครผู้เล่น');
+
         div.innerHTML = `
           <div class="flex items-center gap-2.5 flex-1 overflow-hidden pointer-events-none">
             <img src="${p.avatar}" class="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0">
@@ -1114,12 +1165,11 @@
                 <span class="text-xs font-bold text-slate-800 truncate">${p.name}</span>
                 ${p.isSelected ? '<span class="text-[9px] bg-violet-500 text-white px-2 py-0.2 rounded-full font-semibold flex-shrink-0">ใช้งานอยู่</span>' : ''}
               </div>
-              <p class="text-[10px] text-slate-500 truncate max-w-[170px] mt-0.5">${p.background}</p>
+              <p class="text-[10px] text-slate-500 truncate max-w-[170px] mt-0.5">${summaryText}</p>
             </div>
           </div>
           
           <div class="flex items-center gap-2 pl-2">
-            <!-- ปุ่มแก้ไขโปรไฟล์เดิม -->
             <button onclick="openEditPersonaModal('${p.id}', event)" class="p-1.5 text-slate-400 hover:text-violet-600 rounded-xl hover:bg-white/80 transition" title="แก้ไขโปรไฟล์นี้">
               <i class="fa-solid fa-pen text-xs"></i>
             </button>
@@ -1622,7 +1672,14 @@
 
       if (apiKey) {
         try {
-          const prompt = `คุณคือ ${bot.name} กำลังคุยแชทในไอจีกับ "${persona.name}" (เพศ: ${persona.gender}, อายุ: ${persona.age}, บุคลิก: ${persona.personality}, ความสัมพันธ์: ${persona.background})
+          const prompt = `คุณคือ ${bot.name} กำลังคุยแชทในไอจีกับ "${persona.name}"
+ข้อมูลอัตลักษณ์ของผู้เล่น:
+- เพศ: ${persona.gender}, อายุ: ${persona.age}, วันเกิด: ${persona.birthday || 'ไม่ระบุ'}
+- รูปลักษณ์: ${persona.appearance || 'ไม่ระบุ'}
+- นิสัย: ${persona.personality || 'ไม่ระบุ'}
+- สิ่งที่ชอบ: ${persona.likes || 'ไม่ระบุ'}, สิ่งที่ไม่ชอบ: ${persona.dislikes || 'ไม่ระบุ'}
+- จุดเด่น: ${persona.extra || 'ไม่มี'}
+
 ตอบกลับข้อความนี้แบบธรรมชาติ 1-2 ประโยคสั้นๆ ห้ามใส่คำบรรยายการกระทำ: "${userText}"`;
 
           if (provider === 'gemini') {
@@ -1778,18 +1835,22 @@
 คุณคือนักประพันธ์นวนิยายโรแมนติก โดยรับบทบาทเป็นตัวละคร "${bot.name}"
 ข้อมูลตัวละครบอท: ${bot.personality}
 
-ข้อมูลโปรไฟล์ของผู้เล่นที่กำลังคุยด้วย (User Persona):
+ข้อมูลอัตลักษณ์ประจำตัวของผู้เล่น (User Persona):
 - ชื่อผู้เล่น: ${persona.name}
 - เพศ: ${persona.gender}
 - อายุ: ${persona.age}
-- บุคลิกภาพ: ${persona.personality}
-- ความสัมพันธ์และภูมิหลังกับบอท: ${persona.background}
+- วันเกิด: ${persona.birthday || 'ไม่ระบุ'}
+- รูปลักษณ์ภายนอก: ${persona.appearance || 'ไม่ระบุ'}
+- บุคลิกภาพและนิสัย: ${persona.personality || 'ไม่ระบุ'}
+- สิ่งที่ผู้เล่นชอบ: ${persona.likes || 'ไม่ระบุ'}
+- สิ่งที่ผู้เล่นไม่ชอบ: ${persona.dislikes || 'ไม่ระบุ'}
+- จุดเด่น/เอกลักษณ์เฉพาะตัว: ${persona.extra || 'ไม่มี'}
 
 ข้อความล่าสุดจากผู้เล่น (${persona.name}): "${userText}"
 
 ข้อกำหนดความยาว 4,000 - 6,000 ตัวอักษร:
 - มีการบรรยายสลับคำพูดอย่างสละสลวย พรรณนาบรรยากาศ แสงเงา ภาษากาย และความรู้สึกภายใน
-- ต้องตอบสนองต่อผู้เล่นตามภูมิหลังและความสัมพันธ์ที่กำหนดไว้ในโปรไฟล์ Persona ของผู้เล่นอย่างกลมกลืน
+- ให้สังเกตและบรรยายถึงรูปลักษณ์ภายนอก กลิ่นอาย ปฏิกิริยาท่าทาง และสิ่งที่ ${persona.name} ชอบ/ไม่ชอบ ตามที่ระบุไว้ใน Persona ของผู้เล่นอย่างกลมกลืนเป็นธรรมชาติ
 ตอบเป็น JSON เท่านั้น:
 {
   "thought": "ความคิดในใจของตัวละคร",
@@ -1836,7 +1897,7 @@
       }
 
       return {
-        thought: `ทุกคำพูดของ${persona.name}ทำให้ใจเต้นแรงเสมอ...`,
+        thought: `ทุกคำพูดและการกระทำของ${persona.name}ทำให้ใจเต้นแรงเสมอ...`,
         paragraphs: [
           { type: "narration", text: `ความเงียบงันถูกเติมเต็มด้วยเสียงลมหายใจสม่ำเสมอ แสงแดดยามเย็นทอดประกายกระทบเส้นผมของเขาจนเกิดประกายสีทองอบอุ่น สายตาคมคู่นั้นไม่ได้ละไปจากใบหน้าของ ${persona.name} แม้แต่วินาทีเดียว` },
           { type: "speech", text: `รู้ไหมครับ... ทุกครั้งที่ได้ยินเสียงเธอ มันทำให้เค้าหายเหนื่อยไปหมดเลยนะ ${persona.name}` },
