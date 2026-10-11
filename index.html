@@ -230,13 +230,14 @@
             <div id="explore-bot-cards-container" class="space-y-2.5 pt-1"></div>
           </div>
 
-          <!-- SUB-VIEW B: หน้าฟอร์มสร้างบอท -->
+          <!-- SUB-VIEW B: หน้าฟอร์มสร้าง/แก้ไขบอท -->
           <div id="explore-creator-view" class="hidden space-y-3">
             <div class="flex items-center justify-between text-slate-500 text-xs px-1">
               <div class="flex items-center gap-1.5 cursor-pointer hover:text-violet-600 transition font-medium" onclick="switchToBotDiscovery()">
                 <i class="fa-solid fa-chevron-left text-[11px]"></i>
                 <span>กลับไปหน้ารวมบอท</span>
               </div>
+              <span id="creator-form-title-badge" class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">โหมดสร้างบอทใหม่</span>
             </div>
 
             <div class="flex gap-4 overflow-x-auto hide-scrollbar border-b border-purple-100 pb-1 text-xs font-medium whitespace-nowrap">
@@ -248,6 +249,8 @@
             </div>
 
             <div class="pastel-card rounded-3xl p-4 space-y-4">
+              <input type="hidden" id="editing-bot-id">
+
               <!-- 1. Profile Tab -->
               <div id="btab-profile" class="space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
@@ -364,7 +367,7 @@
               <!-- 4. รายละเอียดเพิ่มเติม -->
               <div id="btab-extra" class="hidden space-y-3.5">
                 <div class="flex justify-between items-center px-1">
-                  <h3 class="text-xs font-bold text-indigo-950">รายละเอียดเพิ่มเติม</h3>
+                  <h3 class="text-xs font-bold text-indigo-950">รายละเอียดเพิ่มเติม (หลังบ้าน)</h3>
                   <span id="extra-slots-badge" class="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">5 ช่องฟรี</span>
                 </div>
                 <div id="bot-extra-slots-container" class="space-y-3"></div>
@@ -400,12 +403,10 @@
               <i class="fa-solid fa-chevron-left"></i> ย้อนกลับ
             </button>
             <div class="flex items-center gap-3">
-              <!-- ปุ่มกดไลก์ (สะสมยอดหัวใจจริง กดแล้วสลับสถานะ 1 คนต่อ 1 ไลก์) -->
               <button id="hub-like-btn" onclick="toggleHubBotLike()" class="flex items-center gap-1.5 px-3 py-1 bg-white border border-rose-200 rounded-full text-rose-500 text-xs font-bold shadow-sm transition active:scale-95">
                 <i id="hub-like-icon" class="fa-regular fa-heart"></i>
                 <span id="hub-like-count">0</span>
               </button>
-              <!-- จำนวนคนเล่น (1 บัญชีอีเมลนับเป็น 1 คน) -->
               <div class="flex items-center gap-1 px-3 py-1 bg-white border border-purple-100 rounded-full text-purple-700 text-xs font-bold shadow-sm">
                 <i class="fa-solid fa-user-group text-[10px]"></i>
                 <span id="hub-player-count">0</span> คนเล่น
@@ -467,7 +468,7 @@
             </div>
           </div>
 
-          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว (พร้อมปุ่มแก้ไข, ลบ, ตอบกลับ และระบบกดไลก์ได้ 1 ครั้ง/บัญชี) -->
+          <!-- เนื้อหาแท็บ 3: ความคิดเห็น & รีวิว -->
           <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
             <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
             
@@ -1249,7 +1250,6 @@
       renderHubReviewsTab();
     }
 
-    // กดไลก์รีวิวได้แค่ครั้งเดียวต่อ 1 บัญชีอีเมล (กดซ้ำเพื่อยกเลิก)
     function likeHubReview(idx) {
       const r = currentHubBot.reviews[idx];
       if (!r) return;
@@ -1257,11 +1257,9 @@
 
       const userIdx = r.likedUsers.indexOf(currentUserEmail);
       if (userIdx > -1) {
-        // ถ้ายกเลิกกดถูกใจ (-1)
         r.likedUsers.splice(userIdx, 1);
         r.likes = Math.max(0, (r.likes || 1) - 1);
       } else {
-        // ถ้ากดถูกใจ (+1)
         r.likedUsers.push(currentUserEmail);
         r.likes = (r.likes || 0) + 1;
       }
@@ -1345,12 +1343,92 @@
       renderExploreBotCards();
     }
 
-    function switchToBotCreatorForm() {
+    function switchToBotCreatorForm(botToEdit = null) {
       document.getElementById('explore-discovery-view').classList.add('hidden');
       document.getElementById('explore-creator-view').classList.remove('hidden');
       document.getElementById('view-bot-hub').classList.add('hidden');
-      renderBotExtraSlots();
+
+      const titleBadge = document.getElementById('creator-form-title-badge');
+
+      if (botToEdit) {
+        // โหมดแก้ไขบอทเดิม
+        if (titleBadge) titleBadge.innerText = 'โหมดแก้ไขบอท';
+        document.getElementById('editing-bot-id').value = botToEdit.id;
+        document.getElementById('bot-name-input').value = botToEdit.name || '';
+        document.getElementById('bot-age-input').value = botToEdit.age || '';
+        document.getElementById('bot-career-input').value = botToEdit.career || '';
+        document.getElementById('bot-quote-input').value = botToEdit.quote || '';
+        document.getElementById('bot-preview-input').value = botToEdit.shortPreview || '';
+        document.getElementById('bot-story-input').value = botToEdit.story || '';
+        document.getElementById('bot-info-input').value = botToEdit.basicInfo || '';
+        document.getElementById('bot-personality-input').value = botToEdit.personality || '';
+        document.getElementById('bot-height-input').value = botToEdit.height || '';
+        document.getElementById('bot-weight-input').value = botToEdit.weight || '';
+        document.getElementById('bot-mbti-input').value = botToEdit.mbti || '';
+        document.getElementById('bot-ideal-type-input').value = botToEdit.idealType || '';
+        document.getElementById('bot-player-relation-input').value = botToEdit.playerRelation || '';
+        document.getElementById('bot-first-encounter-input').value = botToEdit.firstEncounter || '';
+        
+        if (botToEdit.avatar) {
+          tempBotAvatar = botToEdit.avatar;
+          document.getElementById('new-bot-avatar-preview').src = botToEdit.avatar;
+        }
+
+        // เพศ
+        const genderRadios = document.getElementsByName('bot-gender');
+        for (let r of genderRadios) {
+          r.checked = (r.value === (botToEdit.gender || 'none'));
+        }
+
+        // การเผยแพร่
+        const pubRadios = document.getElementsByName('bot-publish-visibility');
+        for (let r of pubRadios) {
+          r.checked = (r.value === (botToEdit.isPublished ? 'public' : 'private'));
+        }
+
+        renderBotExtraSlots(botToEdit.botSlots);
+      } else {
+        // โหมดสร้างบอทใหม่
+        if (titleBadge) titleBadge.innerText = 'โหมดสร้างบอทใหม่';
+        document.getElementById('editing-bot-id').value = '';
+        document.getElementById('bot-name-input').value = '';
+        document.getElementById('bot-age-input').value = '';
+        document.getElementById('bot-career-input').value = '';
+        document.getElementById('bot-quote-input').value = '';
+        document.getElementById('bot-preview-input').value = '';
+        document.getElementById('bot-story-input').value = '';
+        document.getElementById('bot-info-input').value = '';
+        document.getElementById('bot-personality-input').value = '';
+        document.getElementById('bot-height-input').value = '';
+        document.getElementById('bot-weight-input').value = '';
+        document.getElementById('bot-mbti-input').value = '';
+        document.getElementById('bot-ideal-type-input').value = '';
+        document.getElementById('bot-player-relation-input').value = '';
+        document.getElementById('bot-first-encounter-input').value = '';
+
+        renderBotExtraSlots();
+      }
+
       switchBotTab('profile');
+    }
+
+    function editBotById(botId, event) {
+      if (event) event.stopPropagation();
+      const b = getBot(botId);
+      if (b) switchToBotCreatorForm(b);
+    }
+
+    function deleteBotById(botId, event) {
+      if (event) event.stopPropagation();
+      const b = getBot(botId);
+      if (!b) return;
+
+      if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบบอท "${b.name}" ออกจากระบบ?`)) {
+        bots = bots.filter(item => item.id !== botId);
+        saveUserData();
+        renderExploreBotCards();
+        alert("ลบบอทเรียบร้อยแล้ว");
+      }
     }
 
     function renderExploreBotCards(filterKeyword = '') {
@@ -1380,12 +1458,25 @@
 
       listToRender.forEach(b => {
         const div = document.createElement('div');
-        div.className = 'p-3.5 bg-white border border-purple-100 rounded-3xl space-y-2.5 shadow-sm hover:border-violet-300 transition cursor-pointer select-none';
+        div.className = 'p-3.5 bg-white border border-purple-100 rounded-3xl space-y-2.5 shadow-sm hover:border-violet-300 transition cursor-pointer select-none relative';
         div.onclick = () => openBotHubPage(b.id);
 
         let statusBadge = '';
+        let managementBtns = '';
+
         if (currentExploreSubTab === 'mybots') {
           statusBadge = b.isPublished ? '<span class="text-[9px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold">เผยแพร่แล้ว</span>' : '<span class="text-[9px] bg-amber-50 text-amber-600 px-2 py-0.5 rounded-full border border-amber-200 font-semibold">ฉบับร่าง</span>';
+          
+          managementBtns = `
+            <div class="flex items-center gap-1.5">
+              <button onclick="editBotById('${b.id}', event)" class="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1">
+                <i class="fa-solid fa-pen"></i> แก้ไข
+              </button>
+              <button onclick="deleteBotById('${b.id}', event)" class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-[10px] font-bold transition flex items-center gap-1">
+                <i class="fa-solid fa-trash"></i> ลบ
+              </button>
+            </div>
+          `;
         }
 
         div.innerHTML = `
@@ -1402,7 +1493,7 @@
           <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed bg-purple-50/30 p-2.5 rounded-2xl border border-purple-50">${b.shortPreview || b.story || 'ตัวละครพร้อมสำหรับเข้าสู่บทบาท'}</p>
           <div class="flex justify-between items-center text-[10px] text-slate-400 pt-0.5">
             <span class="flex items-center gap-1"><i class="fa-solid fa-comments text-violet-400"></i> ${b.rooms ? b.rooms.length : 1} ห้องเนื้อเรื่อง</span>
-            <span class="text-purple-600 font-semibold hover:underline">แตะเพื่อดูโปรไฟล์ & สตอรี่ →</span>
+            ${managementBtns ? managementBtns : '<span class="text-purple-600 font-semibold hover:underline">แตะเพื่อดูโปรไฟล์ & สตอรี่ →</span>'}
           </div>
         `;
         container.appendChild(div);
@@ -1414,7 +1505,7 @@
     }
 
     // ==================== BOT CREATOR & EXTRA SLOTS ====================
-    function renderBotExtraSlots() {
+    function renderBotExtraSlots(existingSlots = []) {
       const container = document.getElementById('bot-extra-slots-container');
       const badge = document.getElementById('extra-slots-badge');
       if (!container) return;
@@ -1424,16 +1515,20 @@
       if (badge) badge.innerText = `${totalSlots} ช่องพร้อมใช้`;
 
       for (let i = 1; i <= totalSlots; i++) {
+        const slotVal = (existingSlots && existingSlots[i - 1]) ? existingSlots[i - 1].content : '';
         const div = document.createElement('div');
         div.className = 'border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition space-y-1';
         div.innerHTML = `
           <div class="flex justify-between items-center">
-            <label class="block text-xs font-bold text-slate-700">ช่องข้อมูลที่ ${i} (ข้อมูลที่ให้บอทจำ)</label>
+            <label class="block text-xs font-bold text-slate-700">ช่องข้อมูลหลังบ้านที่ ${i} (ข้อมูลที่ให้บอทจำ)</label>
             <span id="extra-slot-counter-${i}" class="text-[10px] text-slate-400">0/1500 คำ</span>
           </div>
-          <textarea id="bot-extra-slot-${i}" oninput="updateWordCounter(this, 'extra-slot-counter-${i}', 1500)" rows="2" placeholder="พิมพ์ข้อมูลที่ให้บอทจำ (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+          <textarea id="bot-extra-slot-${i}" oninput="updateWordCounter(this, 'extra-slot-counter-${i}', 1500)" rows="2" placeholder="พิมพ์ข้อมูลที่ให้บอทจำ (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none">${slotVal}</textarea>
         `;
         container.appendChild(div);
+        if (slotVal) {
+          updateWordCounter(div.querySelector('textarea'), `extra-slot-counter-${i}`, 1500);
+        }
       }
     }
 
@@ -1453,6 +1548,7 @@
     }
 
     function submitSaveBotFromAdvanced() {
+      const editingId = document.getElementById('editing-bot-id').value;
       const visibility = document.querySelector('input[name="bot-publish-visibility"]:checked')?.value || 'public';
       const isPublish = visibility === 'public';
       const name = document.getElementById('bot-name-input').value.trim();
@@ -1469,42 +1565,71 @@
         }
       }
 
-      const newBot = {
-        id: 'bot_' + Date.now(),
-        name: name,
-        avatar: tempBotAvatar,
-        gender: document.querySelector('input[name="bot-gender"]:checked')?.value || 'none',
-        age: document.getElementById('bot-age-input').value.trim(),
-        career: document.getElementById('bot-career-input').value.trim(),
-        quote: document.getElementById('bot-quote-input').value.trim(),
-        shortPreview: document.getElementById('bot-preview-input').value.trim(),
-        story: document.getElementById('bot-story-input').value.trim(),
-        basicInfo: document.getElementById('bot-info-input').value.trim(),
-        personality: document.getElementById('bot-personality-input').value.trim(),
-        height: document.getElementById('bot-height-input').value.trim(),
-        weight: document.getElementById('bot-weight-input').value.trim(),
-        mbti: document.getElementById('bot-mbti-input').value.trim(),
-        idealType: document.getElementById('bot-ideal-type-input').value.trim(),
-        preferredRelation: document.getElementById('bot-preferred-relation-input').value.trim(),
-        playerRelation: document.getElementById('bot-player-relation-input').value.trim(),
-        speakingStyle: document.getElementById('bot-speaking-style-input').value.trim(),
-        firstEncounter: document.getElementById('bot-first-encounter-input').value.trim(),
-        extraDetails: extraDetails,
-        botSlots: botSlots,
-        playerSlots: [],
-        likesCount: 0,
-        likedUsers: [],
-        playedUsers: [],
-        reviews: [],
-        isPublished: isPublish,
-        rooms: [],
-        dmHistory: [{ sender: "bot", text: "ทักทายครับ ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }],
-        posts: [{ img: tempBotAvatar, caption: "เริ่มต้นเรื่องราวใหม่ไปด้วยกัน ✨", time: "เมื่อครู่" }]
-      };
+      if (editingId) {
+        // อัปเดตข้อมูลบอทเดิม
+        const targetBot = getBot(editingId);
+        if (targetBot) {
+          targetBot.name = name;
+          targetBot.avatar = tempBotAvatar;
+          targetBot.gender = document.querySelector('input[name="bot-gender"]:checked')?.value || 'none';
+          targetBot.age = document.getElementById('bot-age-input').value.trim();
+          targetBot.career = document.getElementById('bot-career-input').value.trim();
+          targetBot.quote = document.getElementById('bot-quote-input').value.trim();
+          targetBot.shortPreview = document.getElementById('bot-preview-input').value.trim();
+          targetBot.story = document.getElementById('bot-story-input').value.trim();
+          targetBot.basicInfo = document.getElementById('bot-info-input').value.trim();
+          targetBot.personality = document.getElementById('bot-personality-input').value.trim();
+          targetBot.height = document.getElementById('bot-height-input').value.trim();
+          targetBot.weight = document.getElementById('bot-weight-input').value.trim();
+          targetBot.mbti = document.getElementById('bot-mbti-input').value.trim();
+          targetBot.idealType = document.getElementById('bot-ideal-type-input').value.trim();
+          targetBot.playerRelation = document.getElementById('bot-player-relation-input').value.trim();
+          targetBot.firstEncounter = document.getElementById('bot-first-encounter-input').value.trim();
+          targetBot.extraDetails = extraDetails;
+          targetBot.botSlots = botSlots;
+          targetBot.isPublished = isPublish;
 
-      bots.unshift(newBot);
-      saveUserData();
-      alert(`บันทึกตัวละคร "${name}" เรียบร้อยแล้ว!`);
+          saveUserData();
+          alert(`อัปเดตข้อมูลบอท "${name}" เรียบร้อยแล้ว!`);
+        }
+      } else {
+        // สร้างบอทใหม่
+        const newBot = {
+          id: 'bot_' + Date.now(),
+          name: name,
+          avatar: tempBotAvatar,
+          gender: document.querySelector('input[name="bot-gender"]:checked')?.value || 'none',
+          age: document.getElementById('bot-age-input').value.trim(),
+          career: document.getElementById('bot-career-input').value.trim(),
+          quote: document.getElementById('bot-quote-input').value.trim(),
+          shortPreview: document.getElementById('bot-preview-input').value.trim(),
+          story: document.getElementById('bot-story-input').value.trim(),
+          basicInfo: document.getElementById('bot-info-input').value.trim(),
+          personality: document.getElementById('bot-personality-input').value.trim(),
+          height: document.getElementById('bot-height-input').value.trim(),
+          weight: document.getElementById('bot-weight-input').value.trim(),
+          mbti: document.getElementById('bot-mbti-input').value.trim(),
+          idealType: document.getElementById('bot-ideal-type-input').value.trim(),
+          playerRelation: document.getElementById('bot-player-relation-input').value.trim(),
+          firstEncounter: document.getElementById('bot-first-encounter-input').value.trim(),
+          extraDetails: extraDetails,
+          botSlots: botSlots,
+          playerSlots: [],
+          likesCount: 0,
+          likedUsers: [],
+          playedUsers: [],
+          reviews: [],
+          isPublished: isPublish,
+          rooms: [],
+          dmHistory: [{ sender: "bot", text: "ทักทายครับ ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }],
+          posts: [{ img: tempBotAvatar, caption: "เริ่มต้นเรื่องราวใหม่ไปด้วยกัน ✨", time: "เมื่อครู่" }]
+        };
+
+        bots.unshift(newBot);
+        saveUserData();
+        alert(`บันทึกตัวละคร "${name}" เรียบร้อยแล้ว!`);
+      }
+
       switchToBotDiscovery();
     }
 
