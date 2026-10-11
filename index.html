@@ -102,9 +102,9 @@
     <!-- ==================== VIEW 1: LOBBY ==================== -->
     <div id="view-lobby" class="flex-1 flex flex-col overflow-hidden bg-slate-50/60">
       
-      <!-- Top Lobby Header -->
+      <!-- Top Lobby Header (แสดงทั้งเหรียญกระต่าย 🐰 และเหรียญแมว 🐱) -->
       <header class="p-3 bg-white/90 backdrop-blur border-b border-purple-100 flex justify-between items-center z-10">
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-2">
           <label class="relative cursor-pointer group" title="เปลี่ยนรูปโปรไฟล์หลัก">
             <img id="header-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" class="w-9 h-9 rounded-full object-cover border-2 border-violet-300 shadow-sm">
             <input type="file" accept="image/*" class="hidden" onchange="uploadUserAvatar(event)">
@@ -115,16 +115,22 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <button onclick="openCoinShopModal()" class="flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 rounded-full transition shadow-sm" title="ร้านค้าเหรียญกระต่ายเยลลี่">
-            <span class="text-sm">🐰</span>
-            <span id="user-coin-balance" class="text-xs font-bold text-purple-700">10</span>
-            <span class="text-[9px] text-purple-400 font-medium">+</span>
+        <div class="flex items-center gap-1.5">
+          <!-- กล่องเหรียญกระต่ายเยลลี่ 🐰 -->
+          <button onclick="openCoinShopModal()" class="flex items-center gap-1 px-2 py-1 bg-purple-50 hover:bg-purple-100 border border-purple-200 rounded-full transition shadow-sm" title="เหรียญกระต่ายเยลลี่">
+            <span class="text-xs">🐰</span>
+            <span id="user-coin-balance" class="text-[11px] font-bold text-purple-700">10</span>
+          </button>
+
+          <!-- กล่องเหรียญแมวเยลลี่ 🐱 -->
+          <button onclick="openCoinShopModal()" class="flex items-center gap-1 px-2 py-1 bg-sky-50 hover:bg-sky-100 border border-sky-200 rounded-full transition shadow-sm" title="เหรียญแมวเยลลี่ (รับฟรีทุกวัน)">
+            <span class="text-xs">🐱</span>
+            <span id="user-cat-coin-balance" class="text-[11px] font-bold text-sky-700">50</span>
           </button>
           
           <div class="flex items-center gap-1 pl-1">
-            <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-purple-300"></span>
-            <span id="api-status-label" class="text-[11px] font-medium text-slate-500">ออฟไลน์</span>
+            <span id="api-status-dot" class="w-2 h-2 rounded-full bg-purple-300"></span>
+            <span id="api-status-label" class="text-[10px] font-medium text-slate-500">ออฟไลน์</span>
           </div>
         </div>
       </header>
@@ -200,16 +206,15 @@
         <!-- TAB 2: EXPLORE & BOT MARKETPLACE & BOT CREATOR -->
         <section id="tab-explore" class="hidden space-y-3.5 pb-8">
           
-          <!-- SUB-VIEW A: หน้ารวมบอท (แยกแท็บ "ค้นหาบอท" กับ "บอทที่ฉันสร้าง") -->
+          <!-- SUB-VIEW A: หน้ารวมบอท (เปลี่ยนไอคอนแท็บบอทที่ฉันสร้างเป็นกระต่าย 🐰) -->
           <div id="explore-discovery-view" class="space-y-3.5">
             
-            <!-- 2 แท็บย่อยด้านบน: ค้นหาบอท vs บอทที่ฉันสร้าง -->
             <div class="flex p-1 bg-purple-100/60 rounded-2xl border border-purple-200 text-xs font-bold">
               <button onclick="switchExploreSubTab('public')" id="subtab-btn-public" class="flex-1 py-2 rounded-xl bg-white text-purple-700 shadow-sm transition flex items-center justify-center gap-1.5">
                 <i class="fa-solid fa-compass text-xs"></i> ค้นหาบอท
               </button>
               <button onclick="switchExploreSubTab('mybots')" id="subtab-btn-mybots" class="flex-1 py-2 rounded-xl text-slate-500 hover:text-purple-700 transition flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-robot text-xs"></i> บอทที่ฉันสร้าง
+                <span>🐰</span> บอทที่ฉันสร้าง
               </button>
             </div>
 
@@ -224,7 +229,7 @@
               </button>
             </div>
 
-            <!-- กล่องค้นหา (แสดงเฉพาะตอนอยู่แท็บค้นหาบอท) -->
+            <!-- กล่องค้นหา -->
             <div id="explore-search-bar" class="relative">
               <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
               <input id="bot-search-input" oninput="filterExploreBots()" type="text" placeholder="ค้นหาชื่อบอท, นิสัย, แนวเนื้อเรื่อง..." class="w-full pastel-input rounded-2xl pl-9 pr-3.5 py-2 text-xs focus:outline-none">
@@ -243,13 +248,12 @@
               </div>
             </div>
 
-            <!-- Tab Headers: Profile / ข้อมูลบอท / สถานการณ์ / ตั้งค่ารายละเอียด / อีเวนต์ / ลอร์บุ๊ก -->
+            <!-- Tab Headers: Profile / ข้อมูลบอท / สถานการณ์ / รายละเอียดเพิ่มเติม / ลอร์บุ๊ก (ตัดตั้งค่ารายละเอียดออกแล้ว) -->
             <div class="flex gap-4 overflow-x-auto hide-scrollbar border-b border-purple-100 pb-1 text-xs font-medium whitespace-nowrap">
               <button onclick="switchBotTab('profile')" id="btab-btn-profile" class="text-violet-600 border-b-2 border-violet-500 pb-1 px-1 transition font-bold">Profile</button>
               <button onclick="switchBotTab('basic')" id="btab-btn-basic" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ข้อมูลบอท</button>
               <button onclick="switchBotTab('first')" id="btab-btn-first" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">สถานการณ์</button>
-              <button onclick="switchBotTab('details')" id="btab-btn-details" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ตั้งค่ารายละเอียด</button>
-              <button onclick="switchBotTab('event')" id="btab-btn-event" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">อีเวนต์</button>
+              <button onclick="switchBotTab('extra')" id="btab-btn-extra" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">รายละเอียดเพิ่มเติม</button>
               <button onclick="switchBotTab('lore')" id="btab-btn-lore" class="text-slate-400 hover:text-violet-600 pb-1 px-1 transition font-medium">ลอร์บุ๊ก</button>
             </div>
 
@@ -309,7 +313,7 @@
                     <label class="block text-xs font-bold text-slate-700">เรื่องเล่า / สตอรี่แบบละเอียด</label>
                     <span id="story-word-counter" class="text-[10px] text-slate-400">0/2000 คำ</span>
                   </div>
-                  <textarea id="bot-story-input" oninput="updateStoryWordCount(this)" rows="5" placeholder="เขียนเนื้อเรื่อง ปูมหลัง บรรยากาศ หรือพล็อตละเอียดเพื่อให้ผู้เล่นอ่านก่อนตัดสินใจเข้าเล่น (ไม่เกิน 2,000 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
+                  <textarea id="bot-story-input" oninput="updateWordCounter(this, 'story-word-counter', 2000)" rows="5" placeholder="เขียนเนื้อเรื่อง ปูมหลัง บรรยากาศ หรือพล็อตละเอียดเพื่อให้ผู้เล่นอ่านก่อนตัดสินใจเข้าเล่น (ไม่เกิน 2,000 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
                 </div>
 
                 <div class="border border-dashed border-purple-200 rounded-2xl p-3 space-y-2 bg-purple-50/40">
@@ -327,16 +331,22 @@
                 </div>
               </div>
 
-              <!-- 2. ข้อมูลบอท -->
+              <!-- 2. ข้อมูลบอท (เพิ่มความสัมพันธ์กับผู้เล่น) -->
               <div id="btab-basic" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">ข้อมูลพื้นฐานของบอท</label>
-                  <textarea id="bot-info-input" rows="3" placeholder="ประวัติครอบครัว ความเป็นมา ภูมิหลังในอดีต และข้อมูลอื่นๆ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <div class="flex justify-between items-center mb-1">
+                    <label class="block text-xs font-bold text-slate-700">ข้อมูลพื้นฐานของบอท</label>
+                    <span id="basic-info-word-counter" class="text-[10px] text-slate-400">0/1500 คำ</span>
+                  </div>
+                  <textarea id="bot-info-input" oninput="updateWordCounter(this, 'basic-info-word-counter', 1500)" rows="3" placeholder="ประวัติครอบครัว ความเป็นมา ภูมิหลังในอดีต (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
                 
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">นิสัยหรือพฤติกรรม</label>
-                  <textarea id="bot-personality-input" rows="3" placeholder="ลักษณะนิสัย การกระทำ สิ่งที่ชอบทำเป็นประจำ กิริยาท่าทาง..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <div class="flex justify-between items-center mb-1">
+                    <label class="block text-xs font-bold text-slate-700">นิสัยหรือพฤติกรรม</label>
+                    <span id="personality-word-counter" class="text-[10px] text-slate-400">0/1500 คำ</span>
+                  </div>
+                  <textarea id="bot-personality-input" oninput="updateWordCounter(this, 'personality-word-counter', 1500)" rows="3" placeholder="ลักษณะนิสัย การกระทำ สิ่งที่ชอบทำเป็นประจำ กิริยาท่าทาง (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
@@ -366,13 +376,22 @@
                   <input id="bot-preferred-relation-input" type="text" placeholder="เช่น คนรักที่คลั่งรักกัน, เพื่อนสนิทที่คอยดูแลกันเงียบๆ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
                 </div>
 
+                <!-- เพิ่มความสัมพันธ์กับผู้เล่น (ตัวเลือก) -->
+                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
+                  <div class="flex justify-between items-center mb-1">
+                    <label class="block text-xs font-bold text-slate-700">ความสัมพันธ์กับผู้เล่น (ถ้ามี / ตัวเลือก)</label>
+                    <span id="player-rel-word-counter" class="text-[10px] text-slate-400">0/1500 คำ</span>
+                  </div>
+                  <textarea id="bot-player-relation-input" oninput="updateWordCounter(this, 'player-rel-word-counter', 1500)" rows="2" placeholder="ระบุสถานะความสัมพันธ์ตั้งต้นกับผู้เล่น เช่น เป็นแฟนที่คบกันมา 1 ปี, พี่ชายข้างบ้าน (ถ้าไม่มีปล่อยว่างได้)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                </div>
+
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
                   <label class="block text-xs font-bold text-slate-700 mb-1">สไตล์การพูดและสำนวน</label>
                   <textarea id="bot-speaking-style-input" rows="2" placeholder="ตัวอย่าง: พูดแทนตัวเองว่าเค้า และเรียกคุณว่าคนดี ลงท้ายด้วยครับ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
               </div>
 
-              <!-- 3. สถานการณ์ -->
+              <!-- 3. สถานการณ์ (ฉากแรกเจอ + ไวยากรณ์) -->
               <div id="btab-first" class="hidden space-y-3.5">
                 <div class="p-3 bg-gradient-to-r from-purple-50 to-sky-50 rounded-2xl border border-purple-200/80 text-[11px] space-y-1.5 leading-relaxed text-slate-600">
                   <div class="font-bold text-purple-800 flex items-center gap-1.5">
@@ -386,47 +405,44 @@
                 </div>
 
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">ฉากแรกเจอ (ทั้งการกระทำและคำพูดเปิดฉาก)</label>
-                  <textarea id="bot-first-encounter-input" rows="6" placeholder="ตัวอย่าง:
+                  <div class="flex justify-between items-center mb-1">
+                    <label class="block text-xs font-bold text-slate-700">ฉากแรกเจอ (ทั้งการกระทำและคำพูดเปิดฉาก)</label>
+                    <span id="encounter-word-counter" class="text-[10px] text-slate-400">0/1500 คำ</span>
+                  </div>
+                  <textarea id="bot-first-encounter-input" oninput="updateWordCounter(this, 'encounter-word-counter', 1500)" rows="6" placeholder="ตัวอย่าง:
 *แสงแดดยามเย็นส่องกระทบใบหน้าของเขา เขาวางมือลงบนโต๊ะก่อนจะเงยหน้าสบตากับ {user} อย่างอ่อนโยน*
 
 &quot;{user} มาถึงแล้วเหรอครับ? เค้าคิดถึงเธอทั้งวันเลยนะ...&quot;" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none leading-relaxed"></textarea>
                 </div>
               </div>
 
-              <!-- 4. ตั้งค่ารายละเอียด -->
-              <div id="btab-details" class="hidden space-y-3.5">
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">ชอบ (ตัวเลือก)</label>
-                  <input id="bot-likes-input" type="text" placeholder="เช่น กาแฟ, หนังสือ, ของหวาน" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
+              <!-- 4. รายละเอียดเพิ่มเติม (เปลี่ยนจากอีเวนต์ เป็นช่องความจำ 1-5 + ปลดล็อคได้) -->
+              <div id="btab-extra" class="hidden space-y-3.5">
+                <div class="flex justify-between items-center px-1">
+                  <div>
+                    <h3 class="text-xs font-bold text-indigo-950">ข้อมูลและรายละเอียดเพิ่มเติมที่ให้บอทจำ</h3>
+                    <p class="text-[10px] text-slate-500">ข้อมูลพิเศษ พฤติกรรม หรือความลับ (ไม่เกิน 1,500 คำต่อช่อง)</p>
+                  </div>
+                  <span id="extra-slots-badge" class="text-[10px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">5 ช่องฟรี</span>
                 </div>
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">ไม่ชอบ (ตัวเลือก)</label>
-                  <input id="bot-dislikes-input" type="text" placeholder="ป้อนสิ่งที่ตัวละครไม่ชอบ" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                </div>
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">วันเกิด (ตัวเลือก)</label>
-                  <input id="bot-birthday-input" type="text" placeholder="เช่น 14 มีนาคม" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                </div>
+
+                <!-- รายการช่องข้อมูลเพิ่มเติม 1-5 (และช่องที่ปลดล็อคเพิ่ม) -->
+                <div id="bot-extra-slots-container" class="space-y-3"></div>
+
+                <!-- ปุ่มปลดล็อคช่องเพิ่ม -->
+                <button onclick="unlockExtraBotSlot()" class="w-full py-2.5 bg-gradient-to-r from-purple-50 to-sky-50 hover:from-purple-100 hover:to-sky-100 text-purple-700 rounded-2xl text-xs font-bold border border-purple-200 flex items-center justify-center gap-1.5 transition shadow-sm">
+                  <i class="fa-solid fa-lock-open text-[11px]"></i> ปลดล็อคช่องเพิ่ม (3 🐰 หรือ 10 🐱)
+                </button>
               </div>
 
-              <!-- 5. อีเวนต์ -->
-              <div id="btab-event" class="hidden space-y-3.5">
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">คีย์เวิร์ดกระตุ้นอีเวนต์</label>
-                  <input id="bot-event-trigger" type="text" placeholder="เช่น หึง, ป่วย, วันครบรอบ" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent">
-                </div>
-                <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">พฤติกรรมเมื่อเกิดอีเวนต์</label>
-                  <textarea id="bot-event-behavior" rows="2" placeholder="เช่น แสดงอาการหวงเป็นพิเศษ และดึงเข้ามากอดแน่น" class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
-                </div>
-              </div>
-
-              <!-- 6. ลอร์บุ๊ก -->
+              <!-- 5. ลอร์บุ๊ก -->
               <div id="btab-lore" class="hidden space-y-3.5">
                 <div class="border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition">
-                  <label class="block text-xs font-bold text-slate-700 mb-1">ลอร์บุ๊กและความทรงจำลึก</label>
-                  <textarea id="bot-lorebook-input" rows="4" placeholder="พิมพ์ประวัติศาสตร์โลก ความลับ หรือข้อเท็จจริงสำคัญ..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+                  <div class="flex justify-between items-center mb-1">
+                    <label class="block text-xs font-bold text-slate-700">ลอร์บุ๊กและความทรงจำลึก</label>
+                    <span id="lore-word-counter" class="text-[10px] text-slate-400">0/1500 คำ</span>
+                  </div>
+                  <textarea id="bot-lorebook-input" oninput="updateWordCounter(this, 'lore-word-counter', 1500)" rows="5" placeholder="พิมพ์ประวัติศาสตร์โลก ความลับ หรือข้อเท็จจริงสำคัญของจักรวาล (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
                 </div>
               </div>
 
@@ -694,9 +710,7 @@
           </div>
         </div>
 
-        <!-- รายละเอียดกายภาพ & นิสัยในการ์ดพรีวิว -->
-        <div id="modal-bot-additional-info" class="p-2.5 bg-purple-50/30 rounded-2xl border border-purple-100 text-[10.5px] text-slate-600 space-y-1 hidden">
-        </div>
+        <div id="modal-bot-additional-info" class="p-2.5 bg-purple-50/30 rounded-2xl border border-purple-100 text-[10.5px] text-slate-600 space-y-1 hidden"></div>
 
         <div class="space-y-2 pt-1 border-t border-purple-100">
           <span class="text-xs font-bold text-slate-700 block">เลือกโปรไฟล์ของคุณ (Persona) ที่จะใช้เข้าเล่น:</span>
@@ -798,41 +812,46 @@
       </div>
     </div>
 
-    <!-- Modal ร้านค้าเหรียญกระต่ายเยลลี่ -->
+    <!-- Modal ร้านค้าเหรียญกระต่ายเยลลี่ 🐰 และ แมวเยลลี่ 🐱 -->
     <div id="coin-shop-modal" class="hidden absolute inset-0 bg-indigo-950/30 backdrop-blur-md z-40 flex items-center justify-center p-4">
       <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-4">
         <div class="flex justify-between items-center border-b border-purple-100 pb-2">
           <div class="flex items-center gap-2">
-            <span class="text-xl">🐰</span>
-            <h3 class="text-sm font-bold text-indigo-950">ร้านค้าเหรียญกระต่ายเยลลี่</h3>
+            <span class="text-lg">🐰🐱</span>
+            <h3 class="text-sm font-bold text-indigo-950">ร้านค้าเหรียญเยลลี่</h3>
           </div>
           <button onclick="closeCoinShopModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <div class="bg-gradient-to-r from-purple-100/70 to-sky-100/70 p-3.5 rounded-2xl border border-purple-200/60 flex items-center justify-between">
-          <div>
-            <span class="text-[10px] text-slate-500 block">เหรียญของคุณตอนนี้</span>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-gradient-to-br from-purple-100/70 to-purple-50 p-3 rounded-2xl border border-purple-200/60">
+            <span class="text-[9px] text-slate-500 block">เหรียญกระต่ายเยลลี่</span>
             <div class="flex items-center gap-1.5 mt-0.5">
-              <span class="text-lg">🐰</span>
-              <span id="shop-coin-display" class="text-base font-extrabold text-purple-700">10</span>
-              <span class="text-[10px] text-purple-600 font-semibold">เหรียญกระต่ายเยลลี่</span>
+              <span class="text-base">🐰</span>
+              <span id="shop-coin-display" class="text-sm font-extrabold text-purple-700">10</span>
             </div>
           </div>
-          <span class="text-[10px] bg-white px-2 py-1 rounded-full border border-purple-200 text-purple-600 font-semibold">ฟรีเวอร์ชันทดสอบ</span>
+          <div class="bg-gradient-to-br from-sky-100/70 to-sky-50 p-3 rounded-2xl border border-sky-200/60">
+            <span class="text-[9px] text-slate-500 block">เหรียญแมวเยลลี่ (ฟรีทุกวัน)</span>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-base">🐱</span>
+              <span id="shop-cat-coin-display" class="text-sm font-extrabold text-sky-700">50</span>
+            </div>
+          </div>
         </div>
 
         <div class="space-y-2 text-xs">
-          <span class="font-bold text-slate-700 block">กดรับเหรียญเพิ่ม (ระบบจำลอง):</span>
+          <span class="font-bold text-slate-700 block">รับเหรียญฟรี (ระบบจำลอง):</span>
           
-          <div class="p-2.5 bg-purple-50/50 border border-purple-100 rounded-2xl flex justify-between items-center">
+          <div class="p-2.5 bg-sky-50/50 border border-sky-100 rounded-2xl flex justify-between items-center">
             <div class="flex items-center gap-2">
-              <span class="text-base">🐰</span>
+              <span class="text-base">🐱</span>
               <div>
-                <span class="font-bold text-slate-800 text-[11px] block">+5 เหรียญกระต่าย</span>
-                <span class="text-[9px] text-slate-400">ปลดล็อคโปรไฟล์ได้ 2 ช่อง</span>
+                <span class="font-bold text-slate-800 text-[11px] block">+50 เหรียญแมวเยลลี่</span>
+                <span class="text-[9px] text-slate-400">เช็คอินรับฟรีประจำวัน</span>
               </div>
             </div>
-            <button onclick="addFreeCoins(5)" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">รับฟรี</button>
+            <button onclick="claimDailyCatCoins()" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">รับฟรีวันนี้</button>
           </div>
 
           <div class="p-2.5 bg-purple-50/50 border border-purple-100 rounded-2xl flex justify-between items-center">
@@ -840,7 +859,7 @@
               <span class="text-base">🐰</span>
               <div>
                 <span class="font-bold text-slate-800 text-[11px] block">+10 เหรียญกระต่าย</span>
-                <span class="text-[9px] text-slate-400">ปลดล็อคโปรไฟล์ได้ 5 ช่อง</span>
+                <span class="text-[9px] text-slate-400">เหรียญพรีเมียมทดลองใช้</span>
               </div>
             </div>
             <button onclick="addFreeCoins(10)" class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">รับฟรี</button>
@@ -993,8 +1012,11 @@
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
     let tempLoginAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
     let tempPersonaAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
-    let currentExploreSubTab = 'public'; // 'public' หรือ 'mybots'
+    let currentExploreSubTab = 'public';
     let selectedPersonaForChatId = null;
+
+    // ตัวแปรโควตาช่องข้อมูลเพิ่มเติม (เริ่มต้น 5 ช่อง)
+    let unlockedBotExtraSlotsCount = 5;
 
     function getUserKey(key) {
       return `lovey_${currentUserEmail}_${key}`;
@@ -1005,6 +1027,19 @@
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
       return `${hours}:${minutes} น.`;
+    }
+
+    // ตัวนับคำและล็อกไม่ให้เกินจำนวนที่กำหนด
+    function updateWordCounter(textarea, counterId, maxWords) {
+      const text = textarea.value.trim();
+      const words = text ? text.split(/\s+/) : [];
+      if (words.length > maxWords) {
+        // ตัดทอนส่วนที่เกิน
+        textarea.value = words.slice(0, maxWords).join(" ");
+      }
+      const count = textarea.value.trim() ? textarea.value.trim().split(/\s+/).length : 0;
+      const el = document.getElementById(counterId);
+      if (el) el.innerText = `${count}/${maxWords} คำ`;
     }
 
     let defaultBots = [
@@ -1024,10 +1059,18 @@
         mbti: "ENFJ",
         idealType: "คนที่ยิ้มเก่ง อ่อนหวาน และรับฟังเวลาเขาเล่นดนตรี",
         preferredRelation: "คนรักที่คลั่งรักและอยู่เคียงข้างกันตลอดเวลา",
+        playerRelation: "เพื่อนสนิทที่รู้จักกันมาตั้งแต่มัธยม แอบชอบคุณอยู่เงียบๆ",
         speakingStyle: "แทนตัวเองว่าเค้า เรียกผู้เล่นว่าคนดี ลงท้ายด้วยครับ",
         firstEncounter: `*แสงแดดยามเย็นทอประกายสีส้มอ่อนสาดส่องผ่านกระจกบานใหญ่ในห้องซ้อมดนตรี เสียงเปียโนที่ก้องกังวานค่อยๆ เงียบลงเมื่อเขาหยุดปลายนิ้วลงบนคีย์ไม้ เร็นเงยหน้าขึ้นมาสบตากับ {user} ก่อนที่รอยยิ้มอบอุ่นจะปรากฏขึ้นที่มุมปากอย่างปิดไม่มิด*
 
 "เลิกเรียนแล้วเหรอครับ {user}? เค้าคิดถึงเธอทั้งวันเลยเนี่ย... เข้ามานั่งข้างๆ เค้าตรงนี้สิครับ"`,
+        extraDetails: [
+          "ชอบดื่มช็อกโกแลตร้อนหวานน้อยเวลาซ้อมเปียโนดึกๆ",
+          "มีรอยแผลเป็นเล็กๆ ที่ข้อนิ้วชี้ซ้ายจากการเล่นดนตรีตอนเด็ก",
+          "หวงคุณมากแต่พยายามเก็บอาการโดยการส่งยิ้มกลบเกลื่อน",
+          "จำวันสำคัญของคุณได้ทุกวันโดยไม่ต้องจดลงสมุด",
+          "ชอบให้คุณลูบผมเวลาเขารู้สึกเหนื่อยหรือท้อแท้"
+        ],
         isPublished: true,
         rooms: [
           {
@@ -1056,31 +1099,6 @@
             time: "1 ชม. ที่แล้ว"
           }
         ]
-      },
-      {
-        id: "bot_2",
-        name: "ลูคัส (Lucas)",
-        avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&auto=format&fit=crop&q=80",
-        gender: "male",
-        age: "26 ปี",
-        career: "ประธานบริหารรุ่นใหม่",
-        quote: "ในสายตาผม... ไม่มีอะไรสำคัญไปกว่าความสุขของคุณอีกแล้ว",
-        shortPreview: "ท่านประธานหนุ่มมาดนิ่ง เย็นชากับคนทั้งโลกแต่อ่อนโยนกับคุณเพียงคนเดียว",
-        story: "ลูคัสเป็นทายาทตระกูลธุรกิจใหญ่ที่ต้องแบกรับความกดดันมาตั้งแต่เด็ก ภายนอกเขาดูเยือกเย็นและเข้าถึงยาก แต่เมื่ออยู่กับคุณ เขาจะยอมวางความเข้มงวดทั้งหมดลงและคอยดูแลคุณอย่างทะนุถนอมที่สุด...",
-        personality: "สุขุม พูดน้อย อบอุ่น คอยดูแลและตามใจเงียบๆ ไม่ยอมให้ใครมารังแกคุณ",
-        height: "186 ซม.",
-        weight: "75 กก.",
-        mbti: "INTJ",
-        idealType: "คนที่จริงใจ เข้าใจความเงียบ และคอยอยู่ข้างๆ",
-        preferredRelation: "ความสัมพันธ์ที่มั่นคง ปกป้องดูแลซึ่งกันและกัน",
-        speakingStyle: "พูดสุภาพ น้ำเสียงทุ้มต่ำ เรียกผู้เล่นว่าคุณ แทนตัวเองว่าผม",
-        firstEncounter: `*บรรยากาศในห้องทำงานกว้างขวางเงียบสงบ มีเพียงเสียงแอร์เย็นฉ่ำและเสียงพลิกหน้ากระดาษเอกสาร ลูคัสหยุดมือที่กำลังเซ็นเอกสารก่อนจะเงยหน้ามองผู้มาเยือนอย่าง {user} แววตาคมดุพลันอ่อนแสงลงจนแทบสังเกตไม่เห็น*
-
-"มาถึงแล้วเหรอครับ {user}... เข้ามานั่งสิ แอร์ตรงนั้นหนาวไปไหม?"`,
-        isPublished: true,
-        rooms: [],
-        dmHistory: [],
-        posts: []
       }
     ];
 
@@ -1107,9 +1125,12 @@
       }
     ];
 
+    // ระบบเศรษฐกิจ: เหรียญกระต่ายเยลลี่ 🐰 และ เหรียญแมวเยลลี่ 🐱
     let userEconomy = {
-      coins: 10,
-      unlockedSlots: 0
+      coins: 10,       // เหรียญกระต่ายเยลลี่
+      catCoins: 50,    // เหรียญแมวเยลลี่ (ของฟรี)
+      unlockedSlots: 0,
+      extraBotSlots: 0  // ช่องข้อมูลเพิ่มเติมของบอทที่ปลดล็อคเพิ่มจาก 5
     };
 
     let appSettings = { language: "th", length: "epic", provider: "gemini", apiKey: "", showThoughts: true };
@@ -1149,6 +1170,60 @@
       localStorage.setItem(getUserKey('community'), JSON.stringify(communityPosts));
     }
 
+    // ==================== BOT EXTRA SLOTS (รายละเอียดเพิ่มเติม 1-5 และปลดล็อค) ====================
+    function renderBotExtraSlots() {
+      const container = document.getElementById('bot-extra-slots-container');
+      const badge = document.getElementById('extra-slots-badge');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const totalSlots = 5 + (userEconomy.extraBotSlots || 0);
+      if (badge) badge.innerText = `${totalSlots} ช่องพร้อมใช้`;
+
+      for (let i = 1; i <= totalSlots; i++) {
+        const div = document.createElement('div');
+        div.className = 'border border-purple-100 bg-purple-50/20 rounded-2xl p-3 focus-within:border-violet-400 focus-within:bg-white transition space-y-1';
+        div.innerHTML = `
+          <div class="flex justify-between items-center">
+            <label class="block text-xs font-bold text-slate-700">ช่องข้อมูลที่ ${i} (ข้อมูลที่ให้บอทจำ)</label>
+            <span id="extra-slot-counter-${i}" class="text-[10px] text-slate-400">0/1500 คำ</span>
+          </div>
+          <textarea id="bot-extra-slot-${i}" oninput="updateWordCounter(this, 'extra-slot-counter-${i}', 1500)" rows="2" placeholder="พิมพ์ข้อมูลเฉพาะตัว นิสัยลับ หรือเงื่อนไขที่ให้บอทจำในช่องนี้ (ไม่เกิน 1,500 คำ)..." class="w-full text-xs text-slate-800 focus:outline-none bg-transparent resize-none"></textarea>
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    function unlockExtraBotSlot() {
+      const choice = prompt("เลือกเหรียญที่ต้องการใช้ปลดล็อคช่องเพิ่ม 1 ช่อง:\nพิมพ์ '1' เพื่อใช้ 3 เหรียญกระต่ายเยลลี่ 🐰\nพิมพ์ '2' เพื่อใช้ 10 เหรียญแมวเยลลี่ 🐱\n(เหรียญของคุณ: " + userEconomy.coins + " 🐰 | " + userEconomy.catCoins + " 🐱)");
+      
+      if (choice === '1') {
+        if (userEconomy.coins >= 3) {
+          userEconomy.coins -= 3;
+          userEconomy.extraBotSlots = (userEconomy.extraBotSlots || 0) + 1;
+          saveUserData();
+          updateCoinDisplay();
+          renderBotExtraSlots();
+          alert("🎉 ปลดล็อคช่องข้อมูลบอทเพิ่มสำเร็จ!");
+        } else {
+          alert("เหรียญกระต่ายเยลลี่ไม่พอ!");
+          openCoinShopModal();
+        }
+      } else if (choice === '2') {
+        if (userEconomy.catCoins >= 10) {
+          userEconomy.catCoins -= 10;
+          userEconomy.extraBotSlots = (userEconomy.extraBotSlots || 0) + 1;
+          saveUserData();
+          updateCoinDisplay();
+          renderBotExtraSlots();
+          alert("🎉 ปลดล็อคช่องข้อมูลบอทเพิ่มสำเร็จ!");
+        } else {
+          alert("เหรียญแมวเยลลี่ไม่พอ! กดรับฟรีได้ที่หน้าร้านค้า");
+          openCoinShopModal();
+        }
+      }
+    }
+
     // ==================== EXPLORE SUB-TAB SWITCHER & DISCOVERY ====================
     function switchExploreSubTab(tab) {
       currentExploreSubTab = tab;
@@ -1183,13 +1258,8 @@
     function switchToBotCreatorForm() {
       document.getElementById('explore-discovery-view').classList.add('hidden');
       document.getElementById('explore-creator-view').classList.remove('hidden');
+      renderBotExtraSlots();
       switchBotTab('profile');
-    }
-
-    function updateStoryWordCount(textarea) {
-      const text = textarea.value.trim();
-      const count = text ? text.split(/\s+/).length : 0;
-      document.getElementById('story-word-counter').innerText = `${count}/2000 คำ`;
     }
 
     function renderExploreBotCards(filterKeyword = '') {
@@ -1216,7 +1286,7 @@
       if (listToRender.length === 0) {
         container.innerHTML = `
           <div class="text-center py-8 text-slate-400 space-y-2">
-            <i class="fa-solid fa-robot text-2xl text-purple-300"></i>
+            <span class="text-2xl">🐰</span>
             <p class="text-xs">${currentExploreSubTab === 'public' ? 'ไม่พบบอทที่ตรงกับคำค้นหา' : 'คุณยังไม่ได้สร้างบอท กดปุ่ม "+ สร้างบอทใหม่" ด้านบนได้เลย'}</p>
           </div>
         `;
@@ -1283,12 +1353,12 @@
       document.getElementById('modal-bot-story').innerText = b.story || 'ไม่มีเนื้อเรื่องเพิ่มเติม ตัวละครพร้อมเปิดรับบทบาทตามจินตนาการของคุณ';
 
       const extraBox = document.getElementById('modal-bot-additional-info');
-      if (b.height || b.weight || b.mbti || b.preferredRelation) {
+      if (b.height || b.weight || b.mbti || b.preferredRelation || b.playerRelation) {
         extraBox.classList.remove('hidden');
         extraBox.innerHTML = `
           <div><strong>ส่วนสูง/น้ำหนัก:</strong> ${b.height || '-'} / ${b.weight || '-'} | <strong>MBTI:</strong> ${b.mbti || '-'}</div>
           <div><strong>สเปกที่ชอบ:</strong> ${b.idealType || '-'}</div>
-          <div><strong>ความสัมพันธ์ที่ชอบ:</strong> ${b.preferredRelation || '-'}</div>
+          <div><strong>ความสัมพันธ์กับผู้เล่น:</strong> ${b.playerRelation || 'ไม่มีกำหนด'}</div>
         `;
       } else {
         extraBox.classList.add('hidden');
@@ -1392,7 +1462,7 @@
       openChatRoom(bot.id, newRoom.id);
     }
 
-    // ==================== PERSONA MANAGEMENT (EDIT/CREATE/DELETE) ====================
+    // ==================== PERSONA MANAGEMENT (ใช้ 2🐰 หรือ 5🐱 ปลดล็อค) ====================
     function getMaxPersonaQuota() {
       return 15 + (userEconomy.unlockedSlots || 0);
     }
@@ -1410,17 +1480,30 @@
     function checkAndOpenCreatePersona() {
       const maxQuota = getMaxPersonaQuota();
       if (userPersonas.length >= maxQuota) {
-        const confirmBuy = confirm(`คุณสร้างโปรไฟล์ครบโควตาฟรี ${maxQuota} ช่องแล้ว!\n\nต้องการใช้ 2 เหรียญกระต่ายเยลลี่ 🐰 เพื่อปลดล็อคสร้างเพิ่มอีก 1 ช่องหรือไม่? (เหรียญปัจจุบัน: ${userEconomy.coins} 🐰)`);
-        if (confirmBuy) {
+        const choice = prompt(`คุณสร้างโปรไฟล์ครบโควตาฟรี ${maxQuota} ช่องแล้ว!\nเลือกเหรียญที่ต้องการใช้ปลดล็อคสร้างเพิ่ม 1 ช่อง:\nพิมพ์ '1' เพื่อใช้ 2 เหรียญกระต่ายเยลลี่ 🐰\nพิมพ์ '2' เพื่อใช้ 5 เหรียญแมวเยลลี่ 🐱\n(เหรียญของคุณ: ${userEconomy.coins} 🐰 | ${userEconomy.catCoins} 🐱)`);
+        
+        if (choice === '1') {
           if (userEconomy.coins >= 2) {
             userEconomy.coins -= 2;
             userEconomy.unlockedSlots = (userEconomy.unlockedSlots || 0) + 1;
             saveUserData();
             updateCoinDisplay();
-            alert(`🎉 ปลดล็อคโควตาเพิ่มสำเร็จ! สามารถสร้างโปรไฟล์ได้สูงสุด ${getMaxPersonaQuota()} ช่องแล้ว`);
+            alert(`🎉 ปลดล็อคสำเร็จ! สามารถสร้างโปรไฟล์ได้สูงสุด ${getMaxPersonaQuota()} ช่องแล้ว`);
             openCreatePersonaModal();
           } else {
-            alert('เหรียญกระต่ายเยลลี่ไม่พอ! กดที่ไอคอนเหรียญด้านบนเพื่อรับเหรียญฟรีได้เลย');
+            alert('เหรียญกระต่ายเยลลี่ไม่พอ!');
+            openCoinShopModal();
+          }
+        } else if (choice === '2') {
+          if (userEconomy.catCoins >= 5) {
+            userEconomy.catCoins -= 5;
+            userEconomy.unlockedSlots = (userEconomy.unlockedSlots || 0) + 1;
+            saveUserData();
+            updateCoinDisplay();
+            alert(`🎉 ปลดล็อคสำเร็จ! สามารถสร้างโปรไฟล์ได้สูงสุด ${getMaxPersonaQuota()} ช่องแล้ว`);
+            openCreatePersonaModal();
+          } else {
+            alert('เหรียญแมวเยลลี่ไม่พอ! กดรับฟรีได้ที่หน้าร้านค้า');
             openCoinShopModal();
           }
         }
@@ -1600,10 +1683,16 @@
     // ==================== COIN & SHOP LOGIC ====================
     function updateCoinDisplay() {
       const balance = userEconomy.coins || 0;
+      const catBalance = userEconomy.catCoins || 0;
       const el1 = document.getElementById('user-coin-balance');
       const el2 = document.getElementById('shop-coin-display');
+      const elCat1 = document.getElementById('user-cat-coin-balance');
+      const elCat2 = document.getElementById('shop-cat-coin-display');
+
       if (el1) el1.innerText = balance;
       if (el2) el2.innerText = balance;
+      if (elCat1) elCat1.innerText = catBalance;
+      if (elCat2) elCat2.innerText = catBalance;
     }
 
     function openCoinShopModal() {
@@ -1620,6 +1709,13 @@
       saveUserData();
       updateCoinDisplay();
       alert(`🎉 ได้รับ ${amount} เหรียญกระต่ายเยลลี่ 🐰 เรียบร้อยแล้ว!`);
+    }
+
+    function claimDailyCatCoins() {
+      userEconomy.catCoins = (userEconomy.catCoins || 0) + 50;
+      saveUserData();
+      updateCoinDisplay();
+      alert(`🎉 เช็คอินรับฟรี 50 เหรียญแมวเยลลี่ 🐱 สำเร็จ!`);
     }
 
     // ==================== AUTH & LOGIN ====================
@@ -1815,7 +1911,7 @@
 
     // ==================== MULTI-TAB BOT CREATOR LOGIC ====================
     function switchBotTab(tab) {
-      const tabs = ['profile', 'basic', 'first', 'details', 'event', 'lore'];
+      const tabs = ['profile', 'basic', 'first', 'extra', 'lore'];
       tabs.forEach(t => {
         const page = document.getElementById(`btab-${t}`);
         const btn = document.getElementById(`btab-btn-${t}`);
@@ -1850,15 +1946,19 @@
       const mbti = document.getElementById('bot-mbti-input').value.trim();
       const idealType = document.getElementById('bot-ideal-type-input').value.trim();
       const preferredRelation = document.getElementById('bot-preferred-relation-input').value.trim();
+      const playerRelation = document.getElementById('bot-player-relation-input').value.trim();
       const speakingStyle = document.getElementById('bot-speaking-style-input').value.trim();
 
       const firstEncounter = document.getElementById('bot-first-encounter-input').value.trim();
 
-      const likes = document.getElementById('bot-likes-input').value.trim();
-      const dislikes = document.getElementById('bot-dislikes-input').value.trim();
-      const birthday = document.getElementById('bot-birthday-input').value.trim();
-      const eventTrigger = document.getElementById('bot-event-trigger').value.trim();
-      const eventBehavior = document.getElementById('bot-event-behavior').value.trim();
+      // รวบรวมข้อมูลเพิ่มเติมจากช่อง 1 ถึง N
+      const totalSlots = 5 + (userEconomy.extraBotSlots || 0);
+      let extraDetails = [];
+      for (let i = 1; i <= totalSlots; i++) {
+        const val = document.getElementById(`bot-extra-slot-${i}`)?.value.trim();
+        if (val) extraDetails.push(val);
+      }
+
       const lorebook = document.getElementById('bot-lorebook-input').value.trim();
 
       const newBot = {
@@ -1878,13 +1978,10 @@
         mbti: mbti,
         idealType: idealType,
         preferredRelation: preferredRelation,
+        playerRelation: playerRelation,
         speakingStyle: speakingStyle,
         firstEncounter: firstEncounter,
-        likes: likes,
-        dislikes: dislikes,
-        birthday: birthday,
-        eventTrigger: eventTrigger,
-        eventBehavior: eventBehavior,
+        extraDetails: extraDetails,
         lorebook: lorebook,
         isPublished: isPublish,
         rooms: [],
@@ -1904,9 +2001,9 @@
       saveUserData();
 
       if (isPublish) {
-        alert(`🎉 เผยแพร่บอท "${name}" สู่สาธารณะเรียบร้อยแล้ว! ทุกคนสามารถค้นหาและเข้าเล่นได้ทันที`);
+        alert(`🎉 เผยแพร่บอท "${name}" สู่สาธารณะเรียบร้อยแล้ว!`);
       } else {
-        alert(`📁 บันทึกบอท "${name}" เป็นฉบับร่างเรียบร้อยแล้ว (ยังไม่เผยแพร่สู่สาธารณะ)`);
+        alert(`📁 บันทึกบอท "${name}" เป็นฉบับร่างเรียบร้อยแล้ว`);
       }
 
       switchToBotDiscovery();
@@ -2129,8 +2226,7 @@
 - เพศ: ${persona.gender}, อายุ: ${persona.age}, วันเกิด: ${persona.birthday || 'ไม่ระบุ'}
 - รูปลักษณ์: ${persona.appearance || 'ไม่ระบุ'}
 - นิสัย: ${persona.personality || 'ไม่ระบุ'}
-- สิ่งที่ชอบ: ${persona.likes || 'ไม่ระบุ'}, สิ่งที่ไม่ชอบ: ${persona.dislikes || 'ไม่ระบุ'}
-- จุดเด่น: ${persona.extra || 'ไม่มี'}
+- ความสัมพันธ์กับผู้เล่น: ${bot.playerRelation || 'ไม่มีระบุ'}
 
 ตอบกลับข้อความนี้แบบธรรมชาติ 1-2 ประโยคสั้นๆ ห้ามใส่คำบรรยายการกระทำ: "${userText}"`;
 
@@ -2281,6 +2377,8 @@
       const provider = appSettings.provider || 'gemini';
       const persona = getActivePersona();
 
+      const extraText = (bot.extraDetails && bot.extraDetails.length > 0) ? bot.extraDetails.join("\n- ") : "ไม่มี";
+
       if (apiKey) {
         try {
           const systemPrompt = `
@@ -2292,8 +2390,11 @@
 - MBTI: ${bot.mbti || ''}
 - สเปกคนที่ชอบ: ${bot.idealType || ''}
 - ความสัมพันธ์ที่ชอบ: ${bot.preferredRelation || ''}
+- ความสัมพันธ์กับผู้เล่น (${persona.name}): ${bot.playerRelation || 'ไม่มีกำหนดเป็นพิเศษ'}
 - ปูมหลังและประวัติ: ${bot.basicInfo || ''}
 - สตอรี่ละเอียด: ${bot.story || ''}
+- ข้อมูลที่ต้องจดจำเพิ่มเติม:
+- ${extraText}
 
 ข้อมูลอัตลักษณ์ประจำตัวของผู้เล่น (User Persona):
 - ชื่อผู้เล่น: ${persona.name}
@@ -2310,7 +2411,7 @@
 
 ข้อกำหนดความยาว 4,000 - 6,000 ตัวอักษร:
 - มีการบรรยายสลับคำพูดอย่างสละสลวย พรรณนาบรรยากาศ แสงเงา ภาษากาย และความรู้สึกภายใน
-- ให้สังเกตและบรรยายถึงรูปลักษณ์ภายนอก กลิ่นอาย ปฏิกิริยาท่าทาง และสิ่งที่ ${persona.name} ชอบ/ไม่ชอบ ตามที่ระบุไว้ใน Persona ของผู้เล่นอย่างกลมกลืนเป็นธรรมชาติ
+- ให้สังเกตและบรรยายถึงรูปลักษณ์ภายนอก กลิ่นอาย ปฏิกิริยาท่าทาง และตอบสนองต่อ ${persona.name} ตามความสัมพันธ์ที่กำหนดไว้อย่างกลมกลืนเป็นธรรมชาติ
 ตอบเป็น JSON เท่านั้น:
 {
   "thought": "ความคิดในใจของตัวละคร",
