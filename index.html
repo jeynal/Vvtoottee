@@ -187,12 +187,13 @@
             <div id="persona-list-container" class="space-y-2"></div>
           </div>
 
+          <!-- ผู้ติดต่อ (แสดงบอทที่คุณกด Like เอาไว้) -->
           <div>
             <div class="flex justify-between items-center mb-3 px-1">
               <h3 class="text-xs font-bold text-indigo-950 tracking-wide flex items-center gap-1.5">
-                <i class="fa-solid fa-user-group text-violet-500"></i> บอทเพื่อนสนิท
+                <i class="fa-solid fa-address-book text-violet-500"></i> ผู้ติดต่อ (บอทที่คุณถูกใจ)
               </h3>
-              <span id="friend-count" class="text-[10px] text-slate-500 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">1 คน</span>
+              <span id="friend-count" class="text-[10px] text-slate-500 bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">0 คน</span>
             </div>
             <div id="home-friends-list" class="space-y-2.5"></div>
           </div>
@@ -422,7 +423,7 @@
                 </div>
               </div>
 
-              <!-- ปุ่มบันทึก 2 ปุ่ม (บันทึกร่าง / บันทึกฉบับเต็ม) -->
+              <!-- ปุ่มบันทึก 2 ปุ่ม -->
               <div class="pt-2 border-t border-purple-100 grid grid-cols-2 gap-2">
                 <button onclick="submitSaveBot(false)" class="py-3 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-bold rounded-2xl text-xs flex items-center justify-center gap-1.5 transition">
                   <i class="fa-solid fa-file-lines text-xs"></i> บันทึกฉบับร่าง
@@ -827,8 +828,9 @@
     let isCalling = false;
     let attachedImageUrl = null;
     let tempBotAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80';
-    let currentExploreSubTab = 'public';
+    let currentExploreSubTab = localStorage.getItem('lovey_explore_subtab') || 'public';
     let currentHubTab = 'story';
+    let currentLobbyTab = localStorage.getItem('lovey_lobby_tab') || 'home';
 
     function getUserKey(key) { return `lovey_${currentUserEmail}_${key}`; }
     function getCurrentTimeStr() {
@@ -936,6 +938,40 @@
       localStorage.setItem(getUserKey('community'), JSON.stringify(communityPosts));
     }
 
+    // ==================== RENDER HOME FRIENDS (ผู้ติดต่อ / บอทที่ถูกใจ) ====================
+    function renderHomeFriendsList() {
+      const container = document.getElementById('home-friends-list');
+      const countBadge = document.getElementById('friend-count');
+      if (!container) return;
+      container.innerHTML = '';
+
+      // กรองหาบอทที่คุณ (currentUserEmail) กดถูกใจไว้
+      const likedBots = bots.filter(b => b.likedUsers && b.likedUsers.includes(currentUserEmail));
+      if (countBadge) countBadge.innerText = `${likedBots.length} คน`;
+
+      if (likedBots.length === 0) {
+        container.innerHTML = '<div class="p-3 bg-purple-50/40 rounded-2xl border border-purple-100 text-center text-xs text-slate-400">ยังไม่มีผู้ติดต่อที่คุณกดถูกใจ (สามารถกดหัวใจถูกใจบอทในหน้าค้นหาได้เลย)</div>';
+        return;
+      }
+
+      likedBots.forEach(b => {
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-white border border-purple-100 rounded-2xl flex items-center justify-between shadow-sm hover:border-violet-300 transition cursor-pointer';
+        div.onclick = () => openBotHubPage(b.id);
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <img src="${b.avatar}" class="w-10 h-10 rounded-full object-cover border border-purple-200">
+            <div>
+              <h4 class="text-xs font-bold text-slate-800">${b.name}</h4>
+              <p class="text-[10px] text-purple-600 font-medium">${b.career || 'ไม่ระบุอาชีพ'} • ${b.age || 'ไม่ระบุอายุ'}</p>
+            </div>
+          </div>
+          <button class="px-3 py-1.5 pastel-btn-primary rounded-xl text-[10px] font-bold">ดูโปรไฟล์</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
     // ==================== BOT PROFILE HUB VIEW LOGIC ====================
     function openBotHubPage(botId) {
       const b = getBot(botId);
@@ -952,7 +988,6 @@
       document.getElementById('hub-quote').innerText = `"${b.quote || 'ยินดีที่ได้พบกันนะ'}"`;
       document.getElementById('hub-preview').innerText = b.shortPreview || b.personality || '';
 
-      // แสดง Hashtags
       const tagsContainer = document.getElementById('hub-tags-container');
       tagsContainer.innerHTML = '';
       if (b.hashtags) {
@@ -967,7 +1002,6 @@
 
       updateHubLikeState();
       updatePlayerCountDisplay();
-
       switchHubSubTab('story');
     }
 
@@ -1011,6 +1045,7 @@
 
       saveUserData();
       updateHubLikeState();
+      renderHomeFriendsList();
     }
 
     function updatePlayerCountDisplay() {
@@ -1058,7 +1093,6 @@
         <div><strong>ความสัมพันธ์กับผู้เล่น:</strong> ${currentHubBot.playerRelation || 'ไม่มีระบุ'}</div>
       `;
 
-      // ข้อมูลบอทที่เชื่อมโยง
       const connBox = document.getElementById('hub-connected-bot-box');
       const connText = document.getElementById('hub-connected-bot-text');
       if (currentHubBot.connectedBotId) {
@@ -1159,7 +1193,6 @@
       renderHubSlotsTab();
     }
 
-    // ==================== REVIEWS, EDIT, DELETE & TOGGLE LIKE SYSTEM ====================
     function renderHubReviewsTab() {
       if (!currentHubBot) return;
       const container = document.getElementById('hub-reviews-container');
@@ -1247,16 +1280,8 @@
       });
     }
 
-    function startEditReview(idx) {
-      editingReviewIndex = idx;
-      renderHubReviewsTab();
-    }
-
-    function cancelEditReview() {
-      editingReviewIndex = null;
-      renderHubReviewsTab();
-    }
-
+    function startEditReview(idx) { editingReviewIndex = idx; renderHubReviewsTab(); }
+    function cancelEditReview() { editingReviewIndex = null; renderHubReviewsTab(); }
     function saveEditReview(idx) {
       const input = document.getElementById(`edit-review-input-${idx}`);
       if (!input) return;
@@ -1267,71 +1292,47 @@
       saveUserData();
       renderHubReviewsTab();
     }
-
     function deleteReview(idx) {
       if (!confirm("คุณต้องการลบความคิดเห็นนี้ใช่หรือไม่?")) return;
       currentHubBot.reviews.splice(idx, 1);
       saveUserData();
       renderHubReviewsTab();
     }
-
     function deleteReply(reviewIdx, replyIdx) {
       if (!confirm("คุณต้องการลบข้อความตอบกลับนี้ใช่หรือไม่?")) return;
       currentHubBot.reviews[reviewIdx].replies.splice(replyIdx, 1);
       saveUserData();
       renderHubReviewsTab();
     }
-
     function toggleReplyBox(idx) {
       activeReplyReviewIndex = activeReplyReviewIndex === idx ? null : idx;
       renderHubReviewsTab();
     }
-
     function submitReviewReply(idx) {
       const input = document.getElementById(`reply-input-${idx}`);
       if (!input) return;
       const text = input.value.trim();
       if (!text) return;
-
-      if (!currentHubBot.reviews[idx].replies) {
-        currentHubBot.reviews[idx].replies = [];
-      }
-
-      currentHubBot.reviews[idx].replies.push({
-        author: userProfile.name,
-        text: text,
-        time: getCurrentTimeStr()
-      });
-
+      if (!currentHubBot.reviews[idx].replies) currentHubBot.reviews[idx].replies = [];
+      currentHubBot.reviews[idx].replies.push({ author: userProfile.name, text: text, time: getCurrentTimeStr() });
       activeReplyReviewIndex = null;
       saveUserData();
       renderHubReviewsTab();
     }
-
     function submitHubReview() {
       const input = document.getElementById('hub-review-input');
       const text = input.value.trim();
       if (!text) return;
-
       if (!currentHubBot.reviews) currentHubBot.reviews = [];
-      currentHubBot.reviews.unshift({
-        author: userProfile.name,
-        text: text,
-        time: getCurrentTimeStr(),
-        likes: 0,
-        likedUsers: [],
-        replies: []
-      });
+      currentHubBot.reviews.unshift({ author: userProfile.name, text: text, time: getCurrentTimeStr(), likes: 0, likedUsers: [], replies: [] });
       input.value = '';
       saveUserData();
       renderHubReviewsTab();
     }
-
     function likeHubReview(idx) {
       const r = currentHubBot.reviews[idx];
       if (!r) return;
       if (!r.likedUsers) r.likedUsers = [];
-
       const userIdx = r.likedUsers.indexOf(currentUserEmail);
       if (userIdx > -1) {
         r.likedUsers.splice(userIdx, 1);
@@ -1340,16 +1341,13 @@
         r.likedUsers.push(currentUserEmail);
         r.likes = (r.likes || 0) + 1;
       }
-
       saveUserData();
       renderHubReviewsTab();
     }
 
     function startChatFromBotHub() {
       if (!currentHubBot) return;
-      
       registerPlayerAccount();
-
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
       let initialDialogue = currentHubBot.firstEncounter || currentHubBot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
       initialDialogue = initialDialogue.replace(/\{user\}/g, persona.name);
@@ -1368,17 +1366,15 @@
       const newRoom = {
         id: 'room_' + Date.now(),
         name: `บทสนทนากับ ${persona.name}`,
-        history: [
-          {
-            sender: "bot",
-            thought: `ได้พบกับ ${persona.name} แล้ว...`,
-            paragraphs: [
-              { type: "narration", text: parsedNarration },
-              { type: "speech", text: parsedSpeech }
-            ],
-            time: getCurrentTimeStr()
-          }
-        ]
+        history: [{
+          sender: "bot",
+          thought: `ได้พบกับ ${persona.name} แล้ว...`,
+          paragraphs: [
+            { type: "narration", text: parsedNarration },
+            { type: "speech", text: parsedSpeech }
+          ],
+          time: getCurrentTimeStr()
+        }]
       };
 
       if (!currentHubBot.rooms) currentHubBot.rooms = [];
@@ -1388,9 +1384,9 @@
       openChatRoom(currentHubBot.id, newRoom.id);
     }
 
-    // ==================== EXPLORE SUB-TAB SWITCHER & DISCOVERY ====================
     function switchExploreSubTab(tab) {
       currentExploreSubTab = tab;
+      localStorage.setItem('lovey_explore_subtab', tab);
       const btnPub = document.getElementById('subtab-btn-public');
       const btnMy = document.getElementById('subtab-btn-mybots');
       const searchBar = document.getElementById('explore-search-bar');
@@ -1468,7 +1464,6 @@
         document.getElementById('bot-first-encounter-input').value = botToEdit.firstEncounter || '';
         document.getElementById('bot-hashtags-input').value = botToEdit.hashtags || '';
 
-        // ข้อมูลบอทเชื่อมโยง
         const connectToggle = document.getElementById('bot-connect-toggle');
         if (botToEdit.connectedBotId) {
           connectToggle.checked = true;
@@ -1592,10 +1587,7 @@
           `;
         }
 
-        let tagListHtml = '';
-        if (b.hashtags) {
-          tagListHtml = `<p class="text-[9px] text-violet-500 font-medium truncate pt-0.5">${b.hashtags}</p>`;
-        }
+        let tagListHtml = b.hashtags ? `<p class="text-[9px] text-violet-500 font-medium truncate pt-0.5">${b.hashtags}</p>` : '';
 
         div.innerHTML = `
           <div class="flex items-center gap-3">
@@ -1623,7 +1615,6 @@
       renderExploreBotCards(document.getElementById('bot-search-input').value);
     }
 
-    // ==================== BOT CREATOR & EXTRA SLOTS ====================
     function renderBotExtraSlots(existingSlots = []) {
       const container = document.getElementById('bot-extra-slots-container');
       const badge = document.getElementById('extra-slots-badge');
@@ -1666,7 +1657,6 @@
       }
     }
 
-    // ฟังก์ชันบันทึกบอท (isPublishNow = true คือเผยแพร่ / false คือบันทึกร่าง)
     function submitSaveBot(isPublishNow = true) {
       const editingId = document.getElementById('editing-bot-id').value;
       const name = document.getElementById('bot-name-input').value.trim();
@@ -1689,7 +1679,6 @@
       const hashtags = document.getElementById('bot-hashtags-input').value.trim();
 
       if (editingId) {
-        // อัปเดตข้อมูลบอทเดิม
         const targetBot = getBot(editingId);
         if (targetBot) {
           targetBot.name = name;
@@ -1719,7 +1708,6 @@
           alert(isPublishNow ? `อัปเดตและเผยแพร่บอท "${name}" เรียบร้อยแล้ว!` : `บันทึกฉบับร่างของบอท "${name}" เรียบร้อยแล้ว!`);
         }
       } else {
-        // สร้างบอทใหม่
         const newBot = {
           id: 'bot_' + Date.now(),
           name: name,
@@ -1762,7 +1750,6 @@
       switchToBotDiscovery();
     }
 
-    // ==================== ROLEPLAY & NOVEL ENGINE ====================
     async function callDynamicNarrativeEngine(userText, bot) {
       const apiKey = appSettings.apiKey;
       const provider = appSettings.provider || 'gemini';
@@ -1771,7 +1758,6 @@
       const playerSlotsText = (bot.playerSlots && bot.playerSlots.length > 0) ? bot.playerSlots.map(s => `${s.title}: ${s.content}`).join("\n") : "ไม่มี";
       const botSlotsText = (bot.botSlots && bot.botSlots.length > 0) ? bot.botSlots.map(s => `${s.title}: ${s.content}`).join("\n") : "ไม่มี";
 
-      // ดึงข้อมูลบอทที่เชื่อมโยง (ถ้ามี)
       let connectedBotContext = "ไม่มีบอทเชื่อมโยง";
       if (bot.connectedBotId) {
         const connBot = getBot(bot.connectedBotId);
@@ -1897,7 +1883,6 @@ ${playerSlotsText}
       sendBtn.disabled = false;
     }
 
-    // ==================== OTHER HELPERS ====================
     function getBot(id) { return bots.find(b => b.id === id) || bots[0]; }
     function getCurrentRoom(bot) {
       if (!bot.rooms || bot.rooms.length === 0) bot.rooms = [{ id: "room_default", name: "เนื้อเรื่องหลัก", history: [] }];
@@ -1905,12 +1890,14 @@ ${playerSlotsText}
     }
 
     function switchLobbyTab(tab) {
+      currentLobbyTab = tab;
+      localStorage.setItem('lovey_lobby_tab', tab);
       ['home', 'explore', 'chats', 'relations', 'community', 'settings'].forEach(t => {
         document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tab);
         document.getElementById(`btn-tab-${t}`).className = t === tab ? 'flex flex-col items-center gap-0.5 text-violet-600 transition font-bold' : 'flex flex-col items-center gap-0.5 text-slate-400 hover:text-violet-600 transition';
       });
       document.getElementById('view-bot-hub').classList.add('hidden');
-      if (tab === 'home') renderPersonas();
+      if (tab === 'home') { renderPersonas(); renderHomeFriendsList(); }
       if (tab === 'explore') switchToBotDiscovery();
       if (tab === 'chats') renderChatRecords();
       if (tab === 'relations') renderGroupChats();
@@ -1966,7 +1953,7 @@ ${playerSlotsText}
     function handleBackAction() {
       document.getElementById('view-room').classList.add('hidden');
       document.getElementById('view-lobby').classList.remove('hidden');
-      switchLobbyTab('explore');
+      switchLobbyTab(currentLobbyTab);
     }
 
     function createNewRoomForCurrentBot() {
@@ -2062,6 +2049,7 @@ ${playerSlotsText}
 
     function handleLogout() {
       localStorage.removeItem('lovey_current_email');
+      localStorage.removeItem('lovey_lobby_tab');
       location.reload();
     }
 
@@ -2071,7 +2059,7 @@ ${playerSlotsText}
       document.getElementById('user-avatar').src = userProfile.avatar;
       document.getElementById('header-user-avatar').src = userProfile.avatar;
       updateCoinDisplay();
-      switchLobbyTab('home');
+      switchLobbyTab(currentLobbyTab);
     }
 
     if (!currentUserEmail) {
