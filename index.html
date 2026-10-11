@@ -105,6 +105,58 @@
     </div>
   </div>
 
+  <!-- MODAL 1: CHAT MODE SELECTION (แชทเดิม VS แชทใหม่) -->
+  <div id="chat-mode-selection-modal" class="hidden fixed inset-0 bg-indigo-950/40 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+    <div class="w-full max-w-xs pastel-card rounded-3xl p-5 space-y-3.5 shadow-2xl">
+      <div class="text-center space-y-1">
+        <h3 class="text-sm font-bold text-indigo-950">เลือกรูปแบบการเล่น</h3>
+        <p class="text-[11px] text-slate-500">คุณมีประวัติการสนทนากับบอทตัวนี้อยู่แล้ว</p>
+      </div>
+      <div class="space-y-2 pt-1">
+        <button onclick="openExistingChatRoomSelector()" class="w-full p-3 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-2xl text-xs font-bold border border-purple-200 flex items-center gap-2.5 transition">
+          <i class="fa-solid fa-clock-rotate-left text-sm"></i>
+          <div class="text-left">
+            <div>เล่นต่อจากแชทเดิม</div>
+            <div class="text-[10px] text-purple-500 font-normal">ใช้โปรไฟล์เดิมที่เคยเล่นไว้</div>
+          </div>
+        </button>
+        <button onclick="openPersonaSelectorForNewChat()" class="w-full p-3 pastel-btn-primary rounded-2xl text-xs font-bold flex items-center gap-2.5 transition">
+          <i class="fa-solid fa-plus text-sm"></i>
+          <div class="text-left">
+            <div>สร้างเนื้อเรื่องใหม่</div>
+            <div class="text-[10px] text-white/80 font-normal">เลือกโปรไฟล์ Persona ใหม่</div>
+          </div>
+        </button>
+      </div>
+      <button onclick="closeChatModeSelectionModal()" class="w-full py-1.5 text-slate-400 hover:text-slate-600 text-xs font-medium text-center">ยกเลิก</button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: EXISTING CHAT ROOM SELECTOR -->
+  <div id="existing-chat-selector-modal" class="hidden fixed inset-0 bg-indigo-950/40 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+    <div class="w-full max-w-xs pastel-card rounded-3xl p-5 space-y-3 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-purple-100 pb-2">
+        <h3 class="text-xs font-bold text-indigo-950">เลือกแชทที่ต้องการเล่นต่อ</h3>
+        <button onclick="closeExistingChatSelectorModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="existing-rooms-list" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar"></div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: PERSONA SELECTOR FOR NEW CHAT -->
+  <div id="persona-selector-modal" class="hidden fixed inset-0 bg-indigo-950/40 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+    <div class="w-full max-w-xs pastel-card rounded-3xl p-5 space-y-3 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-purple-100 pb-2">
+        <div>
+          <h3 class="text-xs font-bold text-indigo-950">เลือกโปรไฟล์ผู้ใช้ (Persona)</h3>
+          <p class="text-[10px] text-slate-500">เลือกตัวตนที่จะใช้คุยในเนื้อเรื่องใหม่นี้</p>
+        </div>
+        <button onclick="closePersonaSelectorModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="persona-select-list" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar"></div>
+    </div>
+  </div>
+
   <!-- LOGIN MODAL OVERLAY -->
   <div id="login-screen" class="fixed inset-0 bg-indigo-950/30 backdrop-blur-md z-50 flex items-center justify-center p-4">
     <div class="w-full max-w-sm pastel-card rounded-3xl p-6 space-y-4">
@@ -461,9 +513,8 @@
           </div>
         </section>
 
-        <!-- TAB 3: CHAT HISTORIES / STORIES (UPDATED HEADER BAR & MANAGEMENT) -->
+        <!-- TAB 3: CHAT HISTORIES / STORIES -->
         <section id="tab-chats" class="hidden space-y-3">
-          <!-- Styled Header Bar -->
           <div class="bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-500 p-3.5 rounded-2xl text-white shadow-md flex justify-between items-center">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-comments text-base text-purple-200"></i>
@@ -474,7 +525,6 @@
             </button>
           </div>
 
-          <!-- Chat List Container -->
           <div id="chat-records-list" class="space-y-2.5"></div>
         </section>
 
@@ -590,7 +640,6 @@
 
     <!-- ==================== VIEW 3: FULLSCREEN BOT PROFILE HUB PAGE ==================== -->
     <div id="view-bot-hub" class="hidden absolute inset-0 bg-slate-50 z-30 flex flex-col overflow-hidden">
-      <!-- Top Header -->
       <header class="p-3 bg-white/95 backdrop-blur border-b border-purple-100 flex items-center justify-between z-20">
         <button onclick="backFromBotHub()" class="flex items-center gap-1 text-slate-600 hover:text-purple-700 text-xs font-bold transition">
           <i class="fa-solid fa-chevron-left"></i> ย้อนกลับ
@@ -607,7 +656,6 @@
         </div>
       </header>
 
-      <!-- Scrollable Hub Content -->
       <div class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar">
         <div class="pastel-card p-4 rounded-3xl space-y-3 relative overflow-hidden">
           <div class="flex items-start gap-3.5">
@@ -665,7 +713,7 @@
           </div>
         </div>
 
-        <!-- REVIEWS & COMMENTS SUB-TAB -->
+        <!-- REVIEWS SUB-TAB -->
         <div id="hub-content-reviews" class="hidden pastel-card p-4 rounded-3xl space-y-3.5">
           <h4 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-comments text-violet-500"></i> รีวิวและเม้ามอย</h4>
           <div class="space-y-2">
@@ -678,15 +726,14 @@
         </div>
       </div>
 
-      <!-- Bottom Action Button -->
       <div class="p-3 bg-white/95 backdrop-blur border-t border-purple-100 z-20">
-        <button onclick="startChatFromBotHub()" class="w-full py-3.5 pastel-btn-primary font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg">
+        <button onclick="handleStartChatButtonClick()" class="w-full py-3.5 pastel-btn-primary font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg">
           <i class="fa-solid fa-play text-xs"></i> เริ่มต้นเล่นบทสนทนากับตัวละครนี้
         </button>
       </div>
     </div>
 
-    <!-- ==================== VIEW 2: CHAT VIEW ==================== -->
+    <!-- VIEW 2: CHAT VIEW -->
     <div id="view-room" class="hidden flex-1 flex flex-col overflow-hidden relative bg-gradient-to-b from-purple-50/60 via-white to-sky-50/40">
       <header class="p-3 bg-white/95 backdrop-blur border-b border-purple-100 flex items-center justify-between z-20">
         <div class="flex items-center gap-2">
@@ -985,6 +1032,8 @@
           {
             id: "room_default",
             name: "เนื้อเรื่องหลัก",
+            personaId: "persona_default",
+            personaName: "คุณหนูนักท่องฝัน",
             isPinned: true,
             history: [
               {
@@ -1032,6 +1081,140 @@
       localStorage.setItem(getUserKey('settings'), JSON.stringify(appSettings));
       localStorage.setItem(getUserKey('groups'), JSON.stringify(groupChats));
       localStorage.setItem(getUserKey('community'), JSON.stringify(communityPosts));
+    }
+
+    // ==================== START CHAT FLOW: EXISTING VS NEW & PERSONA SELECTION ====================
+    function handleStartChatButtonClick() {
+      if (!currentHubBot) return;
+      registerPlayerAccount();
+
+      if (currentHubBot.rooms && currentHubBot.rooms.length > 0) {
+        document.getElementById('chat-mode-selection-modal').classList.remove('hidden');
+      } else {
+        openPersonaSelectorForNewChat();
+      }
+    }
+
+    function closeChatModeSelectionModal() {
+      document.getElementById('chat-mode-selection-modal').classList.add('hidden');
+    }
+
+    function openExistingChatRoomSelector() {
+      closeChatModeSelectionModal();
+      const container = document.getElementById('existing-rooms-list');
+      container.innerHTML = '';
+
+      currentHubBot.rooms.forEach(room => {
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-purple-50/60 hover:bg-purple-100 border border-purple-200 rounded-2xl flex items-center justify-between cursor-pointer transition';
+        div.onclick = () => selectAndContinueExistingChat(room.id);
+        div.innerHTML = `
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-slate-800">${room.name}</span>
+              ${room.isPinned ? '<i class="fa-solid fa-thumbtack text-amber-500 text-[10px]"></i>' : ''}
+            </div>
+            <p class="text-[10px] text-purple-600 mt-0.5">เล่นโดยโปรไฟล์: <strong>${room.personaName || 'คุณหนูนักท่องฝัน'}</strong></p>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-purple-400"></i>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('existing-chat-selector-modal').classList.remove('hidden');
+    }
+
+    function closeExistingChatSelectorModal() {
+      document.getElementById('existing-chat-selector-modal').classList.add('hidden');
+    }
+
+    function selectAndContinueExistingChat(roomId) {
+      closeExistingChatSelectorModal();
+      const room = currentHubBot.rooms.find(r => r.id === roomId);
+      if (room && room.personaId) {
+        userPersonas.forEach(p => p.isSelected = (p.id === room.personaId));
+        saveUserData();
+      }
+      backFromBotHub();
+      openChatRoom(currentHubBot.id, roomId);
+      showToast(`เข้าสู่ห้อง "${room ? room.name : ''}" ด้วยโปรไฟล์เดิม`, 'success', '💬');
+    }
+
+    function openPersonaSelectorForNewChat() {
+      closeChatModeSelectionModal();
+      const container = document.getElementById('persona-select-list');
+      container.innerHTML = '';
+
+      userPersonas.forEach(p => {
+        const div = document.createElement('div');
+        div.className = `p-2.5 rounded-2xl border flex items-center justify-between cursor-pointer transition ${p.isSelected ? 'bg-purple-100 border-violet-400' : 'bg-purple-50/40 border-purple-100 hover:border-purple-200'}`;
+        div.onclick = () => startNewChatWithPersona(p.id);
+        div.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <img src="${p.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'}" class="w-9 h-9 rounded-full object-cover border border-violet-300">
+            <div>
+              <span class="text-xs font-bold text-slate-800">${p.name}</span>
+              <p class="text-[10px] text-slate-500">${p.gender || 'ไม่ระบุเพศ'} • ${p.age || 'ไม่ระบุอายุ'}</p>
+            </div>
+          </div>
+          <button class="px-2.5 py-1 pastel-btn-primary rounded-xl text-[10px] font-bold">เลือก</button>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('persona-selector-modal').classList.remove('hidden');
+    }
+
+    function closePersonaSelectorModal() {
+      document.getElementById('persona-selector-modal').classList.add('hidden');
+    }
+
+    function startNewChatWithPersona(personaId) {
+      closePersonaSelectorModal();
+      const selectedPersona = userPersonas.find(p => p.id === personaId) || userPersonas[0];
+      
+      userPersonas.forEach(p => p.isSelected = (p.id === personaId));
+      saveUserData();
+
+      let initialDialogue = currentHubBot.firstEncounter || currentHubBot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
+      initialDialogue = initialDialogue.replace(/\{user\}/g, selectedPersona.name);
+
+      let parsedNarration = "";
+      let parsedSpeech = "";
+      const narrationMatch = initialDialogue.match(/\*(.*?)\*/);
+      const speechMatch = initialDialogue.match(/\"(.*?)\"/);
+      if (narrationMatch) parsedNarration = narrationMatch[1];
+      if (speechMatch) parsedSpeech = speechMatch[1];
+      if (!parsedNarration && !parsedSpeech) {
+        parsedSpeech = initialDialogue;
+        parsedNarration = `${currentHubBot.name} สบตากับ ${selectedPersona.name}`;
+      }
+
+      const newRoom = {
+        id: 'room_' + Date.now(),
+        name: `บทสนทนากับ ${selectedPersona.name}`,
+        personaId: selectedPersona.id,
+        personaName: selectedPersona.name,
+        isPinned: false,
+        history: [{
+          sender: "bot",
+          thought: `ได้พบกับ ${selectedPersona.name} แล้ว...`,
+          paragraphs: [
+            { type: "narration", text: parsedNarration },
+            { type: "speech", text: parsedSpeech }
+          ],
+          time: getCurrentTimeStr()
+        }]
+      };
+
+      if (!currentHubBot.rooms) currentHubBot.rooms = [];
+      currentHubBot.rooms.unshift(newRoom);
+      currentRoomId = newRoom.id;
+      saveUserData();
+
+      backFromBotHub();
+      openChatRoom(currentHubBot.id, newRoom.id);
+      showToast(`สร้างเนื้อเรื่องใหม่ด้วยโปรไฟล์ "${selectedPersona.name}"`, 'success', '✨');
     }
 
     // ==================== PERSONA MANAGEMENT ====================
@@ -1665,47 +1848,6 @@
       }, "fa-solid fa-trash text-rose-500");
     }
 
-    function startChatFromBotHub() {
-      if (!currentHubBot) return;
-      registerPlayerAccount();
-      const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
-      let initialDialogue = currentHubBot.firstEncounter || currentHubBot.quote || `ยินดีที่ได้พบกันนะ {user}...`;
-      initialDialogue = initialDialogue.replace(/\{user\}/g, persona.name);
-
-      let parsedNarration = "";
-      let parsedSpeech = "";
-      const narrationMatch = initialDialogue.match(/\*(.*?)\*/);
-      const speechMatch = initialDialogue.match(/\"(.*?)\"/);
-      if (narrationMatch) parsedNarration = narrationMatch[1];
-      if (speechMatch) parsedSpeech = speechMatch[1];
-      if (!parsedNarration && !parsedSpeech) {
-        parsedSpeech = initialDialogue;
-        parsedNarration = `${currentHubBot.name} สบตากับ ${persona.name}`;
-      }
-
-      const newRoom = {
-        id: 'room_' + Date.now(),
-        name: `บทสนทนากับ ${persona.name}`,
-        isPinned: false,
-        history: [{
-          sender: "bot",
-          thought: `ได้พบกับ ${persona.name} แล้ว...`,
-          paragraphs: [
-            { type: "narration", text: parsedNarration },
-            { type: "speech", text: parsedSpeech }
-          ],
-          time: getCurrentTimeStr()
-        }]
-      };
-
-      if (!currentHubBot.rooms) currentHubBot.rooms = [];
-      currentHubBot.rooms.unshift(newRoom);
-      currentRoomId = newRoom.id;
-      saveUserData();
-      backFromBotHub();
-      openChatRoom(currentHubBot.id, newRoom.id);
-    }
-
     function switchExploreSubTab(tab) {
       currentExploreSubTab = tab;
       localStorage.setItem('lovey_explore_subtab', tab);
@@ -1856,30 +1998,64 @@
     }
 
     function filterExploreBots() { renderExploreBotCards(document.getElementById('bot-search-input').value); }
+    
+    function previewNewBotAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          tempBotAvatar = e.target.result;
+          document.getElementById('new-bot-avatar-preview').src = tempBotAvatar;
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
     function submitSaveBot(isPublishNow = true) {
       const name = document.getElementById('bot-name-input').value.trim();
       if (!name) return showToast('กรุณากรอกชื่อตัวละครก่อนนะครับ', 'error', '⚠️');
-      const newBot = {
-        id: 'bot_' + Date.now(),
-        name: name,
-        avatar: tempBotAvatar,
-        quote: document.getElementById('bot-quote-input').value.trim(),
-        shortPreview: document.getElementById('bot-preview-input').value.trim(),
-        story: document.getElementById('bot-story-input').value.trim(),
-        hashtags: document.getElementById('bot-hashtags-input').value.trim(),
-        likesCount: 0,
-        likedUsers: [],
-        playedUsers: [],
-        reviews: [],
-        isPublished: isPublishNow,
-        rooms: [],
-        dmHistory: [{ sender: "bot", text: "ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }],
-        posts: []
-      };
-      bots.unshift(newBot);
+      const editingId = document.getElementById('editing-bot-id').value;
+
+      if (editingId) {
+        const b = getBot(editingId);
+        if (b) {
+          b.name = name;
+          b.avatar = tempBotAvatar;
+          b.age = document.getElementById('bot-age-input').value.trim();
+          b.career = document.getElementById('bot-career-input').value.trim();
+          b.quote = document.getElementById('bot-quote-input').value.trim();
+          b.shortPreview = document.getElementById('bot-preview-input').value.trim();
+          b.story = document.getElementById('bot-story-input').value.trim();
+          b.hashtags = document.getElementById('bot-hashtags-input').value.trim();
+          b.isPublished = isPublishNow;
+        }
+        showToast('อัปเดตข้อมูลตัวละครเรียบร้อย!', 'success', '✨');
+      } else {
+        const newBot = {
+          id: 'bot_' + Date.now(),
+          name: name,
+          avatar: tempBotAvatar,
+          age: document.getElementById('bot-age-input').value.trim(),
+          career: document.getElementById('bot-career-input').value.trim(),
+          quote: document.getElementById('bot-quote-input').value.trim(),
+          shortPreview: document.getElementById('bot-preview-input').value.trim(),
+          story: document.getElementById('bot-story-input').value.trim(),
+          hashtags: document.getElementById('bot-hashtags-input').value.trim(),
+          likesCount: 0,
+          likedUsers: [],
+          playedUsers: [],
+          reviews: [],
+          isPublished: isPublishNow,
+          rooms: [],
+          dmHistory: [{ sender: "bot", text: "ยินดีที่ได้คุยกันนะ 🤍", time: getCurrentTimeStr() }],
+          posts: []
+        };
+        bots.unshift(newBot);
+        showToast('สร้างตัวละครใหม่เรียบร้อย!', 'success', '🎉');
+      }
+
       saveUserData();
       switchToBotDiscovery();
-      showToast('บันทึกตัวละครเรียบร้อย!', 'success', '🎉');
     }
 
     // ==================== TAB 3: CHAT MANAGEMENT SYSTEM ====================
@@ -1911,7 +2087,7 @@
         return;
       }
 
-      allRooms.forEach((item, index) => {
+      allRooms.forEach((item) => {
         const { bot, room } = item;
         const lastMsg = (room.history && room.history.length > 0) ? room.history[room.history.length - 1] : null;
         let lastText = 'เริ่มต้นบทสนทนาใหม่...';
@@ -1924,7 +2100,15 @@
 
         const div = document.createElement('div');
         div.className = `p-3.5 bg-white border rounded-3xl flex items-center justify-between shadow-sm transition ${room.isPinned ? 'border-amber-300 bg-amber-50/20' : 'border-purple-100'} hover:border-violet-300 cursor-pointer`;
-        div.onclick = () => { if (!isManageChatMode) openChatRoom(bot.id, room.id); };
+        div.onclick = () => { 
+          if (!isManageChatMode) {
+            if (room.personaId) {
+              userPersonas.forEach(p => p.isSelected = (p.id === room.personaId));
+              saveUserData();
+            }
+            openChatRoom(bot.id, room.id); 
+          }
+        };
 
         let actionControls = '';
         if (isManageChatMode) {
@@ -1953,6 +2137,7 @@
                 <h4 class="text-xs font-bold text-slate-800 truncate">${bot.name}</h4>
                 <span class="text-[9px] bg-purple-100 text-purple-700 px-2 py-0.2 rounded-full font-semibold">${room.name}</span>
               </div>
+              <p class="text-[10px] text-purple-600 truncate font-medium mt-0.5">โปรไฟล์: ${room.personaName || 'คุณหนูนักท่องฝัน'}</p>
               <p class="text-[11px] text-slate-500 truncate mt-0.5">${lastText}</p>
             </div>
           </div>
@@ -2077,6 +2262,37 @@
       renderRoomMessages();
     }
 
+    function handleAttachImageFromFile(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          attachedImageUrl = e.target.result;
+          document.getElementById('img-preview').src = attachedImageUrl;
+          document.getElementById('img-preview-box').classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearAttachedImage() {
+      attachedImageUrl = null;
+      document.getElementById('img-preview').src = '';
+      document.getElementById('img-preview-box').classList.add('hidden');
+    }
+
+    function toggleCallSimulation() {
+      isCalling = !isCalling;
+      const bar = document.getElementById('call-bar');
+      if (isCalling) {
+        bar.classList.remove('hidden');
+        showToast("เริ่มต้นสายโทรศัพท์จำลอง...", "info", "📞");
+      } else {
+        bar.classList.add('hidden');
+        showToast("วางสายแล้ว", "info", "📵");
+      }
+    }
+
     function getBot(id) { return bots.find(b => b.id === id) || bots[0]; }
     function getCurrentRoom(bot) {
       if (!bot.rooms || bot.rooms.length === 0) bot.rooms = [{ id: "room_default", name: "เนื้อเรื่องหลัก", history: [] }];
@@ -2142,7 +2358,8 @@
       const name = prompt("ตั้งชื่อห้องเนื้อเรื่องใหม่:");
       if (!name) return;
       const b = getBot(currentBotId);
-      const newRoom = { id: 'room_' + Date.now(), name: name, history: [] };
+      const activePersona = userPersonas.find(p => p.isSelected) || userPersonas[0];
+      const newRoom = { id: 'room_' + Date.now(), name: name, personaId: activePersona.id, personaName: activePersona.name, history: [] };
       b.rooms.push(newRoom);
       currentRoomId = newRoom.id;
       saveUserData();
@@ -2155,9 +2372,17 @@
       c.innerHTML = '';
       b.rooms.forEach(r => {
         const d = document.createElement('div');
-        d.className = 'p-2.5 bg-white border border-purple-100 rounded-xl cursor-pointer text-xs font-bold text-slate-800 hover:bg-purple-50 transition';
-        d.innerText = r.name;
-        d.onclick = () => { currentRoomId = r.id; document.getElementById('room-picker-modal').classList.add('hidden'); renderRoomMessages(); };
+        d.className = 'p-2.5 bg-white border border-purple-100 rounded-xl cursor-pointer text-xs font-bold text-slate-800 hover:bg-purple-50 transition flex justify-between items-center';
+        d.innerHTML = `<span>${r.name}</span><span class="text-[10px] text-purple-600 font-normal">${r.personaName || 'คุณหนูนักท่องฝัน'}</span>`;
+        d.onclick = () => { 
+          if (r.personaId) {
+            userPersonas.forEach(p => p.isSelected = (p.id === r.personaId));
+            saveUserData();
+          }
+          currentRoomId = r.id; 
+          document.getElementById('room-picker-modal').classList.add('hidden'); 
+          renderRoomMessages(); 
+        };
         c.appendChild(d);
       });
       document.getElementById('room-picker-modal').classList.remove('hidden');
@@ -2187,11 +2412,80 @@
       }, 'fa-solid fa-right-from-bracket text-rose-500');
     }
 
+    function openEditProfileModal() {
+      document.getElementById('edit-user-name').value = userProfile.name;
+      document.getElementById('edit-user-bio').value = userProfile.bio || '';
+      document.getElementById('edit-profile-modal').classList.remove('hidden');
+    }
+
+    function saveUserProfile() {
+      const newName = document.getElementById('edit-user-name').value.trim();
+      if (!newName) return showToast("กรุณากรอกชื่อด้วยครับ", "error", "⚠️");
+      userProfile.name = newName;
+      userProfile.bio = document.getElementById('edit-user-bio').value.trim();
+      saveUserData();
+      document.getElementById('edit-profile-modal').classList.add('hidden');
+      initApp();
+      showToast("บันทึกโปรไฟล์เรียบร้อย", "success", "✨");
+    }
+
+    function uploadUserAvatar(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          userProfile.avatar = e.target.result;
+          saveUserData();
+          initApp();
+          showToast("เปลี่ยนรูปโปรไฟล์เรียบร้อย", "success", "🖼️");
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function verifyAndSaveApiKey() {
+      const key = document.getElementById('setting-api-key').value.trim();
+      appSettings.apiKey = key;
+      saveUserData();
+      showToast(key ? "บันทึก API Key เรียบร้อย" : "ลบ API Key แล้ว", "success", "🔑");
+    }
+
+    function toggleApiKeyVisibility() {
+      const input = document.getElementById('setting-api-key');
+      const icon = document.getElementById('eye-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash text-xs';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye text-xs';
+      }
+    }
+
+    function saveGeneralSettings() {
+      appSettings.length = document.getElementById('setting-length').value;
+      appSettings.showThoughts = document.getElementById('setting-thoughts').checked;
+      saveUserData();
+    }
+
+    function clearAllData() {
+      showCustomConfirm('ล้างข้อมูลทั้งหมด', 'ข้อมูลเดิมทั้งหมดจะถูกลบออกและไม่สามารถกู้คืนได้ แน่ใจหรือไม่?', (confirmed) => {
+        if (confirmed) {
+          localStorage.clear();
+          location.reload();
+        }
+      }, 'fa-solid fa-triangle-exclamation text-rose-500');
+    }
+
     function initApp() {
       document.getElementById('user-name').innerText = userProfile.name;
       document.getElementById('header-user-name').innerText = userProfile.name;
       document.getElementById('user-avatar').src = userProfile.avatar;
       document.getElementById('header-user-avatar').src = userProfile.avatar;
+      document.getElementById('user-bio').innerText = `"${userProfile.bio || 'ไม่มีคำอธิบายโปรไฟล์'}"`;
+      if (document.getElementById('setting-api-key')) document.getElementById('setting-api-key').value = appSettings.apiKey || '';
+      if (document.getElementById('setting-thoughts')) document.getElementById('setting-thoughts').checked = appSettings.showThoughts !== false;
+      
       updateCoinDisplay();
       switchLobbyTab(currentLobbyTab);
     }
