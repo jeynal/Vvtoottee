@@ -20,6 +20,7 @@
       --text-main: #1e1b4b;
       --text-muted: #64748b;
       --border-soft: #e9d5ff;
+      --chat-bg-theme: #ffffff;
     }
 
     body {
@@ -102,6 +103,59 @@
       <button onclick="closeCommentContextModal()" class="w-full py-2 text-slate-400 hover:text-slate-600 font-medium text-xs text-center transition">
         ยกเลิก
       </button>
+    </div>
+  </div>
+
+  <!-- MODAL: CHAT SETTINGS (ตั้งค่าห้องแชทส่วนตัว, ชื่อเฉพาะบอท, ธีมสี, และโหมดความยาว 6000 คำ) -->
+  <div id="chat-settings-modal" class="hidden fixed inset-0 bg-indigo-950/40 backdrop-blur-md z-[90] flex items-center justify-center p-4">
+    <div class="w-full max-w-sm pastel-card rounded-3xl p-5 space-y-3.5 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-purple-100 pb-2">
+        <h3 class="text-xs font-bold text-indigo-950 flex items-center gap-1.5"><i class="fa-solid fa-sliders text-violet-500"></i> ตั้งค่าห้องแชทส่วนตัว</h3>
+        <button onclick="closeChatSettingsModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">ชื่อแสดงผลตัวละครในห้องนี้</label>
+          <input id="setting-room-bot-name" type="text" placeholder="ชื่อตัวละคร" class="w-full pastel-input rounded-2xl px-3 py-2">
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">สีธีมพื้นหลังช่องแชท</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="setChatBgTheme('#ffffff')" class="h-8 rounded-xl border border-slate-200 bg-white shadow-sm flex items-center justify-center text-[10px] font-bold text-slate-700">ขาว</button>
+            <button onclick="setChatBgTheme('#faf5ff')" class="h-8 rounded-xl border border-purple-200 bg-purple-50 text-purple-700 shadow-sm flex items-center justify-center text-[10px] font-bold">พาสเทล</button>
+            <button onclick="setChatBgTheme('#f0f9ff')" class="h-8 rounded-xl border border-sky-200 bg-sky-50 text-sky-700 shadow-sm flex items-center justify-center text-[10px] font-bold">ฟ้าใส</button>
+            <button onclick="setChatBgTheme('#fff1f2')" class="h-8 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 shadow-sm flex items-center justify-center text-[10px] font-bold">ชมพู</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">ความยาวคำบรรยายของบอท</label>
+          <select id="setting-room-length" class="w-full pastel-input rounded-2xl px-3 py-2 text-xs">
+            <option value="1000">กระชับ (~1,000 คำ)</option>
+            <option value="2000">ปานกลาง (~2,000 - 3,000 คำ)</option>
+            <option value="4000">บรรยายยาว (~4,000 - 5,000 คำ)</option>
+            <option value="6000">👑 พรีเมียม บรรยายละเอียดมาก (6,000+ คำ) [ใช้ 3 🐰/ครั้ง]</option>
+          </select>
+          <p class="text-[10px] text-purple-600 mt-1">*โหมด 6,000+ คำ จะหัก 3 เหรียญกระต่ายเยลลี่เมื่อกดส่งข้อความ</p>
+        </div>
+      </div>
+
+      <button onclick="saveChatSettingsModal()" class="w-full py-2.5 pastel-btn-primary font-bold rounded-2xl text-xs transition">บันทึกการตั้งค่า</button>
+    </div>
+  </div>
+
+  <!-- MODAL: REGENERATE COST CHOICE (รีเจนฟรี 3 ครั้ง เกินนั้นหักเหรียญ) -->
+  <div id="regen-choice-modal" class="hidden fixed inset-0 bg-indigo-950/40 backdrop-blur-md z-[95] flex items-center justify-center p-4">
+    <div class="w-full max-w-xs pastel-card rounded-3xl p-5 space-y-3 text-center shadow-2xl">
+      <h3 class="text-xs font-bold text-indigo-950">โควตารีฟรีประจำวันหมดแล้ว (ครบ 3 ครั้งแล้ว)</h3>
+      <p class="text-[11px] text-slate-600">เลือกเหรียญที่จะใช้สั่งให้บอทตอบใหม่:</p>
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <button onclick="confirmRegenWithCoin('rabbit')" class="py-2.5 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-2xl border border-purple-200 text-xs font-bold transition">1 🐰 กระต่าย</button>
+        <button onclick="confirmRegenWithCoin('cat')" class="py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-2xl border border-sky-200 text-xs font-bold transition">2 🐱 แมว</button>
+      </div>
+      <button onclick="closeRegenChoiceModal()" class="w-full text-[10px] text-slate-400 py-1 hover:text-slate-600">ยกเลิก</button>
     </div>
   </div>
 
@@ -734,13 +788,17 @@
     </div>
 
     <!-- VIEW 2: CHAT VIEW -->
-    <div id="view-room" class="hidden flex-1 flex flex-col overflow-hidden relative bg-gradient-to-b from-purple-50/60 via-white to-sky-50/40">
+    <div id="view-room" class="hidden flex-1 flex flex-col overflow-hidden relative" style="background-color: var(--chat-bg-theme);">
       <header class="p-3 bg-white/95 backdrop-blur border-b border-purple-100 flex items-center justify-between z-20">
         <div class="flex items-center gap-2">
           <button onclick="handleBackAction()" class="flex items-center gap-1.5 px-2.5 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-xl text-xs font-medium border border-purple-200 transition"><i class="fa-solid fa-arrow-left text-[11px]"></i><span class="text-[10px]">ย้อนกลับ</span></button>
           <img id="room-avatar" src="" class="w-8 h-8 rounded-full object-cover border-2 border-purple-200">
           <div>
-            <h2 id="room-name" class="text-xs font-bold text-slate-800 leading-tight">ชื่อบอท</h2>
+            <div class="flex items-center gap-1.5">
+              <h2 id="room-name" class="text-xs font-bold text-slate-800 leading-tight">ชื่อบอท</h2>
+              <!-- ปุ่มตั้งค่าห้องแชทข้างชื่อบอท -->
+              <button onclick="openChatSettingsModal()" class="text-violet-500 hover:text-violet-700 text-xs px-2 py-0.5 bg-purple-50 rounded-lg border border-purple-200 font-bold transition" title="ตั้งค่าแชท"><i class="fa-solid fa-gear"></i> ตั้งค่า</button>
+            </div>
             <button onclick="openRoomPickerModal()" class="text-[10px] text-violet-500 font-medium flex items-center gap-1 hover:underline">
               <i class="fa-solid fa-bookmark text-[9px]"></i><span id="room-current-name">เนื้อเรื่องหลัก</span><i class="fa-solid fa-caret-down text-[9px]"></i>
             </button>
@@ -978,6 +1036,10 @@
     let currentExploreSubTab = localStorage.getItem('lovey_explore_subtab') || 'public';
     let currentHubTab = 'story';
     let currentLobbyTab = localStorage.getItem('lovey_lobby_tab') || 'home';
+    
+    // ระบบรีเจนใหม่ตามคำขอ
+    let dailyRegenCount = 0;
+    let pendingRegenIndex = null;
 
     function getUserKey(key) { return `lovey_${currentUserEmail}_${key}`; }
     function getCurrentTimeStr() {
@@ -1034,6 +1096,8 @@
             name: "เนื้อเรื่องหลัก",
             personaId: "persona_default",
             personaName: "คุณหนูนักท่องฝัน",
+            lengthSetting: "2000",
+            bgTheme: "#ffffff",
             isPinned: true,
             history: [
               {
@@ -1195,6 +1259,8 @@
         name: `บทสนทนากับ ${selectedPersona.name}`,
         personaId: selectedPersona.id,
         personaName: selectedPersona.name,
+        lengthSetting: "2000",
+        bgTheme: "#ffffff",
         isPinned: false,
         history: [{
           sender: "bot",
@@ -2131,10 +2197,10 @@
 
         div.innerHTML = `
           <div class="flex items-center gap-3 overflow-hidden flex-1 pr-2">
-            <img src="${bot.avatar}" class="w-11 h-11 rounded-2xl object-cover border border-purple-200 flex-shrink-0">
+            <img src="${room.customBotAvatar || bot.avatar}" class="w-11 h-11 rounded-2xl object-cover border border-purple-200 flex-shrink-0">
             <div class="truncate">
               <div class="flex items-center gap-1.5">
-                <h4 class="text-xs font-bold text-slate-800 truncate">${bot.name}</h4>
+                <h4 class="text-xs font-bold text-slate-800 truncate">${room.customBotName || bot.name}</h4>
                 <span class="text-[9px] bg-purple-100 text-purple-700 px-2 py-0.2 rounded-full font-semibold">${room.name}</span>
               </div>
               <p class="text-[10px] text-purple-600 truncate font-medium mt-0.5">โปรไฟล์: ${room.personaName || 'คุณหนูนักท่องฝัน'}</p>
@@ -2188,15 +2254,17 @@
       }, 'fa-solid fa-trash text-rose-500');
     }
 
-    async function callDynamicNarrativeEngine(userText, bot) {
+    async function callDynamicNarrativeEngine(userText, bot, room) {
       const apiKey = appSettings.apiKey;
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
+      const lengthMode = room.lengthSetting || '2000';
+      
       if (apiKey) {
         try {
           let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: `คุณคือนวนิยายโรแมนติก รับบทเป็น ${bot.name} คุยกับ ${persona.name} ผู้เล่นพิมพ์ว่า "${userText}". ตอบกลับเป็น JSON มี thought และ paragraphs` }] }], generationConfig: { responseMimeType: "application/json" } })
+            body: JSON.stringify({ contents: [{ parts: [{ text: `คุณคือนวนิยายโรแมนติก รับบทเป็น ${room.customBotName || bot.name} คุยกับ ${persona.name} ผู้เล่นพิมพ์ว่า "${userText}". ความยาวระดับ ${lengthMode} คำ. ตอบกลับเป็น JSON มี thought และ paragraphs` }] }], generationConfig: { responseMimeType: "application/json" } })
           });
           let data = await res.json();
           const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -2204,10 +2272,10 @@
         } catch(e) {}
       }
       return {
-        thought: `ดีใจจังที่ได้คุยกับ ${persona.name}...`,
+        thought: `ดีใจจังที่ได้คุยกับ ${persona.name} ในห้อง ${room.name} (${lengthMode} คำ)...`,
         paragraphs: [
-          { type: "narration", text: `${bot.name} ส่งยิ้มละมุนให้คุณอย่างอบอุ่น` },
-          { type: "speech", text: `ครับคนดี เค้าอยู่ตรงนี้ข้างๆ เสมอนะ` }
+          { type: "narration", text: `${room.customBotName || bot.name} ส่งยิ้มละมุนให้คุณอย่างอบอุ่นและบรรยายรายละเอียดอย่างลึกซึ้ง` },
+          { type: "speech", text: `ครับคนดี เค้าอยู่ตรงนี้ข้างๆ เสมอนะสำหรับเรื่อง "${userText}"` }
         ]
       };
     }
@@ -2219,7 +2287,7 @@
       container.innerHTML = '';
       if (!room.history) room.history = [];
 
-      room.history.forEach(m => {
+      room.history.forEach((m, idx) => {
         if (m.sender === 'user') {
           const div = document.createElement('div');
           div.className = 'flex flex-col items-end self-end max-w-[85%] ml-auto space-y-1';
@@ -2236,7 +2304,12 @@
               contentHtml += (p.type === 'narration') ? `<div class="text-[11px] text-slate-600 italic leading-loose px-3 bg-white/95 p-3.5 rounded-2xl border border-purple-100 shadow-sm">*${p.text}*</div>` : `<div class="bg-purple-50 border border-purple-200 text-purple-900 text-xs px-4 py-2.5 rounded-2xl rounded-tl-sm leading-relaxed shadow-sm font-medium">"${p.text}"</div>`;
             });
           }
-          div.innerHTML = `${thoughtHtml}${contentHtml}<span class="text-[9px] text-slate-400 font-mono pl-1">${m.time || getCurrentTimeStr()}</span>`;
+          div.innerHTML = `${thoughtHtml}${contentHtml}
+            <div class="flex items-center gap-3 pt-1 text-[10px] text-slate-400">
+              <span class="font-mono">${m.time || getCurrentTimeStr()}</span>
+              <button onclick="regenerateBotResponse(${idx})" class="hover:text-purple-600 font-bold flex items-center gap-1"><i class="fa-solid fa-rotate-right"></i> ตอบใหม่</button>
+              <button onclick="deleteBotMessage(${idx})" class="hover:text-rose-500 font-bold flex items-center gap-1"><i class="fa-solid fa-trash"></i> ลบ</button>
+            </div>`;
           container.appendChild(div);
         }
       });
@@ -2251,15 +2324,108 @@
       const b = getBot(currentBotId);
       const room = getCurrentRoom(b);
 
+      // ตรวจสอบโหมดพรีเมียม 6,000+ คำ หัก 3 เหรียญกระต่าย
+      if (room.lengthSetting === '6000') {
+        if (userEconomy.coins < 3) {
+          return showToast("เหรียญกระต่ายเยลลี่ไม่พอสำหรับโหมดพรีเมียม 6,000+ คำ (ต้องใช้ 3 🐰)", "error", "⚠️");
+        }
+        userEconomy.coins -= 3;
+        updateCoinDisplay();
+        showToast("ใช้งานโหมดพรีเมียมละเอียดพิเศษ (หัก 3 🐰)", "info", "🐰");
+      }
+
       room.history.push({ sender: 'user', userText: text, image: attachedImageUrl, time: getCurrentTimeStr() });
       input.value = '';
       clearAttachedImage();
       renderRoomMessages();
 
-      const res = await callDynamicNarrativeEngine(text, b);
+      const res = await callDynamicNarrativeEngine(text, b, room);
       room.history.push({ sender: 'bot', thought: res.thought, paragraphs: res.paragraphs, time: getCurrentTimeStr() });
       saveUserData();
       renderRoomMessages();
+    }
+
+    // ฟังก์ชันรีเจนคำตอบใหม่ตามคำขอ
+    function regenerateBotResponse(index) {
+      if (dailyRegenCount < 3) {
+        dailyRegenCount++;
+        executeRegen(index);
+        showToast(`สุ่มคำตอบใหม่ฟรี (${dailyRegenCount}/3 ครั้ง)`, "success", "🔄");
+      } else {
+        pendingRegenIndex = index;
+        document.getElementById('regen-choice-modal').classList.remove('hidden');
+      }
+    }
+
+    function closeRegenChoiceModal() {
+      document.getElementById('regen-choice-modal').classList.add('hidden');
+    }
+
+    function confirmRegenWithCoin(type) {
+      closeRegenChoiceModal();
+      if (type === 'rabbit') {
+        if (userEconomy.coins < 1) return showToast("เหรียญกระต่ายเยลลี่ไม่พอ", "error", "⚠️");
+        userEconomy.coins -= 1;
+      } else {
+        if (userEconomy.catCoins < 2) return showToast("เหรียญแมวเยลลี่ไม่พอ", "error", "⚠️");
+        userEconomy.catCoins -= 2;
+      }
+      updateCoinDisplay();
+      executeRegen(pendingRegenIndex);
+      showToast("สั่งบอทตอบใหม่สำเร็จ!", "success", "✨");
+    }
+
+    async function executeRegen(index) {
+      const b = getBot(currentBotId);
+      const room = getCurrentRoom(b);
+      if (room.history[index]) {
+        const res = await callDynamicNarrativeEngine("ช่วยเรียบเรียงคำตอบใหม่ให้ลึกซึ้งขึ้นอีก", b, room);
+        room.history[index].thought = res.thought;
+        room.history[index].paragraphs = res.paragraphs;
+        saveUserData();
+        renderRoomMessages();
+      }
+    }
+
+    function deleteBotMessage(index) {
+      const b = getBot(currentBotId);
+      const room = getCurrentRoom(b);
+      room.history.splice(index, 1);
+      saveUserData();
+      renderRoomMessages();
+      showToast("ลบข้อความเรียบร้อย", "success", "🗑️");
+    }
+
+    // ==================== CHAT SETTINGS MODAL & THEMES ====================
+    function openChatSettingsModal() {
+      const b = getBot(currentBotId);
+      const room = getCurrentRoom(b);
+      document.getElementById('setting-room-bot-name').value = room.customBotName || b.name;
+      document.getElementById('setting-room-length').value = room.lengthSetting || "2000";
+      document.getElementById('chat-settings-modal').classList.remove('hidden');
+    }
+
+    function closeChatSettingsModal() {
+      document.getElementById('chat-settings-modal').classList.add('hidden');
+    }
+
+    function setChatBgTheme(color) {
+      const b = getBot(currentBotId);
+      const room = getCurrentRoom(b);
+      room.bgTheme = color;
+      document.documentElement.style.setProperty('--chat-bg-theme', color);
+      showToast("เปลี่ยนสีธีมห้องแชทเรียบร้อย", "success", "🎨");
+    }
+
+    function saveChatSettingsModal() {
+      const b = getBot(currentBotId);
+      const room = getCurrentRoom(b);
+      room.customBotName = document.getElementById('setting-room-bot-name').value.trim();
+      room.lengthSetting = document.getElementById('setting-room-length').value;
+      document.getElementById('room-name').innerText = room.customBotName || b.name;
+      saveUserData();
+      closeChatSettingsModal();
+      showToast("บันทึกการตั้งค่าห้องแชทแล้ว", "success", "⚙️");
     }
 
     function handleAttachImageFromFile(event) {
@@ -2295,7 +2461,7 @@
 
     function getBot(id) { return bots.find(b => b.id === id) || bots[0]; }
     function getCurrentRoom(bot) {
-      if (!bot.rooms || bot.rooms.length === 0) bot.rooms = [{ id: "room_default", name: "เนื้อเรื่องหลัก", history: [] }];
+      if (!bot.rooms || bot.rooms.length === 0) bot.rooms = [{ id: "room_default", name: "เนื้อเรื่องหลัก", lengthSetting: "2000", bgTheme: "#ffffff", history: [] }];
       return bot.rooms.find(r => r.id === currentRoomId) || bot.rooms[0];
     }
 
@@ -2342,9 +2508,11 @@
 
       document.getElementById('view-lobby').classList.add('hidden');
       document.getElementById('view-room').classList.remove('hidden');
-      document.getElementById('room-name').innerText = b.name;
-      document.getElementById('room-avatar').src = b.avatar;
+      document.getElementById('room-name').innerText = room.customBotName || b.name;
+      document.getElementById('room-avatar').src = room.customBotAvatar || b.avatar;
       document.getElementById('room-current-name').innerText = room.name;
+
+      document.documentElement.style.setProperty('--chat-bg-theme', room.bgTheme || '#ffffff');
       renderRoomMessages();
     }
 
@@ -2359,7 +2527,7 @@
       if (!name) return;
       const b = getBot(currentBotId);
       const activePersona = userPersonas.find(p => p.isSelected) || userPersonas[0];
-      const newRoom = { id: 'room_' + Date.now(), name: name, personaId: activePersona.id, personaName: activePersona.name, history: [] };
+      const newRoom = { id: 'room_' + Date.now(), name: name, personaId: activePersona.id, personaName: activePersona.name, lengthSetting: "2000", bgTheme: "#ffffff", history: [] };
       b.rooms.push(newRoom);
       currentRoomId = newRoom.id;
       saveUserData();
