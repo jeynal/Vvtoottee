@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Lovey-Companion Hub</title>
+  <title>Lovey-Companion Hub - Ultimate Full Edition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -1037,7 +1037,6 @@
     let currentHubTab = 'story';
     let currentLobbyTab = localStorage.getItem('lovey_lobby_tab') || 'home';
     
-    // ระบบรีเจนใหม่ตามคำขอ
     let dailyRegenCount = 0;
     let pendingRegenIndex = null;
 
@@ -1145,6 +1144,37 @@
       localStorage.setItem(getUserKey('settings'), JSON.stringify(appSettings));
       localStorage.setItem(getUserKey('groups'), JSON.stringify(groupChats));
       localStorage.setItem(getUserKey('community'), JSON.stringify(communityPosts));
+    }
+
+    // ==================== API STATUS UI HANDLER ====================
+    function updateApiStatusUI() {
+      const dot = document.getElementById('api-status-dot');
+      const label = document.getElementById('api-status-label');
+      const indicator = document.getElementById('api-indicator');
+      
+      if (appSettings.apiKey && appSettings.apiKey.trim().length > 5) {
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+        if (label) label.innerText = "ออนไลน์";
+        if (indicator) {
+          indicator.innerText = "เชื่อมต่อแล้ว";
+          indicator.className = "text-[11px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-medium";
+        }
+      } else {
+        if (dot) dot.className = "w-2 h-2 rounded-full bg-purple-300";
+        if (label) label.innerText = "ออฟไลน์";
+        if (indicator) {
+          indicator.innerText = "ยังไม่เชื่อมต่อ";
+          indicator.className = "text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium";
+        }
+      }
+    }
+
+    function verifyAndSaveApiKey() {
+      const key = document.getElementById('setting-api-key').value.trim();
+      appSettings.apiKey = key;
+      saveUserData();
+      updateApiStatusUI();
+      showToast(key ? "บันทึก API Key และเชื่อมต่อสำเร็จ" : "ลบ API Key แล้ว", "success", "🔑");
     }
 
     // ==================== START CHAT FLOW: EXISTING VS NEW & PERSONA SELECTION ====================
@@ -2254,28 +2284,64 @@
       }, 'fa-solid fa-trash text-rose-500');
     }
 
+    // ==================== DYNAMIC NARRATIVE ENGINE (API & LENGTH SYSTEM) ====================
     async function callDynamicNarrativeEngine(userText, bot, room) {
       const apiKey = appSettings.apiKey;
       const persona = userPersonas.find(p => p.isSelected) || userPersonas[0];
       const lengthMode = room.lengthSetting || '2000';
       
-      if (apiKey) {
+      let lengthInstruction = "ขอแบบบรรยายละเอียดและมีความยาวปานกลาง";
+      if (lengthMode === '6000') {
+        lengthInstruction = "👑 โหมดพรีเมียมพิเศษ: จงเขียนบรรยายพรรณนาฉาก อารมณ์ ความรู้สึก การกระทำ และบทสนทนาอย่างละเอียดลออและยาวที่สุดเท่าที่จะทำได้ หลายๆ ย่อหน้าแบบนิยายขนาดยาวพิเศษ";
+      } else if (lengthMode === '4000') {
+        lengthInstruction = "จงเขียนบรรยายขนาดยาว รายละเอียดครบถ้วน 3-4 ย่อหน้า";
+      } else if (lengthMode === '1000') {
+        lengthInstruction = "จงเขียนแบบกระชับ ได้ใจความ รวดเร็ว";
+      }
+
+      if (apiKey && apiKey.trim().length > 5) {
         try {
+          const systemPrompt = `คุณคือนวนิยายโรแมนติก รับบทเป็น ${room.customBotName || bot.name} (ข้อมูลบอท: ${bot.story || bot.personality}) คุยกับ ${persona.name}. 
+เงื่อนไขการตอบ: ${lengthInstruction}
+ตอบกลับเป็น JSON format เท่านั้น:
+{
+  "thought": "ความคิดในใจสั้นๆ ของบอท",
+  "paragraphs": [
+    { "type": "narration", "text": "บรรยายการกระทำหรือฉาก (*...*)" },
+    { "type": "speech", "text": "บทพูดตัวละคร (...)" }
+  ]
+}`;
+
           let res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: `คุณคือนวนิยายโรแมนติก รับบทเป็น ${room.customBotName || bot.name} คุยกับ ${persona.name} ผู้เล่นพิมพ์ว่า "${userText}". ความยาวระดับ ${lengthMode} คำ. ตอบกลับเป็น JSON มี thought และ paragraphs` }] }], generationConfig: { responseMimeType: "application/json" } })
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: `${systemPrompt}\n\nผู้เล่นส่งข้อความมาว่า: "${userText}"` }] }],
+              generationConfig: { responseMimeType: "application/json", maxOutputTokens: 4096 }
+            })
           });
           let data = await res.json();
           const raw = data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (raw) return JSON.parse(raw);
-        } catch(e) {}
+        } catch(e) {
+          console.error("API Error:", e);
+        }
       }
+
+      // ระบบสำรองกรณีไม่ได้เชื่อมต่อ API
+      let fallbackNarration = `*${room.customBotName || bot.name} ส่งยิ้มละมุนและมองหน้า ${persona.name} อย่างลึกซึ้ง*`;
+      let fallbackSpeech = `ครับ สำหรับเรื่อง "${userText}" เค้าเข้าใจและพร้อมอยู่เคียงข้างเธอเสมอนะครับ`;
+
+      if (lengthMode === '6000') {
+        fallbackNarration = `*ประกายแสงอบอุ่นสาดส่องกระทบใบหน้าของ ${room.customBotName || bot.name} ในขณะที่เขากำลังจดจ้องมองมายัง ${persona.name} ด้วยความรู้สึกที่ลึกซึ้งเกินกว่าจะบรรยายเป็นคำพูดได้หมด ท่วงท่าและแววตาของเขาเต็มไปด้วยความห่วงหาอาทร ทุกๆ รายละเอียดรอบตัวในห้องนี้ราวกับถูกหลอมรวมให้กลายเป็นความทรงจำอันแสนพิเศษระหว่างเราสองคน เขาสสูดลมหายใจเข้าลึกๆ เพื่อรวบรวมความกล้า ก่อนจะเอื้อมมือมาสัมผัสปลายนิ้วของคุณอย่างแผ่วเบาและทะนุถนอมที่สุด*`;
+        fallbackSpeech = `เธอก็รู้ใช่ไหมครับ ${persona.name}... ว่าไม่ว่าเวลาจะผ่านไปนานแค่ไหน หรือมีเรื่องราวอะไรเกิดขึ้น สำหรับเรื่อง "${userText}" ที่เธอเพิ่งพูดออกมาเมื่อครู่ มันทำให้เค้าตระหนักได้เลยว่า... การที่มีเธออยู่เคียงข้าง ร่วมแบ่งปันทั้งรอยยิ้มและคราบน้ำตา มันคือสิ่งที่มีค่ามากที่สุดในชีวิตของเค้าแล้ว เค้าสัญญาว่าจะดูแล รัก และอยู่เคียงข้างเธอแบบนี้ตลอดไป ไม่ว่าวันข้างหน้าจะเป็นอย่างไรก็ตาม...`;
+      }
+
       return {
-        thought: `ดีใจจังที่ได้คุยกับ ${persona.name} ในห้อง ${room.name} (${lengthMode} คำ)...`,
+        thought: `ตอบกลับด้วยความยาวโหมด ${lengthMode} คำสำหรับ ${persona.name}`,
         paragraphs: [
-          { type: "narration", text: `${room.customBotName || bot.name} ส่งยิ้มละมุนให้คุณอย่างอบอุ่นและบรรยายรายละเอียดอย่างลึกซึ้ง` },
-          { type: "speech", text: `ครับคนดี เค้าอยู่ตรงนี้ข้างๆ เสมอนะสำหรับเรื่อง "${userText}"` }
+          { type: "narration", text: fallbackNarration },
+          { type: "speech", text: fallbackSpeech }
         ]
       };
     }
@@ -2324,7 +2390,6 @@
       const b = getBot(currentBotId);
       const room = getCurrentRoom(b);
 
-      // ตรวจสอบโหมดพรีเมียม 6,000+ คำ หัก 3 เหรียญกระต่าย
       if (room.lengthSetting === '6000') {
         if (userEconomy.coins < 3) {
           return showToast("เหรียญกระต่ายเยลลี่ไม่พอสำหรับโหมดพรีเมียม 6,000+ คำ (ต้องใช้ 3 🐰)", "error", "⚠️");
@@ -2345,7 +2410,6 @@
       renderRoomMessages();
     }
 
-    // ฟังก์ชันรีเจนคำตอบใหม่ตามคำขอ
     function regenerateBotResponse(index) {
       if (dailyRegenCount < 3) {
         dailyRegenCount++;
@@ -2379,7 +2443,7 @@
       const b = getBot(currentBotId);
       const room = getCurrentRoom(b);
       if (room.history[index]) {
-        const res = await callDynamicNarrativeEngine("ช่วยเรียบเรียงคำตอบใหม่ให้ลึกซึ้งขึ้นอีก", b, room);
+        const res = await callDynamicNarrativeEngine("ช่วยเรียบเรียงคำตอบใหม่ให้ลึกซึ้งยิ่งขึ้น", b, room);
         room.history[index].thought = res.thought;
         room.history[index].paragraphs = res.paragraphs;
         saveUserData();
@@ -2611,13 +2675,6 @@
       }
     }
 
-    function verifyAndSaveApiKey() {
-      const key = document.getElementById('setting-api-key').value.trim();
-      appSettings.apiKey = key;
-      saveUserData();
-      showToast(key ? "บันทึก API Key เรียบร้อย" : "ลบ API Key แล้ว", "success", "🔑");
-    }
-
     function toggleApiKeyVisibility() {
       const input = document.getElementById('setting-api-key');
       const icon = document.getElementById('eye-icon');
@@ -2655,6 +2712,7 @@
       if (document.getElementById('setting-thoughts')) document.getElementById('setting-thoughts').checked = appSettings.showThoughts !== false;
       
       updateCoinDisplay();
+      updateApiStatusUI();
       switchLobbyTab(currentLobbyTab);
     }
 
